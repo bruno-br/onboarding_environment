@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Myapp::Application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -6,11 +8,11 @@ Myapp::Application.routes.draw do
   # root 'welcome#index'
 
   # Example of regular route:
-    get 'products' => 'products#list_all'
+  get 'products' => 'products#list_all'
 
-    get 'products/:id' => 'products#get_by_id'
+  get 'products/:id' => 'products#find_by_id'
 
-    post 'products' => 'products#create'
+  post 'products' => 'products#create'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
@@ -43,7 +45,7 @@ Myapp::Application.routes.draw do
   #       get 'recent', on: :collection
   #     end
   #   end
-  
+
   # Example resource route with concerns:
   #   concern :toggleable do
   #     post 'toggle'
