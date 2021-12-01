@@ -10,6 +10,8 @@ Myapp::Application.routes.draw do
 
     get 'products/:id' => 'products#get_by_id'
 
+    post 'products' => 'products#create'
+
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 
