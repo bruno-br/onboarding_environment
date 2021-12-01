@@ -1,6 +1,6 @@
 class ProductsController < ApplicationController
-    def index
-        # @products = Product.all
-        render json: {status: 'SUCCESS'}
+    def list_all
+        products = Product.all
+        render json: {status: products}
     end
 end
