@@ -6,21 +6,25 @@ class ProductsController < ApplicationController
 
   def list_all
     products = Product.all
-    render json: { data: products }
+    render json: { products: products }
   end
 
   def find_by_id
     product = Product.find_by(id: params[:id])
-    render json: { data: product }
+
+    if product.nil?
+      render json: {}, status: 404
+    else
+      render json: { product: product }, status: :ok
+    end
   end
 
   def create
-    # Check if any params are missing
     missing_params = check_for_missing_params(%i[SKU amount description name price])
 
     if missing_params.length > 0
       return render json: { error: true, message: "Missing params: #{missing_params.join(', ')}" },
-                    status: :error
+                    status: 400
     end
 
     # Create and save new Product
@@ -30,7 +34,7 @@ class ProductsController < ApplicationController
     if product.save
       render json: { message: 'Created', data: product }, status: :created
     else
-      render json: { error: true, message: 'Failed' }, status: :error
+      render json: { error: true, message: 'Failed' }, status: 400
     end
   end
 
@@ -38,9 +42,9 @@ class ProductsController < ApplicationController
     product = Product.find_by(id: params[:id])
     if !product.nil?
       product.destroy
-      render json: { message: 'Deleted', data: product }, status: :ok
+      render json: { message: 'Deleted', product: product }, status: :ok
     else
-      render json: { message: 'Product not found', data: nil }, status: :error
+      render json: {}, status: 404
     end
   end
 
@@ -48,7 +52,7 @@ class ProductsController < ApplicationController
     valid_params = find_valid_params(%i[SKU amount description name price], params)
     product = Product.find_by(id: params[:id])
 
-    return render json: { message: 'Product not found' }, status: :error if product.nil?
+    return render json: {}, status: 404 if product.nil?
 
     # Update all valid_params
     valid_params.each do |param|
@@ -56,13 +60,13 @@ class ProductsController < ApplicationController
       render json: { message: "Error adding attribute #{param[:name]}" }, status: :error unless is_success
     end
 
-    render json: { message: 'Updated', data: product }, status: :ok
+    render json: { message: 'Updated', product: product }, status: :ok
   end
 
   private
 
   def error_handler
-    render json: { error: true, data: nil }, status: :error
+    render json: { error: true }, status: :error
   end
 
   def check_for_missing_params(required_params)
