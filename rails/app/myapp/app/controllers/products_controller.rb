@@ -23,7 +23,7 @@ class ProductsController < ApplicationController
     product = Product.new(permitted_params)
 
     if product.save
-      render json: { message: 'Created', product: product }, status: :created
+      render json: { product: product }, status: :created
     else
       render json: {}, status: :bad_request
     end
@@ -33,7 +33,7 @@ class ProductsController < ApplicationController
     product = Product.find_by(id: params[:id])
     if !product.nil?
       product.destroy
-      render json: { message: 'Deleted', product: product }, status: :ok
+      render json: { product: product }, status: :ok
     else
       render json: {}, status: :not_found
     end
@@ -45,7 +45,7 @@ class ProductsController < ApplicationController
     return render json: {}, status: :not_found if product.nil?
 
     if product.update_attributes(permitted_params)
-      render json: { message: 'Updated', product: product }, status: :ok
+      render json: { product: product }, status: :ok
     else
       render json: {}, status: :bad_request
     end
