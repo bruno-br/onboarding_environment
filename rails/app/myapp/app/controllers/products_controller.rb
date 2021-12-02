@@ -3,6 +3,7 @@
 # Controller for Products
 class ProductsController < ApplicationController
   rescue_from Exception, with: :error_handler
+  rescue_from ActionController::ParameterMissing, with: :param_missing_handler
 
   def index
     products = Product.all
@@ -13,19 +14,14 @@ class ProductsController < ApplicationController
     product = Product.find_by(id: params[:id])
 
     if product.nil?
-      render json: {}, status: 404
+      render json: {}, status: :not_found
     else
       render json: { product: product }, status: :ok
     end
   end
 
   def create
-    missing_params = check_for_missing_params(%i[sku amount description name price])
-
-    if missing_params.length > 0
-      return render json: { error: true, message: "Missing params: #{missing_params.join(', ')}" },
-                    status: 400
-    end
+    params.require(%i[sku amount description name price])
 
     product = Product.new(sku: params[:sku], amount: params[:amount], description: params[:description],
                           name: params[:name], price: params[:price])
@@ -33,7 +29,7 @@ class ProductsController < ApplicationController
     if product.save
       render json: { message: 'Created', data: product }, status: :created
     else
-      render json: { error: true, message: 'Failed' }, status: 400
+      render json: { error: true, message: 'Failed' }, status: :bad_request
     end
   end
 
@@ -43,7 +39,7 @@ class ProductsController < ApplicationController
       product.destroy
       render json: { message: 'Deleted', product: product }, status: :ok
     else
-      render json: {}, status: 404
+      render json: {}, status: :not_found
     end
   end
 
@@ -51,7 +47,7 @@ class ProductsController < ApplicationController
     valid_params = find_valid_params(%i[sku amount description name price], params)
     product = Product.find_by(id: params[:id])
 
-    return render json: {}, status: 404 if product.nil?
+    return render json: {}, status: :not_found if product.nil?
 
     # Update all valid_params
     valid_params.each do |param|
@@ -64,18 +60,12 @@ class ProductsController < ApplicationController
 
   private
 
-  def error_handler
-    render json: { error: true }, status: :error
+  def param_missing_handler(exception)
+    render json: { error: true, message: exception.message }, status: :bad_request
   end
 
-  def check_for_missing_params(required_params)
-    missing_params = []
-
-    required_params.each do |param|
-      missing_params.push(param) unless params.key?(param)
-    end
-
-    missing_params
+  def error_handler
+    render json: { error: true }, status: :error
   end
 
   def find_valid_params(valid_attributes, params)
