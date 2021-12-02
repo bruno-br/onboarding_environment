@@ -20,14 +20,14 @@ class ProductsController < ApplicationController
   end
 
   def create
-    missing_params = check_for_missing_params(%i[SKU amount description name price])
+    missing_params = check_for_missing_params(%i[sku amount description name price])
 
     if missing_params.length > 0
       return render json: { error: true, message: "Missing params: #{missing_params.join(', ')}" },
                     status: 400
     end
 
-    product = Product.new(SKU: params[:SKU], amount: params[:amount], description: params[:description],
+    product = Product.new(sku: params[:sku], amount: params[:amount], description: params[:description],
                           name: params[:name], price: params[:price])
 
     if product.save
@@ -48,7 +48,7 @@ class ProductsController < ApplicationController
   end
 
   def update
-    valid_params = find_valid_params(%i[SKU amount description name price], params)
+    valid_params = find_valid_params(%i[sku amount description name price], params)
     product = Product.find_by(id: params[:id])
 
     return render json: {}, status: 404 if product.nil?
