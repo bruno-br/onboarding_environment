@@ -3,7 +3,6 @@
 # Controller for Products
 class ProductsController < ApplicationController
   rescue_from Exception, with: :error_handler
-  rescue_from ActionController::ParameterMissing, with: :param_missing_handler
 
   def index
     products = Product.all
@@ -21,8 +20,6 @@ class ProductsController < ApplicationController
   end
 
   def create
-    params.require(%i[sku amount description name price])
-
     product = Product.new(sku: params[:sku], amount: params[:amount], description: params[:description],
                           name: params[:name], price: params[:price])
 
@@ -59,10 +56,6 @@ class ProductsController < ApplicationController
   end
 
   private
-
-  def param_missing_handler(exception)
-    render json: { error: true, message: exception.message }, status: :bad_request
-  end
 
   def error_handler
     render json: { error: true }, status: :error
