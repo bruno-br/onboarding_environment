@@ -20,8 +20,7 @@ class ProductsController < ApplicationController
   end
 
   def create
-    product = Product.new(sku: params[:sku], amount: params[:amount], description: params[:description],
-                          name: params[:name], price: params[:price])
+    product = Product.new(permitted_params)
 
     if product.save
       render json: { message: 'Created', product: product }, status: :created
@@ -41,32 +40,24 @@ class ProductsController < ApplicationController
   end
 
   def update
-    valid_params = find_valid_params(%i[sku amount description name price], params)
     product = Product.find_by(id: params[:id])
 
     return render json: {}, status: :not_found if product.nil?
 
-    # Update all valid_params
-    valid_params.each do |param|
-      is_success = product.update_attribute(param[:name], param[:value])
-      render json: { message: "Error adding attribute #{param[:name]}" }, status: :error unless is_success
+    if product.update_attributes(permitted_params)
+      render json: { message: 'Updated', product: product }, status: :ok
+    else
+      render json: {}, status: :bad_request
     end
-
-    render json: { message: 'Updated', product: product }, status: :ok
   end
 
   private
 
-  def error_handler
-    render json: { error: true }, status: :error
+  def permitted_params
+    params.permit(:sku, :name, :description, :amount, :price)
   end
 
-  def find_valid_params(valid_attributes, params)
-    valid_params = []
-    # Check all params that are valid attributes
-    valid_attributes.each do |attribute|
-      valid_params.push({ name: attribute.to_s, value: params[attribute] }) if params.key?(attribute)
-    end
-    valid_params
+  def error_handler
+    render json: { error: true }, status: :error
   end
 end
