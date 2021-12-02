@@ -16,17 +16,21 @@ class ProductsController < ApplicationController
 
   def create
     # Check if any params are missing
-    required_params = %i[SKU amount description name price]
-    check_for_missing_params(required_params)
+    missing_params = check_for_missing_params(%i[SKU amount description name price])
+
+    if missing_params.length > 0
+      return render json: { error: true, message: "Missing params: #{missing_params.join(', ')}" },
+                    status: :error
+    end
 
     # Create and save new Product
     product = Product.new(SKU: params[:SKU], amount: params[:amount], description: params[:description],
                           name: params[:name], price: params[:price])
 
     if product.save
-      render json: { data: product }, status: :created
+      render json: { message: 'Created', data: product }, status: :created
     else
-      render json: { error: true, data: nil }, status: :error
+      render json: { error: true, message: 'Failed' }, status: :error
     end
   end
 
@@ -61,19 +65,15 @@ class ProductsController < ApplicationController
     render json: { error: true, data: nil }, status: :error
   end
 
-  def check_for_missing_params
+  def check_for_missing_params(required_params)
     missing_params = []
 
     # Check for missing params
-    :required_params.each do |param|
+    required_params.each do |param|
       missing_params.push(param) unless params.key?(param)
     end
 
-    message = "Missing params: #{missing_params.join(', ')}"
-
-    # Returns missing params
-    return unless missing_params.length.positive? render json: { error: true, message: message },
-                                                         status: :error
+    missing_params
   end
 
   def find_valid_params(valid_attributes, params)

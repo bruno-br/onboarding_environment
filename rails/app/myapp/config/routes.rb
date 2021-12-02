@@ -13,7 +13,9 @@ Myapp::Application.routes.draw do
   get 'products/:id' => 'products#find_by_id'
 
   delete 'products/:id' => 'products#delete'
-  
+
+  post 'products' => 'products#create'
+
   patch 'products' => 'products#update'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
