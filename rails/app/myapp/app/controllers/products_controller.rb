@@ -29,7 +29,7 @@ class ProductsController < ApplicationController
     if product.save
       render json: { message: 'Created', data: product }, status: :created
     else
-      render json: { error: true, message: 'Failed' }, status: :bad_request
+      render json: {}, status: :bad_request
     end
   end
 
