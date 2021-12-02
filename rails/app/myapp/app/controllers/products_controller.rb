@@ -4,12 +4,12 @@
 class ProductsController < ApplicationController
   rescue_from Exception, with: :error_handler
 
-  def list_all
+  def index
     products = Product.all
     render json: { products: products }
   end
 
-  def find_by_id
+  def show
     product = Product.find_by(id: params[:id])
 
     if product.nil?
@@ -27,7 +27,6 @@ class ProductsController < ApplicationController
                     status: 400
     end
 
-    # Create and save new Product
     product = Product.new(SKU: params[:SKU], amount: params[:amount], description: params[:description],
                           name: params[:name], price: params[:price])
 
@@ -38,7 +37,7 @@ class ProductsController < ApplicationController
     end
   end
 
-  def delete
+  def destroy
     product = Product.find_by(id: params[:id])
     if !product.nil?
       product.destroy
@@ -72,7 +71,6 @@ class ProductsController < ApplicationController
   def check_for_missing_params(required_params)
     missing_params = []
 
-    # Check for missing params
     required_params.each do |param|
       missing_params.push(param) unless params.key?(param)
     end
