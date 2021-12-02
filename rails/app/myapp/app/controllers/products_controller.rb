@@ -24,7 +24,7 @@ class ProductsController < ApplicationController
                           name: params[:name], price: params[:price])
 
     if product.save
-      render json: { message: 'Created', data: product }, status: :created
+      render json: { message: 'Created', product: product }, status: :created
     else
       render json: {}, status: :bad_request
     end
