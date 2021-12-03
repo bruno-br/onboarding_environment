@@ -93,7 +93,6 @@ $ rails s
   
     ```json
     {
-      "message": "Created",
       "product": {
         "id": "61a918f018a4c200a09a9f9e",
         "sku": "CC-LED-32-V302-P",
@@ -156,7 +155,7 @@ $ rails s
 
 <a id="update"></a>
 
-### Atualizar Produto (update) **[PUT /products/{:id}]**
+### Atualizar Produto (update) **[PATCH /products/{:id}]**
 
 
 - Request
@@ -183,15 +182,13 @@ $ rails s
     
       ```json
       {
-        "message": "Updated",
-          "product": {
-            "id": "61a918f018a4c200a09a9f9e",
-            "sku": "CC-LED-32-V302-P",
-            "name": "Monitor V302",
-            "description": "Monitor LED Preto",
-            "amount": 1,
-            "price": 1200.0
-          }
+        "product": {
+          "id": "61a918f018a4c200a09a9f9e",
+          "sku": "CC-LED-32-V302-P",
+          "name": "Monitor V302",
+          "description": "Monitor LED Preto",
+          "amount": 1,
+          "price": 1200.0
         }
       }
       ```
@@ -224,7 +221,6 @@ $ rails s
 
     ```json
     {
-      "message": "Deleted",
       "product": {
         "id": "61a918f018a4c200a09a9f9e",
         "sku": "CC-LED-32-V302-P",
