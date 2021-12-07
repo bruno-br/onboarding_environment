@@ -7,6 +7,7 @@ defmodule MyappWeb.Router do
 
   scope "/api", MyappWeb do
     pipe_through :api
+    resources "/products", ProductController, except: [:new, :edit]
   end
 
   # Enables LiveDashboard only for development
