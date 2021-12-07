@@ -2,6 +2,8 @@ defmodule Myapp.Management.Product do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+
   schema "products" do
     field :amount, :integer
     field :description, :string
