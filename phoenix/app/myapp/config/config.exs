@@ -14,7 +14,7 @@ config :myapp,
 config :myapp, MyappWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "RYdsnixXkf7WLeAYqt+4HVDXBHUQ8hTR6i2TqqFU/IO46n4JjwZmQOAjxt0GtkTr",
-  render_errors: [view: MyappWeb.ErrorView, accepts: ~w(json), layout: false],
+  render_errors: [view: MyappWeb.ErrorView, accepts: ~w(json), layout: false, format: "json"],
   pubsub_server: Myapp.PubSub,
   live_view: [signing_salt: "knpjupim"]
 
