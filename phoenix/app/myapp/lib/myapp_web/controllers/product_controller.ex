@@ -59,7 +59,7 @@ defmodule MyappWeb.ProductController do
     end
 
     with {:ok, %Product{}} <- Management.delete_product(product) do
-      send_resp(conn, :ok, "")
+      send_resp(conn, :no_content, "")
     end
   end
 end
