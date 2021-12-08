@@ -13,7 +13,6 @@ defmodule MyappWeb.ProductController do
   end
 
   def create(conn, %{"product" => product_params}) do
-
     with {:ok, %Product{} = product} <- Management.create_product(product_params) do
       conn
       |> put_status(:created)
