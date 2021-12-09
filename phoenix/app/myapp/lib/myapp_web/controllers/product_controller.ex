@@ -13,11 +13,12 @@ defmodule MyappWeb.ProductController do
   end
 
   def create(conn, %{"product" => product_params}) do
-    with {:ok, %Product{} = product} <- Management.create_product(product_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", Routes.product_path(conn, :show, product))
-      |> render("show.json", product: product)
+    case Management.create_product(product_params) do
+      {:ok, %Product{} = product} -> conn
+        |> put_status(:created)
+        |> put_resp_header("location", Routes.product_path(conn, :show, product))
+        |> render("show.json", product: product)
+      _ -> send_resp(conn, :bad_request, "")
     end
   end
 
@@ -42,8 +43,9 @@ defmodule MyappWeb.ProductController do
       send_resp(conn, :not_found, "")
     end
 
-    with {:ok, %Product{} = product} <- Management.update_product(product, product_params) do
-      render(conn, "show.json", product: product)
+    case Management.update_product(product, product_params) do
+      {:ok, %Product{} = product} -> render(conn, "show.json", product: product)
+      _ -> send_resp(conn, :bad_request, "")
     end
   end
 
@@ -58,8 +60,9 @@ defmodule MyappWeb.ProductController do
       send_resp(conn, :not_found, "")
     end
 
-    with {:ok, %Product{}} <- Management.delete_product(product) do
-      send_resp(conn, :no_content, "")
+    case  Management.delete_product(product) do
+      {:ok, %Product{}} -> send_resp(conn, :no_content, "")
+      _ -> send_resp(conn, :bad_request, "")
     end
   end
 end
