@@ -17,7 +17,6 @@ defmodule MyappWeb.ProductController do
       {:ok, %Product{} = product} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", Routes.product_path(conn, :show, product))
         |> render("show.json", product: product)
 
       _ ->
