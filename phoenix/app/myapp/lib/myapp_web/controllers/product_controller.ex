@@ -14,11 +14,14 @@ defmodule MyappWeb.ProductController do
 
   def create(conn, %{"product" => product_params}) do
     case Management.create_product(product_params) do
-      {:ok, %Product{} = product} -> conn
+      {:ok, %Product{} = product} ->
+        conn
         |> put_status(:created)
         |> put_resp_header("location", Routes.product_path(conn, :show, product))
         |> render("show.json", product: product)
-      _ -> send_resp(conn, :bad_request, "")
+
+      _ ->
+        send_resp(conn, :bad_request, "")
     end
   end
 
@@ -60,7 +63,7 @@ defmodule MyappWeb.ProductController do
       send_resp(conn, :not_found, "")
     end
 
-    case  Management.delete_product(product) do
+    case Management.delete_product(product) do
       {:ok, %Product{}} -> send_resp(conn, :no_content, "")
       _ -> send_resp(conn, :bad_request, "")
     end
