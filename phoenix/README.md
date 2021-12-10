@@ -36,7 +36,7 @@ $ mix phx.server
 
 <a id="index"></a>
 
-### Listar Produtos  (index) **[GET /api/products]**
+### Listar Produtos  (index) **[GET /products]**
 
 - Response (OK)
 
@@ -69,7 +69,7 @@ $ mix phx.server
 
 <a id="create"></a>
 
-### Criar produto (create) **[POST /api/products]**
+### Criar produto (create) **[POST /products]**
 
 
 - Request 
@@ -112,7 +112,7 @@ $ mix phx.server
 
 <a id="show"></a>
 
-### Detalhes de um produto (show) **[GET /api/products/:id]**
+### Detalhes de um produto (show) **[GET /products/:id]**
 
 - Request
   
@@ -145,7 +145,7 @@ $ mix phx.server
 
 <a id="update"></a>
 
-### Atualizar Produto (update) **[PATCH /api/products/:id]**
+### Atualizar Produto (update) **[PATCH /products/:id]**
 
 
 - Request
@@ -191,7 +191,7 @@ $ mix phx.server
 
 <a id="destroy"></a>
 
-### Apagar Produto (destroy) **[DELETE /api/products/:id]**
+### Apagar Produto (destroy) **[DELETE /products/:id]**
 
 - Request
   

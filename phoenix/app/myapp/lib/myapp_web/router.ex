@@ -5,7 +5,7 @@ defmodule MyappWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", MyappWeb do
+  scope "/", MyappWeb do
     pipe_through :api
     resources "/products", ProductController, except: [:new, :edit]
   end
