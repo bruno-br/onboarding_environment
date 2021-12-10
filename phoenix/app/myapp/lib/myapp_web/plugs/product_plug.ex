@@ -3,9 +3,12 @@ defmodule MyappWeb.ProductPlug do
 
   alias Myapp.Management
 
-  def get_product(conn, _opt) do
-    with true <- conn.params["id"] != nil,
-         product <- Management.get_product!(conn.params["id"]),
+  def get_product(conn, _opt), do: find_by_id(conn, conn.params["id"])
+
+  defp find_by_id(conn, nil), do: assign(conn, :get_product, {:error, :bad_request})
+
+  defp find_by_id(conn, id) do
+    with product <- Management.get_product!(id),
          true <- product != nil do
       assign(conn, :get_product, {:ok, product})
     else
