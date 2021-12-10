@@ -106,6 +106,22 @@ $ mix phx.server
     }
     ```
 
+- Response (Unprocessable Entity)
+  
+  - Status Code: 422
+  
+  - Body: 
+  
+    ```json
+    {
+      "errors": {
+        "price": [
+          "can't be blank"
+        ]
+      }
+    }
+      ```
+
 - Response (Bad Request)
   
   - Status Code: 400
@@ -184,10 +200,29 @@ $ mix phx.server
         }
       }
       ```
+  
+
+- Response (Unprocessable Entity)
+  
+  - Status Code: 422
+  
+  - Body: 
+  
+    ```json
+      {
+        "errors": {
+          "amount": [
+            "is invalid"
+          ]
+        }
+      }
+      ```
+
 
 - Response (Not Found)
  
   - Status Code: 404
+
 
 <a id="destroy"></a>
 
@@ -221,3 +256,4 @@ $ mix phx.server
 - Response (Not Found)
  
   - Status Code: 404
+
