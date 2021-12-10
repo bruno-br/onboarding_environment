@@ -23,8 +23,8 @@ defmodule MyappWeb.ProductController do
         |> put_status(:created)
         |> render("show.json", product: product)
 
-      _ ->
-        send_resp(conn, :bad_request, "")
+      error ->
+        error
     end
   end
 
@@ -35,8 +35,7 @@ defmodule MyappWeb.ProductController do
   def show(conn, %{"id" => id}) do
     case conn.assigns[:get_product] do
       {:ok, %Product{} = product} -> render(conn, "show.json", product: product)
-      {:error, :not_found} -> send_resp(conn, :not_found, "")
-      _ -> send_resp(conn, :bad_request, "")
+      error -> error
     end
   end
 
@@ -44,9 +43,6 @@ defmodule MyappWeb.ProductController do
     with {:ok, %Product{} = product} <- conn.assigns[:get_product],
          {:ok, %Product{} = updated_product} <- Management.update_product(product, product_params) do
       render(conn, "show.json", product: updated_product)
-    else
-      {:error, :not_found} -> send_resp(conn, :not_found, "")
-      _ -> send_resp(conn, :bad_request, "")
     end
   end
 
@@ -58,9 +54,6 @@ defmodule MyappWeb.ProductController do
     with {:ok, %Product{} = product} <- conn.assigns[:get_product],
          {:ok, %Product{}} <- Management.delete_product(product) do
       send_resp(conn, :no_content, "")
-    else
-      {:error, :not_found} -> send_resp(conn, :not_found, "")
-      _ -> send_resp(conn, :bad_request, "")
     end
   end
 end
