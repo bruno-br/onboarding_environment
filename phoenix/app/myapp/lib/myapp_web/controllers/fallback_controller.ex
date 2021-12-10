@@ -21,4 +21,9 @@ defmodule MyappWeb.FallbackController do
     |> put_view(MyappWeb.ErrorView)
     |> render(:"404")
   end
+
+  # Matches other errors
+  def call(conn, {:error, any}) do
+    send_resp(conn, :bad_request, "")
+  end
 end
