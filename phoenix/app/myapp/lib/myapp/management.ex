@@ -7,6 +7,7 @@ defmodule Myapp.Management do
   alias Myapp.Repo
 
   alias Myapp.Management.Product
+  alias MyappWeb.RedisApi
 
   @doc """
   Returns the list of products.
@@ -18,7 +19,20 @@ defmodule Myapp.Management do
 
   """
   def list_products do
-    Repo.all(Product)
+    client = RedisApi.start()
+
+    case RedisApi.get(client, "product_list") do
+      {:ok, products = products} ->
+        products
+
+      {:error, :not_found} ->
+        products = Repo.all(Product)
+        RedisApi.set(client, "product_list", products)
+        products
+
+      _ ->
+        Repo.all(Product)
+    end
   end
 
   @doc """
