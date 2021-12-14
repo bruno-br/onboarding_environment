@@ -2,18 +2,28 @@ defmodule MyappWeb.RedisApi do
   import Exredis
 
   def start() do
-    Exredis.start_link()
+    case Exredis.start_link() do
+      {:ok, client = client} -> client
+      _ -> nil
+    end
   end
 
-  def set(client, key, value) do
+  def set(nil, key, value), do: {:error}
+
+  def set(client, key, value), do: set(client, key, value, 10)
+
+  def set(client, key, value, expiration) do
     with value_binary <- :erlang.term_to_binary(value),
          value_encoded <- Base.encode16(value_binary),
-         "OK" <- query(client, ["SET", key, value_encoded]) do
+         "OK" <- query(client, ["SET", key, value_encoded]),
+         "1" <- query(client, ["EXPIRE", key, expiration]) do
       {:ok}
     else
       _ -> {:error}
     end
   end
+
+  def get(nil, key), do: {:error, :bad_request}
 
   def get(client, key) do
     with value_encoded <- query(client, ["GET", key]),
