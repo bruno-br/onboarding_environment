@@ -2,14 +2,13 @@ defmodule MyappWeb.ProductController do
   use MyappWeb, :controller
   use Plug.ErrorHandler
 
-  import MyappWeb.ProductPlug
-
   alias Myapp.Management
   alias Myapp.Management.Product
+  alias MyappWeb.Plugs.GetProductPlug
 
-  plug :get_product when action in [:show, :update, :delete]
+  plug(GetProductPlug when action in [:show, :update, :delete])
 
-  action_fallback MyappWeb.FallbackController
+  action_fallback(MyappWeb.FallbackController)
 
   def index(conn, _params) do
     products = Management.list_products()
