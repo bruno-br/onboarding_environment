@@ -1,2 +1,4 @@
 data
 .elixir_ls
+phoenix/app/myapp/_build
+phoenix/app/myapp/deps
