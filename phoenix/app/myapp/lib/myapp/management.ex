@@ -7,7 +7,7 @@ defmodule Myapp.Management do
   alias Myapp.Repo
 
   alias Myapp.Management.Product
-  alias MyappWeb.RedisApi
+  alias Myapp.RedisApi
 
   @doc """
   Returns the list of products.

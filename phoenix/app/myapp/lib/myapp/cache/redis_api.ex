@@ -1,4 +1,4 @@
-defmodule MyappWeb.RedisApi do
+defmodule Myapp.RedisApi do
   import Exredis
 
   def start() do
