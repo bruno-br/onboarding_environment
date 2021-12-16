@@ -5,8 +5,10 @@ defmodule MyappWeb.ProductController do
   alias Myapp.Management
   alias Myapp.Management.Product
   alias MyappWeb.Plugs.GetProductPlug
+  alias MyappWeb.Plugs.LogPlug
 
   plug(GetProductPlug when action in [:show, :update, :delete])
+  plug(LogPlug)
 
   action_fallback(MyappWeb.FallbackController)
 
