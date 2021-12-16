@@ -22,6 +22,7 @@ defmodule MyappWeb.Plugs.LogPlug do
     log = [
       date: date,
       method: conn.method,
+      request_path: conn.request_path,
       req_headers: conn.req_headers,
       body_params: conn.body_params
     ]
