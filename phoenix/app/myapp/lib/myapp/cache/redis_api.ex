@@ -35,4 +35,11 @@ defmodule Myapp.RedisApi do
       _ -> {:error, :not_found}
     end
   end
+
+  def del(client, key) do
+    case query(client, ["DEL", key]) do
+      "1" -> :ok
+      _ -> :error
+    end
+  end
 end
