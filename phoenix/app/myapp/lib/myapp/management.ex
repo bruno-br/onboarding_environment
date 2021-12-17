@@ -22,7 +22,7 @@ defmodule Myapp.Management do
     client = RedisApi.start()
 
     case RedisApi.get(client, "product_list") do
-      {:ok, products = products} ->
+      {:ok, products} ->
         products
 
       {:error, :not_found} ->

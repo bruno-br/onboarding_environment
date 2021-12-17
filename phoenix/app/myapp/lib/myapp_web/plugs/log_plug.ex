@@ -15,18 +15,14 @@ defmodule MyappWeb.Plugs.LogPlug do
   defp post_log(conn), do: post("/my_index/logs", generate_log(conn))
 
   defp generate_log(conn) do
-    date =
-      DateTime.utc_now()
-      |> DateTime.to_iso8601()
+    date = DateTime.to_iso8601(DateTime.utc_now())
 
-    log = [
+    [
       date: date,
       method: conn.method,
       request_path: conn.request_path,
       req_headers: conn.req_headers,
       body_params: conn.body_params
     ]
-
-    log
   end
 end

@@ -1,8 +1,11 @@
 defmodule MyappWeb.Router do
   use MyappWeb, :router
 
+  alias MyappWeb.Plugs.LogPlug
+
   pipeline :api do
     plug :accepts, ["json"]
+    plug(LogPlug)
   end
 
   scope "/", MyappWeb do
