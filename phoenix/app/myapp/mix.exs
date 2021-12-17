@@ -20,7 +20,7 @@ defmodule Myapp.MixProject do
   def application do
     [
       mod: {Myapp.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :tirexs]
     ]
   end
 
@@ -41,7 +41,10 @@ defmodule Myapp.MixProject do
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:redis, "~> 0.1"},
+      {:exredis, ">= 0.2.4"},
+      {:tirexs, "~> 0.8"}
     ]
   end
 

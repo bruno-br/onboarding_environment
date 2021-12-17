@@ -2,14 +2,13 @@ defmodule MyappWeb.ProductController do
   use MyappWeb, :controller
   use Plug.ErrorHandler
 
-  import MyappWeb.ProductPlug
-
   alias Myapp.Management
   alias Myapp.Management.Product
+  alias MyappWeb.Plugs.GetProductPlug
 
-  plug :get_product when action in [:show, :update, :delete]
+  plug(GetProductPlug when action in [:show, :update, :delete])
 
-  action_fallback MyappWeb.FallbackController
+  action_fallback(MyappWeb.FallbackController)
 
   def index(conn, _params) do
     products = Management.list_products()
@@ -32,14 +31,14 @@ defmodule MyappWeb.ProductController do
     send_resp(conn, :bad_request, "")
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => _id}) do
     case conn.assigns[:get_product] do
       {:ok, %Product{} = product} -> render(conn, "show.json", product: product)
       error -> error
     end
   end
 
-  def update(conn, %{"id" => id, "product" => product_params}) do
+  def update(conn, %{"id" => _id, "product" => product_params}) do
     with {:ok, %Product{} = product} <- conn.assigns[:get_product],
          {:ok, %Product{} = updated_product} <- Management.update_product(product, product_params) do
       render(conn, "show.json", product: updated_product)
@@ -50,7 +49,7 @@ defmodule MyappWeb.ProductController do
     send_resp(conn, :bad_request, "")
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"id" => _id}) do
     with {:ok, %Product{} = product} <- conn.assigns[:get_product],
          {:ok, %Product{}} <- Management.delete_product(product) do
       send_resp(conn, :no_content, "")

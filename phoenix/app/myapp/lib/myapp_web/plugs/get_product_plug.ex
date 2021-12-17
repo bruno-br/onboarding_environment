@@ -1,9 +1,17 @@
-defmodule MyappWeb.ProductPlug do
+defmodule MyappWeb.Plugs.GetProductPlug do
   import Plug.Conn
 
   alias Myapp.Management
 
-  def get_product(conn, _opt), do: find_by_id(conn, conn.params["id"])
+  def init(props) do
+    props
+  end
+
+  def call(conn, _opts) do
+    get_product(conn)
+  end
+
+  def get_product(conn), do: find_by_id(conn, conn.params["id"])
 
   defp find_by_id(conn, nil), do: assign(conn, :get_product, {:error, :bad_request})
 

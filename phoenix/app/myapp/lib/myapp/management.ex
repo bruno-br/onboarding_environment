@@ -7,6 +7,7 @@ defmodule Myapp.Management do
   alias Myapp.Repo
 
   alias Myapp.Management.Product
+  alias Myapp.RedisApi
 
   @doc """
   Returns the list of products.
@@ -18,7 +19,20 @@ defmodule Myapp.Management do
 
   """
   def list_products do
-    Repo.all(Product)
+    client = RedisApi.start()
+
+    case RedisApi.get(client, "product_list") do
+      {:ok, products} ->
+        products
+
+      {:error, :not_found} ->
+        products = Repo.all(Product)
+        RedisApi.set(client, "product_list", products)
+        products
+
+      _ ->
+        Repo.all(Product)
+    end
   end
 
   @doc """
@@ -54,6 +68,8 @@ defmodule Myapp.Management do
 
   """
   def create_product(attrs \\ %{}) do
+    delete_from_cache("product_list")
+
     %Product{}
     |> Product.changeset(attrs)
     |> Repo.insert()
@@ -90,6 +106,7 @@ defmodule Myapp.Management do
 
   """
   def delete_product(%Product{} = product) do
+    delete_from_cache("product_list")
     Repo.delete(product)
   end
 
@@ -105,4 +122,6 @@ defmodule Myapp.Management do
   def change_product(%Product{} = product, attrs \\ %{}) do
     Product.changeset(product, attrs)
   end
+
+  defp delete_from_cache(key), do: RedisApi.del(RedisApi.start(), key)
 end
