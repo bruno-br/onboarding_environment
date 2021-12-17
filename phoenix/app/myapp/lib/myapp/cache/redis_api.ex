@@ -36,6 +36,8 @@ defmodule Myapp.RedisApi do
     end
   end
 
+  def del(nil, _key), do: :error
+
   def del(client, key) do
     case query(client, ["DEL", key]) do
       "1" -> :ok
