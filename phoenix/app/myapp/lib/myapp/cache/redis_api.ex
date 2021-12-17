@@ -10,7 +10,7 @@ defmodule Myapp.RedisApi do
 
   def set(nil, _key, _value), do: :error
 
-  def set(client, key, value), do: set(client, key, value, 10)
+  def set(client, key, value), do: set(client, key, value, 60)
 
   def set(client, key, value, expiration) do
     with value_binary <- :erlang.term_to_binary(value),
