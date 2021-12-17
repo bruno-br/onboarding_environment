@@ -68,6 +68,8 @@ defmodule Myapp.Management do
 
   """
   def create_product(attrs \\ %{}) do
+    RedisApi.del(RedisApi.start(), "product_list")
+
     %Product{}
     |> Product.changeset(attrs)
     |> Repo.insert()
@@ -104,6 +106,7 @@ defmodule Myapp.Management do
 
   """
   def delete_product(%Product{} = product) do
+    RedisApi.del(RedisApi.start(), "product_list")
     Repo.delete(product)
   end
 
