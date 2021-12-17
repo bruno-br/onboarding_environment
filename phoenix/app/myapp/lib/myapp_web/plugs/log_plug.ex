@@ -8,7 +8,7 @@ defmodule MyappWeb.Plugs.LogPlug do
   end
 
   def call(conn, _opts) do
-    post_log(conn)
+    Task.async(fn -> post_log(conn) end)
     conn
   end
 
