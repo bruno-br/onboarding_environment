@@ -19,6 +19,13 @@ defmodule MyappWeb.ProductControllerTest do
     sku: "some-updated-sku"
   }
   @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil}
+  @invalid_sku_attrs %{
+    amount: 42,
+    description: "some description",
+    name: "some name",
+    price: 120.5,
+    sku: "invalid sku !!!"
+  }
 
   def fixture(:product) do
     {:ok, product} = Management.create_product(@create_attrs)
@@ -56,6 +63,11 @@ defmodule MyappWeb.ProductControllerTest do
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.product_path(conn, :create), product: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
+    end
+
+    test "returns error when sku is invalid", %{conn: conn} do
+      conn = post(conn, Routes.product_path(conn, :create), product: @invalid_sku_attrs)
+      assert json_response(conn, 422)
     end
   end
 
