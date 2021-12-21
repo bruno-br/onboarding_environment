@@ -20,7 +20,7 @@ defmodule MyappWeb.FallbackController do
   end
 
   # Matches other errors
-  def call(conn, {:error, any}) do
+  def call(conn, {:error, _any}) do
     send_resp(conn, :bad_request, "")
   end
 end

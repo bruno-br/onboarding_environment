@@ -4,7 +4,7 @@ defmodule MyappWeb.ProductControllerTest do
   alias Myapp.Management
   alias Myapp.Management.Product
 
-  @create_attrs %{
+  @valid_attrs %{
     amount: 42,
     description: "some description",
     name: "some name",
@@ -19,16 +19,9 @@ defmodule MyappWeb.ProductControllerTest do
     sku: "some-updated-sku"
   }
   @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil}
-  @invalid_sku_attrs %{
-    amount: 42,
-    description: "some description",
-    name: "some name",
-    price: 120.5,
-    sku: "invalid sku !!!"
-  }
 
   def fixture(:product) do
-    {:ok, product} = Management.create_product(@create_attrs)
+    {:ok, product} = Management.create_product(@valid_attrs)
     product
   end
 
@@ -45,7 +38,7 @@ defmodule MyappWeb.ProductControllerTest do
 
   describe "create product" do
     test "renders product when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.product_path(conn, :create), product: @create_attrs)
+      conn = post(conn, Routes.product_path(conn, :create), product: @valid_attrs)
       assert %{"id" => id} = json_response(conn, 201)["product"]
 
       conn = get(conn, Routes.product_path(conn, :show, id))
@@ -66,7 +59,8 @@ defmodule MyappWeb.ProductControllerTest do
     end
 
     test "returns error when sku is invalid", %{conn: conn} do
-      conn = post(conn, Routes.product_path(conn, :create), product: @invalid_sku_attrs)
+      product = %{@valid_attrs | sku: "invalid sku !!"}
+      conn = post(conn, Routes.product_path(conn, :create), product: product)
       assert json_response(conn, 422)
     end
   end
