@@ -12,7 +12,7 @@ defmodule Myapp.ManagementTest do
       name: "some name",
       price: 120.5,
       sku: "some-sku",
-      barcode: "123456"
+      barcode: "123456789"
     }
     @update_attrs %{
       amount: 43,
@@ -20,7 +20,7 @@ defmodule Myapp.ManagementTest do
       name: "some updated name",
       price: 456.7,
       sku: "some-updated-sku",
-      barcode: "123456"
+      barcode: "123456789"
     }
     @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil, barcode: nil}
 
@@ -50,7 +50,7 @@ defmodule Myapp.ManagementTest do
       assert product.name == "some name"
       assert product.price == 120.5
       assert product.sku == "some-sku"
-      assert product.barcode == "123456"
+      assert product.barcode == "123456789"
     end
 
     test "create_product/1 with invalid data returns error changeset" do
@@ -72,6 +72,11 @@ defmodule Myapp.ManagementTest do
       assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
     end
 
+    test "create_product/1 returns error when barcode does not have 8-13 digits" do
+      product = %{@valid_attrs | barcode: "1234"}
+      assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
+    end
+
     test "update_product/2 with valid data updates the product" do
       product = product_fixture()
       assert {:ok, %Product{} = product} = Management.update_product(product, @update_attrs)
@@ -80,7 +85,7 @@ defmodule Myapp.ManagementTest do
       assert product.name == "some updated name"
       assert product.price == 456.7
       assert product.sku == "some-updated-sku"
-      assert product.barcode == "123456"
+      assert product.barcode == "123456789"
     end
 
     test "update_product/2 with invalid data returns error changeset" do
