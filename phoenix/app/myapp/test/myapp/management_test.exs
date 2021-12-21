@@ -11,7 +11,7 @@ defmodule Myapp.ManagementTest do
       description: "some description",
       name: "some name",
       price: 120.5,
-      sku: "some sku"
+      sku: "some-sku"
     }
     @update_attrs %{
       amount: 43,
@@ -21,6 +21,13 @@ defmodule Myapp.ManagementTest do
       sku: "some updated sku"
     }
     @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil}
+    @invalid_sku_attrs %{
+      amount: 42,
+      description: "some description",
+      name: "some name",
+      price: 120.5,
+      sku: "invalid sku !!"
+    }
 
     def product_fixture(attrs \\ %{}) do
       {:ok, product} =
@@ -47,11 +54,15 @@ defmodule Myapp.ManagementTest do
       assert product.description == "some description"
       assert product.name == "some name"
       assert product.price == 120.5
-      assert product.sku == "some sku"
+      assert product.sku == "some-sku"
     end
 
     test "create_product/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Management.create_product(@invalid_attrs)
+    end
+
+    test "create_product/1 returns error when sku is invalid" do
+      assert {:error, %Ecto.Changeset{}} = Management.create_product(@invalid_sku_attrs)
     end
 
     test "update_product/2 with valid data updates the product" do
