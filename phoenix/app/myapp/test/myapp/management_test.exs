@@ -59,6 +59,11 @@ defmodule Myapp.ManagementTest do
       assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
     end
 
+    test "create_product/1 returns error when name is missing" do
+      product = Map.delete(@valid_attrs, :name)
+      assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
+    end
+
     test "update_product/2 with valid data updates the product" do
       product = product_fixture()
       assert {:ok, %Product{} = product} = Management.update_product(product, @update_attrs)
