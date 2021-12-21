@@ -9,14 +9,14 @@ defmodule MyappWeb.ProductControllerTest do
     description: "some description",
     name: "some name",
     price: 120.5,
-    sku: "some sku"
+    sku: "some-sku"
   }
   @update_attrs %{
     amount: 43,
     description: "some updated description",
     name: "some updated name",
     price: 456.7,
-    sku: "some updated sku"
+    sku: "some-updated-sku"
   }
   @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil}
 
@@ -49,7 +49,7 @@ defmodule MyappWeb.ProductControllerTest do
                "description" => "some description",
                "name" => "some name",
                "price" => 120.5,
-               "sku" => "some sku"
+               "sku" => "some-sku"
              } = json_response(conn, 200)["product"]
     end
 
@@ -74,7 +74,7 @@ defmodule MyappWeb.ProductControllerTest do
                "description" => "some updated description",
                "name" => "some updated name",
                "price" => 456.7,
-               "sku" => "some updated sku"
+               "sku" => "some-updated-sku"
              } = json_response(conn, 200)["product"]
     end
 
