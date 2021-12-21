@@ -10,7 +10,7 @@ defmodule MyappWeb.ProductControllerTest do
     name: "some name",
     price: 120.5,
     sku: "some-sku",
-    barcode: "123456"
+    barcode: "123456789"
   }
   @update_attrs %{
     amount: 43,
@@ -18,7 +18,7 @@ defmodule MyappWeb.ProductControllerTest do
     name: "some updated name",
     price: 456.7,
     sku: "some-updated-sku",
-    barcode: "123456"
+    barcode: "123456789"
   }
   @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil, barcode: nil}
 
@@ -52,7 +52,7 @@ defmodule MyappWeb.ProductControllerTest do
                "name" => "some name",
                "price" => 120.5,
                "sku" => "some-sku",
-               "barcode" => "123456"
+               "barcode" => "123456789"
              } = json_response(conn, 200)["product"]
     end
 
@@ -78,6 +78,12 @@ defmodule MyappWeb.ProductControllerTest do
       conn = post(conn, Routes.product_path(conn, :create), product: product)
       assert json_response(conn, 422)
     end
+
+    test "returns error when barcode does not have 8-13 digits", %{conn: conn} do
+      product = %{@valid_attrs | barcode: "1234"}
+      conn = post(conn, Routes.product_path(conn, :create), product: product)
+      assert json_response(conn, 422)
+    end
   end
 
   describe "update product" do
@@ -96,7 +102,7 @@ defmodule MyappWeb.ProductControllerTest do
                "name" => "some updated name",
                "price" => 456.7,
                "sku" => "some-updated-sku",
-               "barcode" => "123456"
+               "barcode" => "123456789"
              } = json_response(conn, 200)["product"]
     end
 
