@@ -64,6 +64,11 @@ defmodule Myapp.ManagementTest do
       assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
     end
 
+    test "create_product/1 returns error when price is not greater than zero" do
+      product = %{@valid_attrs | price: 0}
+      assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
+    end
+
     test "update_product/2 with valid data updates the product" do
       product = product_fixture()
       assert {:ok, %Product{} = product} = Management.update_product(product, @update_attrs)
