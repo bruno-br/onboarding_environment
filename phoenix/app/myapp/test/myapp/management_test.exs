@@ -11,16 +11,18 @@ defmodule Myapp.ManagementTest do
       description: "some description",
       name: "some name",
       price: 120.5,
-      sku: "some-sku"
+      sku: "some-sku",
+      barcode: "123456"
     }
     @update_attrs %{
       amount: 43,
       description: "some updated description",
       name: "some updated name",
       price: 456.7,
-      sku: "some-updated-sku"
+      sku: "some-updated-sku",
+      barcode: "123456"
     }
-    @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil}
+    @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil, barcode: nil}
 
     def product_fixture(attrs \\ %{}) do
       {:ok, product} =
@@ -48,6 +50,7 @@ defmodule Myapp.ManagementTest do
       assert product.name == "some name"
       assert product.price == 120.5
       assert product.sku == "some-sku"
+      assert product.barcode == "123456"
     end
 
     test "create_product/1 with invalid data returns error changeset" do
@@ -77,6 +80,7 @@ defmodule Myapp.ManagementTest do
       assert product.name == "some updated name"
       assert product.price == 456.7
       assert product.sku == "some-updated-sku"
+      assert product.barcode == "123456"
     end
 
     test "update_product/2 with invalid data returns error changeset" do
