@@ -69,6 +69,12 @@ defmodule MyappWeb.ProductControllerTest do
       conn = post(conn, Routes.product_path(conn, :create), product: product)
       assert json_response(conn, 422)
     end
+
+    test "returns error when price is not greater than zero", %{conn: conn} do
+      product = %{@valid_attrs | price: 0}
+      conn = post(conn, Routes.product_path(conn, :create), product: product)
+      assert json_response(conn, 422)
+    end
   end
 
   describe "update product" do
