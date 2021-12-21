@@ -24,6 +24,7 @@ defmodule Myapp.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Myapp.DataCase
+      import Myapp.Management.Product
     end
   end
 
@@ -33,6 +34,8 @@ defmodule Myapp.DataCase do
     # unless tags[:async] do
     #   Ecto.Adapters.SQL.Sandbox.mode(Myapp.Repo, {:shared, self()})
     # end
+
+    Myapp.Repo.delete_all(Myapp.Management.Product)
 
     :ok
   end
