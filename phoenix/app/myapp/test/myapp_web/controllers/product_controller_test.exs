@@ -32,7 +32,7 @@ defmodule MyappWeb.ProductControllerTest do
   describe "index" do
     test "lists all products", %{conn: conn} do
       conn = get(conn, Routes.product_path(conn, :index))
-      assert json_response(conn, 200)["products"] == []
+      assert length(json_response(conn, 200)["products"]) == length(list_products())
     end
   end
 
@@ -97,4 +97,9 @@ defmodule MyappWeb.ProductControllerTest do
     product = fixture(:product)
     %{product: product}
   end
+
+  defp list_products() do
+    Management.list_products()
+  end
+
 end
