@@ -10,6 +10,7 @@ defmodule Myapp.Management.Product do
     field :name, :string
     field :price, :float
     field :sku, :string
+    field :barcode, :string
 
     timestamps()
   end
@@ -17,8 +18,8 @@ defmodule Myapp.Management.Product do
   @doc false
   def changeset(product, attrs) do
     product
-    |> cast(attrs, [:sku, :amount, :description, :name, :price])
-    |> validate_required([:sku, :amount, :description, :name, :price])
+    |> cast(attrs, [:sku, :amount, :description, :name, :price, :barcode])
+    |> validate_required([:sku, :amount, :description, :name, :price, :barcode])
     |> validate_format(:sku, ~r/^([a-zA-Z0-9]|\-)+$/, message: "can only contain alphanumerics and hifen")
     |> validate_number(:price, greater_than: 0)
   end

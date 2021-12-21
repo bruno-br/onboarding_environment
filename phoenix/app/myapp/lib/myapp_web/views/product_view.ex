@@ -16,6 +16,8 @@ defmodule MyappWeb.ProductView do
       amount: product.amount,
       description: product.description,
       name: product.name,
-      price: product.price}
+      price: product.price,
+      barcode: product.barcode
+    }
   end
 end

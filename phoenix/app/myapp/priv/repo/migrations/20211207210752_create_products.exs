@@ -8,6 +8,7 @@ defmodule Myapp.Repo.Migrations.CreateProducts do
       add :description, :text
       add :name, :string
       add :price, :float
+      add :barcode, :string
 
       timestamps()
     end
