@@ -18,7 +18,7 @@ defmodule Myapp.ManagementTest do
       description: "some updated description",
       name: "some updated name",
       price: 456.7,
-      sku: "some updated sku"
+      sku: "some-updated-sku"
     }
     @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil}
     @invalid_sku_attrs %{
@@ -72,7 +72,7 @@ defmodule Myapp.ManagementTest do
       assert product.description == "some updated description"
       assert product.name == "some updated name"
       assert product.price == 456.7
-      assert product.sku == "some updated sku"
+      assert product.sku == "some-updated-sku"
     end
 
     test "update_product/2 with invalid data returns error changeset" do
