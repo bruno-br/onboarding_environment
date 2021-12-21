@@ -19,5 +19,6 @@ defmodule Myapp.Management.Product do
     product
     |> cast(attrs, [:sku, :amount, :description, :name, :price])
     |> validate_required([:sku, :amount, :description, :name, :price])
+    |> validate_format(:sku, ~r/^([a-zA-Z0-9]|\-)+$/, message: "can only contain alphanumerics and hifen")
   end
 end
