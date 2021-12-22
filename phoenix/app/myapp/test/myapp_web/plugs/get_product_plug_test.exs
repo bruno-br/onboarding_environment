@@ -13,6 +13,13 @@ defmodule MyappWeb.Plugs.GetProductPlugTest do
 
       assert conn.assigns[:get_product] == {:ok, product}
     end
+
+    test "assigns not_found error when id is invalid", %{conn: conn} do
+      conn = get(conn, Routes.product_path(conn, :show, "invalid_id"))
+      GetProductPlug.get_product(conn)
+
+      assert conn.assigns[:get_product] == {:error, :not_found}
+    end
   end
 
   defp create_product() do
