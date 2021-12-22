@@ -1,5 +1,10 @@
 defmodule Myapp.Management.Product do
+  @moduledoc """
+  Product model
+  """
+
   use Ecto.Schema
+
   import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -20,7 +25,9 @@ defmodule Myapp.Management.Product do
     product
     |> cast(attrs, [:sku, :amount, :description, :name, :price, :barcode])
     |> validate_required([:sku, :amount, :description, :name, :price, :barcode])
-    |> validate_format(:sku, ~r/^([a-zA-Z0-9]|\-)+$/, message: "can only contain alphanumerics and hifen")
+    |> validate_format(:sku, ~r/^([a-zA-Z0-9]|\-)+$/,
+      message: "can only contain alphanumerics and hifen"
+    )
     |> validate_number(:price, greater_than: 0)
     |> validate_length(:barcode, min: 8, max: 13)
   end

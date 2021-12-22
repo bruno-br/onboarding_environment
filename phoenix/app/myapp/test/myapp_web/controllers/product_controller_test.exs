@@ -129,5 +129,4 @@ defmodule MyappWeb.ProductControllerTest do
   defp list_products() do
     Management.list_products()
   end
-
 end

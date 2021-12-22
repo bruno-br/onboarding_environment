@@ -1,4 +1,9 @@
 defmodule MyappWeb.Plugs.GetProductPlug do
+  @moduledoc """
+  Plug used to get a product before the
+  action goes to the controller
+  """
+
   import Plug.Conn
 
   alias Myapp.Management

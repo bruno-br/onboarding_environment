@@ -11,7 +11,8 @@ defmodule MyappWeb.ProductView do
   end
 
   def render("product.json", %{product: product}) do
-    %{id: product.id,
+    %{
+      id: product.id,
       sku: product.sku,
       amount: product.amount,
       description: product.description,

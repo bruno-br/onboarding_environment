@@ -1,4 +1,8 @@
 defmodule Myapp.RedisApi do
+  @moduledoc """
+  API used to save and load data on cache using Redis
+  """
+
   import Exredis
 
   def start() do
