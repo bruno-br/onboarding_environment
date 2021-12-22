@@ -116,6 +116,13 @@ defmodule MyappWeb.ProductControllerTest do
       conn = put(conn, Routes.product_path(conn, :update, product), product: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
+
+    test "returns 404 if product is not found", %{conn: conn} do
+      conn =
+        put(conn, Routes.product_path(conn, :update, "invalid_product_id"), product: @update_attrs)
+
+      assert response(conn, 404)
+    end
   end
 
   describe "delete product" do
