@@ -28,13 +28,7 @@ defmodule MyappWeb.ChannelCase do
     end
   end
 
-  setup tags do
-    # :ok = Ecto.Adapters.SQL.Sandbox.checkout(Myapp.Repo)
-
-    # unless tags[:async] do
-    #   Ecto.Adapters.SQL.Sandbox.mode(Myapp.Repo, {:shared, self()})
-    # end
-
+  setup _tags do
     :ok
   end
 end

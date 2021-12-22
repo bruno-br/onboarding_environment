@@ -3,7 +3,7 @@ defmodule MyappWeb.Plugs.LogPlug do
   Plug used to create a log for every request
   """
 
-  import Plug.Conn
+  # import Plug.Conn
   import Tirexs.HTTP
 
   def init(props) do
