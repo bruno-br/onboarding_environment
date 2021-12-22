@@ -13,4 +13,11 @@ defmodule Myapp.RedisApiTest do
       assert RedisApi.set(client, @valid_key, @valid_value) == :ok
     end
   end
+
+  describe "get/1" do
+    test "gets correct value when key is valid" do
+      client = RedisApi.start()
+      assert RedisApi.get(client, @valid_key) == {:ok, @valid_value}
+    end
+  end
 end
