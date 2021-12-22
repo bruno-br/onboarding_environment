@@ -108,6 +108,11 @@ defmodule MyappWeb.ProductControllerTest do
                "barcode" => "123456789"
              } = json_response(conn, 200)["product"]
     end
+
+    test "returns 404 if product is not found", %{conn: conn} do
+      conn = get(conn, Routes.product_path(conn, :show, "invalid_id"))
+      assert response(conn, 404)
+    end
   end
 
   describe "update product" do
