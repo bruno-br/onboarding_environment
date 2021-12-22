@@ -92,6 +92,24 @@ defmodule MyappWeb.ProductControllerTest do
     end
   end
 
+  describe "show product" do
+    setup [:create_product]
+
+    test "renders product when id is valid", %{conn: conn, product: %Product{id: id} = product} do
+      conn = get(conn, Routes.product_path(conn, :show, id))
+
+      assert %{
+               "id" => id,
+               "amount" => 42,
+               "description" => "some description",
+               "name" => "some name",
+               "price" => 120.5,
+               "sku" => "some-sku",
+               "barcode" => "123456789"
+             } = json_response(conn, 200)["product"]
+    end
+  end
+
   describe "update product" do
     setup [:create_product]
 
