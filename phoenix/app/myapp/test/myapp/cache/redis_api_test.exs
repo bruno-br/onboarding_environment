@@ -11,6 +11,10 @@ defmodule Myapp.RedisApiTest do
     key: "key2",
     value: "value2"
   }
+  @del_params %{
+    key: "key3",
+    value: "value3"
+  }
 
   describe "set/1" do
     test "saves on cache if params are valid" do
@@ -24,6 +28,14 @@ defmodule Myapp.RedisApiTest do
       client = RedisApi.start()
       assert RedisApi.set(client, @get_params.key, @get_params.value, 1) == :ok
       assert RedisApi.get(client, @get_params.key) == {:ok, @get_params.value}
+    end
+  end
+
+  describe "del/1" do
+    test "deletes key when params are valid" do
+      client = RedisApi.start()
+      assert RedisApi.set(client, @del_params.key, @del_params.value, 1) == :ok
+      assert RedisApi.del(client, @del_params.key) == :ok
     end
   end
 end
