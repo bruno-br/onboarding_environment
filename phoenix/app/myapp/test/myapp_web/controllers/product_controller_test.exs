@@ -79,8 +79,14 @@ defmodule MyappWeb.ProductControllerTest do
       assert json_response(conn, 422)
     end
 
-    test "returns error when barcode does not have 8-13 digits", %{conn: conn} do
-      product = %{@valid_attrs | barcode: "1234"}
+    test "returns error when barcode has less than 8 digits", %{conn: conn} do
+      product = %{@valid_attrs | barcode: "1234567"}
+      conn = post(conn, Routes.product_path(conn, :create), product: product)
+      assert json_response(conn, 422)
+    end
+
+    test "returns error when barcode has more than 13 digits", %{conn: conn} do
+      product = %{@valid_attrs | barcode: "12345678901234"}
       conn = post(conn, Routes.product_path(conn, :create), product: product)
       assert json_response(conn, 422)
     end

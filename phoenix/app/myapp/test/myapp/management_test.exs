@@ -72,8 +72,13 @@ defmodule Myapp.ManagementTest do
       assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
     end
 
-    test "create_product/1 returns error when barcode does not have 8-13 digits" do
-      product = %{@valid_attrs | barcode: "1234"}
+    test "create_product/1 returns error when barcode has less than 8 digits" do
+      product = %{@valid_attrs | barcode: "1234567"}
+      assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
+    end
+
+    test "create_product/1 returns error when barcode has more than 13 digits" do
+      product = %{@valid_attrs | barcode: "12345678901234"}
       assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
     end
 
