@@ -44,7 +44,8 @@ defmodule Myapp.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:redis, "~> 0.1"},
       {:exredis, ">= 0.2.4"},
-      {:tirexs, "~> 0.8"}
+      {:tirexs, "~> 0.8"},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
 
