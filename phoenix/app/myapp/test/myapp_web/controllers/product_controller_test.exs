@@ -125,6 +125,11 @@ defmodule MyappWeb.ProductControllerTest do
       conn = delete(conn, Routes.product_path(conn, :delete, product))
       assert response(conn, 204)
     end
+
+    test "returns 404 if product is not found", %{conn: conn} do
+      conn = delete(conn, Routes.product_path(conn, :delete, "invalid_product_id"))
+      assert response(conn, 404)
+    end
   end
 
   defp create_product(_) do
