@@ -95,7 +95,7 @@ defmodule MyappWeb.ProductControllerTest do
   describe "show product" do
     setup [:create_product]
 
-    test "renders product when id is valid", %{conn: conn, product: %Product{id: id} = product} do
+    test "renders product when id is valid", %{conn: conn, product: %Product{id: id}} do
       conn = get(conn, Routes.product_path(conn, :show, id))
 
       assert %{
