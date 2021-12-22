@@ -22,5 +22,6 @@ defmodule Myapp.Management.Product do
     |> validate_required([:sku, :amount, :description, :name, :price, :barcode])
     |> validate_format(:sku, ~r/^([a-zA-Z0-9]|\-)+$/, message: "can only contain alphanumerics and hifen")
     |> validate_number(:price, greater_than: 0)
+    |> validate_length(:barcode, min: 8, max: 13)
   end
 end
