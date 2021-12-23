@@ -14,7 +14,8 @@ defmodule Myapp.RedisApiTest do
   }
   @del_params %{
     key: "key3",
-    value: "value3"
+    value: "value3",
+    invalid_key: "invalid_key3"
   }
 
   describe "set/1" do
@@ -43,6 +44,12 @@ defmodule Myapp.RedisApiTest do
       client = RedisApi.start()
       assert RedisApi.set(client, @del_params.key, @del_params.value, 1) == :ok
       assert RedisApi.del(client, @del_params.key) == :ok
+    end
+
+    test "returns error when key is not found" do
+      client = RedisApi.start()
+      assert RedisApi.set(client, @del_params.key, @del_params.value, 1) == :ok
+      assert RedisApi.del(client, @del_params.invalid_key) == :error
     end
   end
 end
