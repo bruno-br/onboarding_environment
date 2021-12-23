@@ -48,6 +48,10 @@ defmodule Myapp.ManagementTest do
     test "returns the product with given id", %{product: product} do
       assert Management.get_product!(product.id) == product
     end
+
+    test "returns nil when product is not found" do
+      assert Management.get_product!("invalid_id") == nil
+    end
   end
 
   describe "create_product/1" do
