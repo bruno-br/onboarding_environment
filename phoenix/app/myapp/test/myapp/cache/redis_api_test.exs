@@ -19,8 +19,8 @@ defmodule Myapp.RedisApiTest do
     test "saves on cache if params are valid", %{client: client, key: key, value: value} do
       with_mock(Exredis,
         query: fn
-          client, ["SET", key, value] -> "OK"
-          client, ["EXPIRE", key, value] -> "1"
+          _client, ["SET", _key, _value] -> "OK"
+          _client, ["EXPIRE", _key, _value] -> "1"
         end
       ) do
         assert RedisApi.set(client, key, value) == :ok
@@ -34,7 +34,7 @@ defmodule Myapp.RedisApiTest do
 
       with_mock(Exredis,
         query: fn
-          client, ["GET", key] -> encoded_value
+          _client, ["GET", _key] -> encoded_value
         end
       ) do
         assert RedisApi.get(client, key) == {:ok, value}
@@ -44,7 +44,7 @@ defmodule Myapp.RedisApiTest do
     test "returns error when key is not found", %{client: client, invalid_key: invalid_key} do
       with_mock(Exredis,
         query: fn
-          client, ["GET", invalid_key] -> :undefined
+          _client, ["GET", _invalid_key] -> :undefined
         end
       ) do
         assert RedisApi.get(client, invalid_key) == {:error, :not_found}
@@ -56,7 +56,7 @@ defmodule Myapp.RedisApiTest do
     test "deletes key when params are valid", %{client: client, key: key} do
       with_mock(Exredis,
         query: fn
-          client, ["DEL", key] -> "1"
+          _client, ["DEL", _key] -> "1"
         end
       ) do
         assert RedisApi.del(client, key) == :ok
@@ -69,7 +69,7 @@ defmodule Myapp.RedisApiTest do
     } do
       with_mock(Exredis,
         query: fn
-          client, ["DEL", key] -> "0"
+          _client, ["DEL", _key] -> "0"
         end
       ) do
         assert RedisApi.del(client, invalid_key) == :error
