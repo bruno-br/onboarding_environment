@@ -45,7 +45,8 @@ defmodule Myapp.MixProject do
       {:redis, "~> 0.1"},
       {:exredis, ">= 0.2.4"},
       {:tirexs, "~> 0.8"},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:mock, "~> 0.3.0", only: :test}
     ]
   end
 
