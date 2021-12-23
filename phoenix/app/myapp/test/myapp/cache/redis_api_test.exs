@@ -44,7 +44,7 @@ defmodule Myapp.RedisApiTest do
     test "returns error when key is not found", %{client: client, invalid_key: invalid_key} do
       with_mock(Exredis,
         query: fn
-          client, ["GET", invalid_key] -> "NIL"
+          client, ["GET", invalid_key] -> :undefined
         end
       ) do
         assert RedisApi.get(client, invalid_key) == {:error, :not_found}
