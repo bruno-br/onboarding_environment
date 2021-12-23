@@ -21,7 +21,7 @@ defmodule MyappWeb.Plugs.GetProductPlug do
   defp find_by_id(conn, nil), do: assign(conn, :get_product, {:error, :bad_request})
 
   defp find_by_id(conn, id) do
-    with product <- Management.get_product!(id),
+    with product <- Management.get_product(id),
          true <- product != nil do
       assign(conn, :get_product, {:ok, product})
     else

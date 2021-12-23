@@ -34,7 +34,7 @@ defmodule Myapp.Management do
 
   Raises `Ecto.NoResultsError` if the Product does not exist.
   """
-  def get_product!(id) do
+  def get_product(id) do
     Repo.get(Product, id)
   rescue
     Ecto.Query.CastError -> nil

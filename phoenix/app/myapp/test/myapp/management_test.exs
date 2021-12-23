@@ -42,15 +42,15 @@ defmodule Myapp.ManagementTest do
     end
   end
 
-  describe "get_product!/1" do
+  describe "get_product/1" do
     setup [:create_product]
 
     test "returns the product with given id", %{product: product} do
-      assert Management.get_product!(product.id) == product
+      assert Management.get_product(product.id) == product
     end
 
     test "returns nil when product is not found" do
-      assert Management.get_product!("invalid_id") == nil
+      assert Management.get_product("invalid_id") == nil
     end
   end
 
@@ -112,7 +112,7 @@ defmodule Myapp.ManagementTest do
 
     test "returns error changeset when data is invalid", %{invalid_attrs: attrs, product: product} do
       assert {:error, %Ecto.Changeset{}} = Management.update_product(product, attrs)
-      assert product == Management.get_product!(product.id)
+      assert product == Management.get_product(product.id)
     end
   end
 
