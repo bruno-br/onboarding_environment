@@ -22,11 +22,6 @@ defmodule MyappWeb.ProductControllerTest do
   }
   @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil, barcode: nil}
 
-  def fixture(:product) do
-    {:ok, product} = Management.create_product(@valid_attrs)
-    product
-  end
-
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
@@ -160,6 +155,11 @@ defmodule MyappWeb.ProductControllerTest do
       conn = delete(conn, Routes.product_path(conn, :delete, "invalid_product_id"))
       assert response(conn, 404)
     end
+  end
+
+  defp fixture(:product) do
+    {:ok, product} = Management.create_product(@valid_attrs)
+    product
   end
 
   defp create_product(_) do
