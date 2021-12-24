@@ -132,7 +132,7 @@ defmodule Myapp.ManagementTest do
     end
   end
 
-  def product_fixture(attrs \\ %{}) do
+  defp product_fixture(attrs \\ %{}) do
     {:ok, product} =
       attrs
       |> Enum.into(%{
@@ -148,7 +148,7 @@ defmodule Myapp.ManagementTest do
     product
   end
 
-  def create_product(_) do
+  defp create_product(_) do
     %{product: product_fixture()}
   end
 end
