@@ -4,23 +4,34 @@ defmodule MyappWeb.ProductControllerTest do
   alias Myapp.Management
   alias Myapp.Management.Product
 
-  @valid_attrs %{
-    amount: 42,
-    description: "some description",
-    name: "some name",
-    price: 120.5,
-    sku: "some-sku",
-    barcode: "123456789"
-  }
-  @update_attrs %{
-    amount: 43,
-    description: "some updated description",
-    name: "some updated name",
-    price: 456.7,
-    sku: "some-updated-sku",
-    barcode: "123456789"
-  }
-  @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil, barcode: nil}
+  setup_all do
+    %{
+      valid_attrs: %{
+        amount: 42,
+        description: "some description",
+        name: "some name",
+        price: 120.5,
+        sku: "some-sku",
+        barcode: "123456789"
+      },
+      update_attrs: %{
+        amount: 43,
+        description: "some updated description",
+        name: "some updated name",
+        price: 456.7,
+        sku: "some-updated-sku",
+        barcode: "123456789"
+      },
+      invalid_attrs: %{
+        amount: nil,
+        description: nil,
+        name: nil,
+        price: nil,
+        sku: nil,
+        barcode: nil
+      }
+    }
+  end
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -34,8 +45,8 @@ defmodule MyappWeb.ProductControllerTest do
   end
 
   describe "create product" do
-    test "renders product when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.product_path(conn, :create), product: @valid_attrs)
+    test "renders product when data is valid", %{conn: conn, valid_attrs: attrs} do
+      conn = post(conn, Routes.product_path(conn, :create), product: attrs)
       assert %{"id" => id} = json_response(conn, 201)["product"]
 
       conn = get(conn, Routes.product_path(conn, :show, id))
@@ -51,37 +62,37 @@ defmodule MyappWeb.ProductControllerTest do
              } = json_response(conn, 200)["product"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.product_path(conn, :create), product: @invalid_attrs)
+    test "renders errors when data is invalid", %{conn: conn, invalid_attrs: attrs} do
+      conn = post(conn, Routes.product_path(conn, :create), product: attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
 
-    test "returns error when sku is invalid", %{conn: conn} do
-      product = %{@valid_attrs | sku: "invalid sku !!"}
+    test "returns error when sku is invalid", %{conn: conn, valid_attrs: attrs} do
+      product = %{attrs | sku: "invalid sku !!"}
       conn = post(conn, Routes.product_path(conn, :create), product: product)
       assert json_response(conn, 422)
     end
 
-    test "returns error when name is missing", %{conn: conn} do
-      product = Map.delete(@valid_attrs, :name)
+    test "returns error when name is missing", %{conn: conn, valid_attrs: attrs} do
+      product = Map.delete(attrs, :name)
       conn = post(conn, Routes.product_path(conn, :create), product: product)
       assert json_response(conn, 422)
     end
 
-    test "returns error when price is not greater than zero", %{conn: conn} do
-      product = %{@valid_attrs | price: 0}
+    test "returns error when price is not greater than zero", %{conn: conn, valid_attrs: attrs} do
+      product = %{attrs | price: 0}
       conn = post(conn, Routes.product_path(conn, :create), product: product)
       assert json_response(conn, 422)
     end
 
-    test "returns error when barcode has less than 8 digits", %{conn: conn} do
-      product = %{@valid_attrs | barcode: "1234567"}
+    test "returns error when barcode has less than 8 digits", %{conn: conn, valid_attrs: attrs} do
+      product = %{attrs | barcode: "1234567"}
       conn = post(conn, Routes.product_path(conn, :create), product: product)
       assert json_response(conn, 422)
     end
 
-    test "returns error when barcode has more than 13 digits", %{conn: conn} do
-      product = %{@valid_attrs | barcode: "12345678901234"}
+    test "returns error when barcode has more than 13 digits", %{conn: conn, valid_attrs: attrs} do
+      product = %{attrs | barcode: "12345678901234"}
       conn = post(conn, Routes.product_path(conn, :create), product: product)
       assert json_response(conn, 422)
     end
@@ -113,8 +124,12 @@ defmodule MyappWeb.ProductControllerTest do
   describe "update product" do
     setup [:create_product]
 
-    test "renders product when data is valid", %{conn: conn, product: %Product{id: id} = product} do
-      conn = put(conn, Routes.product_path(conn, :update, product), product: @update_attrs)
+    test "renders product when data is valid", %{
+      conn: conn,
+      product: %Product{id: id} = product,
+      update_attrs: attrs
+    } do
+      conn = put(conn, Routes.product_path(conn, :update, product), product: attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["product"]
 
       conn = get(conn, Routes.product_path(conn, :show, id))
@@ -130,14 +145,17 @@ defmodule MyappWeb.ProductControllerTest do
              } = json_response(conn, 200)["product"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn, product: product} do
-      conn = put(conn, Routes.product_path(conn, :update, product), product: @invalid_attrs)
+    test "renders errors when data is invalid", %{
+      conn: conn,
+      product: product,
+      invalid_attrs: attrs
+    } do
+      conn = put(conn, Routes.product_path(conn, :update, product), product: attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
 
-    test "returns 404 if product is not found", %{conn: conn} do
-      conn =
-        put(conn, Routes.product_path(conn, :update, "invalid_product_id"), product: @update_attrs)
+    test "returns 404 if product is not found", %{conn: conn, update_attrs: attrs} do
+      conn = put(conn, Routes.product_path(conn, :update, "invalid_product_id"), product: attrs)
 
       assert response(conn, 404)
     end
@@ -158,7 +176,16 @@ defmodule MyappWeb.ProductControllerTest do
   end
 
   defp fixture(:product) do
-    {:ok, product} = Management.create_product(@valid_attrs)
+    {:ok, product} =
+      Management.create_product(%{
+        amount: 42,
+        description: "some description",
+        name: "some name",
+        price: 120.5,
+        sku: "some-sku",
+        barcode: "123456789"
+      })
+
     product
   end
 
