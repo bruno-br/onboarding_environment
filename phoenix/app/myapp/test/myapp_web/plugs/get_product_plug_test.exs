@@ -1,5 +1,5 @@
 defmodule MyappWeb.Plugs.GetProductPlugTest do
-  use MyappWeb.ConnCase
+  use MyappWeb.ConnCase, async: false
 
   alias Myapp.Management
   alias MyappWeb.Plugs.GetProductPlug
