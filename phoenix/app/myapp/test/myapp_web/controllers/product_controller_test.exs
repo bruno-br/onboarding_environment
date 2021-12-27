@@ -40,7 +40,10 @@ defmodule MyappWeb.ProductControllerTest do
   describe "index" do
     test "lists all products", %{conn: conn} do
       conn = get(conn, Routes.product_path(conn, :index))
-      assert length(json_response(conn, 200)["products"]) == length(list_products())
+      assert products = json_response(conn, 200)["products"]
+
+      expected_ids = products_map_id(list_products())
+      assert products_map_id(products) == expected_ids
     end
   end
 
@@ -222,5 +225,12 @@ defmodule MyappWeb.ProductControllerTest do
 
   defp list_products() do
     Management.list_products()
+  end
+
+  defp products_map_id(products) do
+    Enum.map(products, fn
+      %{"id" => id} = _product -> id
+      %{id: id} = _product -> id
+    end)
   end
 end
