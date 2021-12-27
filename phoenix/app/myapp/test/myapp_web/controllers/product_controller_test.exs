@@ -139,7 +139,7 @@ defmodule MyappWeb.ProductControllerTest do
         "barcode" => "123456789"
       }
 
-      json_response(conn, 200)["product"] == expected_response
+      assert json_response(conn, 200)["product"] == expected_response
     end
 
     test "returns 404 if product is not found", %{conn: conn} do
