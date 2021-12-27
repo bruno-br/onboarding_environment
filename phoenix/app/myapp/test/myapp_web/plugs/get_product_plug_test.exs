@@ -20,7 +20,7 @@ defmodule MyappWeb.Plugs.GetProductPlugTest do
   describe "get product" do
     test "assigns product to conn when id is valid", %{conn: conn, attrs: attrs} do
       with_mock(Management,
-        get_product: fn id -> attrs.product end
+        get_product: fn _id -> attrs.product end
       ) do
         conn =
           %{conn | params: %{"id" => attrs.id}}
