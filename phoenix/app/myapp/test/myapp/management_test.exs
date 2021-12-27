@@ -167,6 +167,11 @@ defmodule Myapp.ManagementTest do
       assert {:error, response} = Management.update_product(product, attrs)
       assert response.errors == expected_errors
     end
+
+    test "returns error when the product is not found", %{update_attrs: attrs, product: product} do
+      Management.delete_product(product)
+      catch_error(Management.update_product(product, attrs))
+    end
   end
 
   describe "delete_product/1" do
