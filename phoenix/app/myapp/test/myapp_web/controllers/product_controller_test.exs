@@ -56,53 +56,67 @@ defmodule MyappWeb.ProductControllerTest do
     test "returns errors when data is invalid", %{conn: conn, invalid_attrs: attrs} do
       conn = post(conn, Routes.product_path(conn, :create), product: attrs)
 
-      assert json_response(conn, 422)["errors"] == %{
-               "amount" => ["can't be blank"],
-               "barcode" => ["can't be blank"],
-               "description" => ["can't be blank"],
-               "name" => ["can't be blank"],
-               "price" => ["can't be blank"],
-               "sku" => ["can't be blank"]
-             }
+      expected_response = %{
+        "amount" => ["can't be blank"],
+        "barcode" => ["can't be blank"],
+        "description" => ["can't be blank"],
+        "name" => ["can't be blank"],
+        "price" => ["can't be blank"],
+        "sku" => ["can't be blank"]
+      }
+
+      assert json_response(conn, 422)["errors"] == expected_response
     end
 
     test "returns error message when sku is invalid", %{conn: conn, valid_attrs: attrs} do
       product = %{attrs | sku: "invalid sku !!"}
       conn = post(conn, Routes.product_path(conn, :create), product: product)
 
-      assert json_response(conn, 422)["errors"] == %{
-               "sku" => ["can only contain alphanumerics and hifen"]
-             }
+      expected_response = %{
+        "sku" => ["can only contain alphanumerics and hifen"]
+      }
+
+      assert json_response(conn, 422)["errors"] == expected_response
     end
 
     test "returns error when name is missing", %{conn: conn, valid_attrs: attrs} do
       product = Map.delete(attrs, :name)
       conn = post(conn, Routes.product_path(conn, :create), product: product)
-      assert json_response(conn, 422)["errors"] == %{"name" => ["can't be blank"]}
+
+      expected_response = %{"name" => ["can't be blank"]}
+
+      assert json_response(conn, 422)["errors"] == expected_response
     end
 
     test "returns error when price is not greater than zero", %{conn: conn, valid_attrs: attrs} do
       product = %{attrs | price: 0}
       conn = post(conn, Routes.product_path(conn, :create), product: product)
-      assert json_response(conn, 422)["errors"] == %{"price" => ["must be greater than 0"]}
+
+      expected_response = %{"price" => ["must be greater than 0"]}
+
+      assert json_response(conn, 422)["errors"] == expected_response
     end
 
     test "returns error when barcode has less than 8 digits", %{conn: conn, valid_attrs: attrs} do
       product = %{attrs | barcode: "1234567"}
       conn = post(conn, Routes.product_path(conn, :create), product: product)
 
-      assert json_response(conn, 422)["errors"] == %{
-               "barcode" => ["should be at least 8 character(s)"]
-             }
+      expected_response = %{
+        "barcode" => ["should be at least 8 character(s)"]
+      }
+
+      assert json_response(conn, 422)["errors"] == expected_response
     end
 
     test "returns error when barcode has more than 13 digits", %{conn: conn, valid_attrs: attrs} do
       product = %{attrs | barcode: "12345678901234"}
       conn = post(conn, Routes.product_path(conn, :create), product: product)
 
-      assert json_response(conn, 422)["errors"] == %{
-               "barcode" => ["should be at most 13 character(s)"]
-             }
+      expected_response = %{
+        "barcode" => ["should be at most 13 character(s)"]
+      }
+
+      assert json_response(conn, 422)["errors"] == expected_response
     end
   end
 
