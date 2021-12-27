@@ -126,15 +126,17 @@ defmodule MyappWeb.ProductControllerTest do
     test "renders product when id is valid", %{conn: conn, product: %Product{id: id}} do
       conn = get(conn, Routes.product_path(conn, :show, id))
 
-      assert %{
-               "id" => id,
-               "amount" => 42,
-               "description" => "some description",
-               "name" => "some name",
-               "price" => 120.5,
-               "sku" => "some-sku",
-               "barcode" => "123456789"
-             } = json_response(conn, 200)["product"]
+      expected_response = %{
+        "id" => id,
+        "amount" => 42,
+        "description" => "some description",
+        "name" => "some name",
+        "price" => 120.5,
+        "sku" => "some-sku",
+        "barcode" => "123456789"
+      }
+
+      json_response(conn, 200)["product"] == expected_response
     end
 
     test "returns 404 if product is not found", %{conn: conn} do
@@ -156,15 +158,17 @@ defmodule MyappWeb.ProductControllerTest do
 
       conn = get(conn, Routes.product_path(conn, :show, id))
 
-      assert %{
-               "id" => id,
-               "amount" => 43,
-               "description" => "some updated description",
-               "name" => "some updated name",
-               "price" => 456.7,
-               "sku" => "some-updated-sku",
-               "barcode" => "123456789"
-             } = json_response(conn, 200)["product"]
+      expected_response = %{
+        "id" => id,
+        "amount" => 43,
+        "description" => "some updated description",
+        "name" => "some updated name",
+        "price" => 456.7,
+        "sku" => "some-updated-sku",
+        "barcode" => "123456789"
+      }
+
+      assert json_response(conn, 200)["product"] == expected_response
     end
 
     test "renders errors when data is invalid", %{
