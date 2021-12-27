@@ -3,6 +3,7 @@ defmodule MyappWeb.ProductControllerTest do
 
   alias Myapp.Management
   alias Myapp.Management.Product
+  alias Myapp.Repo
 
   setup_all do
     %{
@@ -204,8 +205,12 @@ defmodule MyappWeb.ProductControllerTest do
     setup [:create_product]
 
     test "deletes chosen product", %{conn: conn, product: product} do
+      assert Repo.get(Product, product.id) == product
+
       conn = delete(conn, Routes.product_path(conn, :delete, product))
       assert response(conn, 204)
+
+      assert Repo.get(Product, product.id) == nil
     end
 
     test "returns 404 if product is not found", %{conn: conn} do
