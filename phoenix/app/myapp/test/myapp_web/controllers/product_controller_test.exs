@@ -53,7 +53,7 @@ defmodule MyappWeb.ProductControllerTest do
       assert json_response(conn, 200)["product"] == product
     end
 
-    test "renders errors when data is invalid", %{conn: conn, invalid_attrs: attrs} do
+    test "returns errors when data is invalid", %{conn: conn, invalid_attrs: attrs} do
       conn = post(conn, Routes.product_path(conn, :create), product: attrs)
 
       assert json_response(conn, 422)["errors"] == %{
@@ -66,10 +66,13 @@ defmodule MyappWeb.ProductControllerTest do
              }
     end
 
-    test "returns error when sku is invalid", %{conn: conn, valid_attrs: attrs} do
+    test "returns error message when sku is invalid", %{conn: conn, valid_attrs: attrs} do
       product = %{attrs | sku: "invalid sku !!"}
       conn = post(conn, Routes.product_path(conn, :create), product: product)
-      assert json_response(conn, 422)
+
+      assert json_response(conn, 422)["errors"] == %{
+               "sku" => ["can only contain alphanumerics and hifen"]
+             }
     end
 
     test "returns error when name is missing", %{conn: conn, valid_attrs: attrs} do
