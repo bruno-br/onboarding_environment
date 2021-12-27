@@ -68,32 +68,76 @@ defmodule Myapp.ManagementTest do
     end
 
     test "returns error when data is invalid", %{invalid_attrs: attrs} do
-      assert {:error, %Ecto.Changeset{}} = Management.create_product(attrs)
+      expected_errors = [
+        sku: {"can't be blank", [validation: :required]},
+        amount: {"can't be blank", [validation: :required]},
+        description: {"can't be blank", [validation: :required]},
+        name: {"can't be blank", [validation: :required]},
+        price: {"can't be blank", [validation: :required]},
+        barcode: {"can't be blank", [validation: :required]}
+      ]
+
+      assert {:error, response} = Management.create_product(attrs)
+      assert response.errors == expected_errors
     end
 
     test "returns error when sku is invalid", %{valid_attrs: attrs} do
       product = %{attrs | sku: "invalid sku !!"}
-      assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
+
+      expected_errors = [
+        sku: {"can only contain alphanumerics and hifen", [validation: :format]}
+      ]
+
+      assert {:error, response} = Management.create_product(product)
+      assert response.errors == expected_errors
     end
 
     test "returns error when name is missing", %{valid_attrs: attrs} do
       product = Map.delete(attrs, :name)
-      assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
+
+      expected_errors = [name: {"can't be blank", [validation: :required]}]
+
+      assert {:error, response} = Management.create_product(product)
+      assert response.errors == expected_errors
     end
 
     test "returns error when price is not greater than zero", %{valid_attrs: attrs} do
       product = %{attrs | price: 0}
-      assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
+
+      expected_errors = [
+        price:
+          {"must be greater than %{number}",
+           [validation: :number, kind: :greater_than, number: 0]}
+      ]
+
+      assert {:error, response} = Management.create_product(product)
+      assert response.errors == expected_errors
     end
 
     test "returns error when barcode has less than 8 digits", %{valid_attrs: attrs} do
       product = %{attrs | barcode: "1234567"}
-      assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
+
+      expected_errors = [
+        barcode:
+          {"should be at least %{count} character(s)",
+           [count: 8, validation: :length, kind: :min, type: :string]}
+      ]
+
+      assert {:error, response} = Management.create_product(product)
+      assert response.errors == expected_errors
     end
 
     test "returns error when barcode has more than 13 digits", %{valid_attrs: attrs} do
       product = %{attrs | barcode: "12345678901234"}
-      assert {:error, %Ecto.Changeset{}} = Management.create_product(product)
+
+      expected_errors = [
+        barcode:
+          {"should be at most %{count} character(s)",
+           [count: 13, validation: :length, kind: :max, type: :string]}
+      ]
+
+      assert {:error, response} = Management.create_product(product)
+      assert response.errors == expected_errors
     end
   end
 
