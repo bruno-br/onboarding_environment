@@ -55,7 +55,15 @@ defmodule MyappWeb.ProductControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn, invalid_attrs: attrs} do
       conn = post(conn, Routes.product_path(conn, :create), product: attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+
+      assert json_response(conn, 422)["errors"] == %{
+               "amount" => ["can't be blank"],
+               "barcode" => ["can't be blank"],
+               "description" => ["can't be blank"],
+               "name" => ["can't be blank"],
+               "price" => ["can't be blank"],
+               "sku" => ["can't be blank"]
+             }
     end
 
     test "returns error when sku is invalid", %{conn: conn, valid_attrs: attrs} do
