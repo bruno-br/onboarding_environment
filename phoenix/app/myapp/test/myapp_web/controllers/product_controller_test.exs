@@ -1,5 +1,5 @@
 defmodule MyappWeb.ProductControllerTest do
-  use MyappWeb.ConnCase
+  use MyappWeb.ConnCase, async: false
 
   alias Myapp.Management
   alias Myapp.Management.Product
