@@ -52,9 +52,7 @@ defmodule MyappWeb.ProductControllerTest do
     test "renders product when data is valid", %{conn: conn, valid_attrs: attrs} do
       conn = post(conn, Routes.product_path(conn, :create), product: attrs)
       assert %{"product" => product} = json_response(conn, 201)
-
-      conn = get(conn, Routes.product_path(conn, :show, product["id"]))
-      assert json_response(conn, 200)["product"] == product
+      assert Repo.get(Product, product["id"]) != nil
     end
 
     test "returns errors when data is invalid", %{conn: conn, invalid_attrs: attrs} do
