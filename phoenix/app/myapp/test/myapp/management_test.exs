@@ -155,8 +155,17 @@ defmodule Myapp.ManagementTest do
     end
 
     test "returns error changeset when data is invalid", %{invalid_attrs: attrs, product: product} do
-      assert {:error, %Ecto.Changeset{}} = Management.update_product(product, attrs)
-      assert product == Management.get_product(product.id)
+      expected_errors = [
+        sku: {"can't be blank", [validation: :required]},
+        amount: {"can't be blank", [validation: :required]},
+        description: {"can't be blank", [validation: :required]},
+        name: {"can't be blank", [validation: :required]},
+        price: {"can't be blank", [validation: :required]},
+        barcode: {"can't be blank", [validation: :required]}
+      ]
+
+      assert {:error, response} = Management.update_product(product, attrs)
+      assert response.errors == expected_errors
     end
   end
 
