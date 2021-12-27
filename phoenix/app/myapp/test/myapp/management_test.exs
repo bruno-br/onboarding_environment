@@ -180,6 +180,11 @@ defmodule Myapp.ManagementTest do
     test "deletes the product", %{product: product} do
       assert {:ok, %Product{}} = Management.delete_product(product)
     end
+
+    test "returns error when product is not found", %{product: product} do
+      Management.delete_product(product)
+      catch_error(Management.delete_product(product))
+    end
   end
 
   describe "change_product/1" do
