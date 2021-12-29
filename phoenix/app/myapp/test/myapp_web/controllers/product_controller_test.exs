@@ -4,6 +4,9 @@ defmodule MyappWeb.ProductControllerTest do
   alias Myapp.Management
   alias Myapp.Management.Product
   alias Myapp.Repo
+  alias MyappWeb.Plugs.LogPlug
+
+  import Tirexs
 
   setup_all do
     %{
@@ -46,6 +49,20 @@ defmodule MyappWeb.ProductControllerTest do
       expected_ids = products_map_id(list_products())
       assert products_map_id(products) == expected_ids
     end
+
+    test "creates new log when action is on index", %{conn: conn} do
+      conn = get(conn, Routes.product_path(conn, :index))
+      assert json_response(conn, 200)
+
+      :timer.sleep(1000)
+
+      last_log = get_last_log()
+
+      assert last_log.method == conn.method
+      assert last_log.request_path == conn.request_path
+      assert last_log.body_params == %{}
+      assert last_log.req_headers == tuple_list_to_map(conn.req_headers)
+    end
   end
 
   describe "create product" do
@@ -53,6 +70,20 @@ defmodule MyappWeb.ProductControllerTest do
       conn = post(conn, Routes.product_path(conn, :create), product: attrs)
       assert %{"product" => product} = json_response(conn, 201)
       assert Repo.get(Product, product["id"]) != nil
+    end
+
+    test "creates new log when action is on create", %{conn: conn, valid_attrs: attrs} do
+      conn = post(conn, Routes.product_path(conn, :create), product: attrs)
+      assert json_response(conn, 201)
+
+      :timer.sleep(1000)
+
+      last_log = get_last_log()
+
+      assert last_log.method == conn.method
+      assert last_log.request_path == conn.request_path
+      assert last_log.body_params == %{product: attrs}
+      assert last_log.req_headers == tuple_list_to_map(conn.req_headers)
     end
 
     test "returns errors when data is invalid", %{conn: conn, invalid_attrs: attrs} do
@@ -141,6 +172,20 @@ defmodule MyappWeb.ProductControllerTest do
       assert json_response(conn, 200)["product"] == expected_response
     end
 
+    test "creates new log when action is on show", %{conn: conn, product: %Product{id: id}} do
+      conn = get(conn, Routes.product_path(conn, :show, id))
+      assert json_response(conn, 200)
+
+      :timer.sleep(1000)
+
+      last_log = get_last_log()
+
+      assert last_log.method == conn.method
+      assert last_log.request_path == conn.request_path
+      assert last_log.body_params == %{}
+      assert last_log.req_headers == tuple_list_to_map(conn.req_headers)
+    end
+
     test "returns 404 if product is not found", %{conn: conn} do
       conn = get(conn, Routes.product_path(conn, :show, "invalid_id"))
       assert response(conn, 404)
@@ -171,6 +216,24 @@ defmodule MyappWeb.ProductControllerTest do
       }
 
       assert json_response(conn, 200)["product"] == expected_response
+    end
+
+    test "creates new log when action is on update", %{
+      conn: conn,
+      product: product,
+      update_attrs: attrs
+    } do
+      conn = put(conn, Routes.product_path(conn, :update, product), product: attrs)
+      assert json_response(conn, 200)
+
+      :timer.sleep(1000)
+
+      last_log = get_last_log()
+
+      assert last_log.method == conn.method
+      assert last_log.request_path == conn.request_path
+      assert last_log.body_params == %{product: attrs}
+      assert last_log.req_headers == tuple_list_to_map(conn.req_headers)
     end
 
     test "returns errors when data is invalid", %{
@@ -211,6 +274,20 @@ defmodule MyappWeb.ProductControllerTest do
       assert Repo.get(Product, product.id) == nil
     end
 
+    test "creates new log when action is on delete", %{conn: conn, product: product} do
+      conn = delete(conn, Routes.product_path(conn, :delete, product))
+      assert response(conn, 204)
+
+      :timer.sleep(1000)
+
+      last_log = get_last_log()
+
+      assert last_log.method == conn.method
+      assert last_log.request_path == conn.request_path
+      assert last_log.body_params == %{}
+      assert last_log.req_headers == tuple_list_to_map(conn.req_headers)
+    end
+
     test "returns 404 if product is not found", %{conn: conn} do
       conn = delete(conn, Routes.product_path(conn, :delete, "invalid_product_id"))
       assert response(conn, 404)
@@ -244,6 +321,28 @@ defmodule MyappWeb.ProductControllerTest do
     Enum.map(products, fn
       %{"id" => id} = _product -> id
       %{id: id} = _product -> id
+    end)
+  end
+
+  defp get_last_log() do
+    body = %{
+      size: 1,
+      query: %{
+        match_all: %{}
+      },
+      sort: %{
+        date: "desc"
+      }
+    }
+
+    {:ok, 200, search_results} = Tirexs.HTTP.post("/my_index/logs/_search?order", body)
+
+    List.last(search_results.hits.hits)[:_source]
+  end
+
+  defp tuple_list_to_map(tuple) do
+    Enum.into(tuple, %{}, fn {key, value} ->
+      {String.to_atom(key), value}
     end)
   end
 end
