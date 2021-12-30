@@ -80,7 +80,7 @@ defmodule MyappWeb.ProductControllerTest do
                    %{conn: conn, valid_attrs: attrs},
                    Tirexs.HTTP,
                    [],
-                   post: fn "/my_index/logs", data -> data end do
+                   post: fn _path, data -> data end do
       conn = post(conn, Routes.product_path(conn, :create), product: attrs)
       assert json_response(conn, 201)
 
