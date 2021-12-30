@@ -14,19 +14,7 @@ defmodule Myapp.Management do
   """
   def list_products do
     client = RedisService.start()
-
-    case RedisService.get(client, "product_list") do
-      {:ok, products} ->
-        products
-
-      {:error, :not_found} ->
-        products = Repo.all(Product)
-        RedisService.set(client, "product_list", products)
-        products
-
-      _ ->
-        Repo.all(Product)
-    end
+    Repo.all(Product)
   end
 
   @doc """
@@ -59,8 +47,6 @@ defmodule Myapp.Management do
   Creates a product.
   """
   def create_product(attrs \\ %{}) do
-    delete_from_cache("product_list")
-
     %Product{}
     |> Product.changeset(attrs)
     |> Repo.insert()
@@ -79,7 +65,6 @@ defmodule Myapp.Management do
   Deletes a product.
   """
   def delete_product(%Product{} = product) do
-    delete_from_cache("product_list")
     Repo.delete(product)
   end
 
@@ -90,6 +75,4 @@ defmodule Myapp.Management do
   def change_product(%Product{} = product, attrs \\ %{}) do
     Product.changeset(product, attrs)
   end
-
-  defp delete_from_cache(key), do: RedisService.del(RedisService.start(), key)
 end
