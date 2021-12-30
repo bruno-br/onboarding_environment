@@ -8,6 +8,7 @@ defmodule Myapp.Management do
 
   alias Myapp.Management.Product
   alias Myapp.Services.RedisService
+  alias Myapp.Services.ElasticsearchService
 
   @doc """
   Returns the list of products.
@@ -47,9 +48,13 @@ defmodule Myapp.Management do
   Creates a product.
   """
   def create_product(attrs \\ %{}) do
-    %Product{}
-    |> Product.changeset(attrs)
-    |> Repo.insert()
+    with product_changeset <- Product.changeset(%Product{}, attrs),
+         {:ok, product} <- Repo.insert(product_changeset) do
+      save_product_on_els(product)
+      {:ok, product}
+    else
+      error -> error
+    end
   end
 
   @doc """
@@ -74,5 +79,14 @@ defmodule Myapp.Management do
   """
   def change_product(%Product{} = product, attrs \\ %{}) do
     Product.changeset(product, attrs)
+  end
+
+  defp save_product_on_els(product) do
+    data_to_be_saved = %{
+      id: product.id,
+      name: product.name
+    }
+
+    ElasticsearchService.post("/my_index/products", data_to_be_saved)
   end
 end
