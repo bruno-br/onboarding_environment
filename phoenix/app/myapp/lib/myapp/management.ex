@@ -35,7 +35,22 @@ defmodule Myapp.Management do
   Raises `Ecto.NoResultsError` if the Product does not exist.
   """
   def get_product(id) do
-    Repo.get(Product, id)
+    client = RedisService.start()
+
+    product_key = "product_" <> to_string(id)
+
+    case RedisService.get(client, product_key) do
+      {:ok, product} ->
+        product
+
+      {:error, :not_found} ->
+        product = Repo.get(Product, id)
+        RedisService.set(client, product_key, product)
+        product
+
+      _ ->
+        Repo.get(Product, id)
+    end
   rescue
     Ecto.Query.CastError -> nil
   end
