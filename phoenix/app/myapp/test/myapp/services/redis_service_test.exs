@@ -1,7 +1,7 @@
-defmodule Myapp.RedisApiTest do
+defmodule Myapp.Services.RedisServiceTest do
   use Myapp.DataCase, async: false
 
-  alias Myapp.RedisApi
+  alias Myapp.Services.RedisService
 
   import Exredis
   import Mock
@@ -23,7 +23,7 @@ defmodule Myapp.RedisApiTest do
           _client, ["EXPIRE", _key, _value] -> "1"
         end
       ) do
-        assert RedisApi.set(client, key, value) == :ok
+        assert RedisService.set(client, key, value) == :ok
       end
     end
   end
@@ -37,7 +37,7 @@ defmodule Myapp.RedisApiTest do
           _client, ["GET", _key] -> encoded_value
         end
       ) do
-        assert RedisApi.get(client, key) == {:ok, value}
+        assert RedisService.get(client, key) == {:ok, value}
       end
     end
 
@@ -47,7 +47,7 @@ defmodule Myapp.RedisApiTest do
           _client, ["GET", _invalid_key] -> :undefined
         end
       ) do
-        assert RedisApi.get(client, invalid_key) == {:error, :not_found}
+        assert RedisService.get(client, invalid_key) == {:error, :not_found}
       end
     end
   end
@@ -59,7 +59,7 @@ defmodule Myapp.RedisApiTest do
           _client, ["DEL", _key] -> "1"
         end
       ) do
-        assert RedisApi.del(client, key) == :ok
+        assert RedisService.del(client, key) == :ok
       end
     end
 
@@ -72,7 +72,7 @@ defmodule Myapp.RedisApiTest do
           _client, ["DEL", _key] -> "0"
         end
       ) do
-        assert RedisApi.del(client, invalid_key) == :error
+        assert RedisService.del(client, invalid_key) == :error
       end
     end
   end

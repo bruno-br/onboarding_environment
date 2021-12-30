@@ -1,4 +1,4 @@
-defmodule Myapp.RedisApi do
+defmodule Myapp.Services.RedisService do
   @moduledoc """
   API used to save and load data on cache using Redis
   """
