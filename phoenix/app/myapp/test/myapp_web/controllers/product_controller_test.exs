@@ -223,19 +223,15 @@ defmodule MyappWeb.ProductControllerTest do
       conn = put(conn, Routes.product_path(conn, :update, product), product: attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["product"]
 
-      conn = get(conn, Routes.product_path(conn, :show, id))
+      updated_product = Repo.get(Product, id)
 
-      expected_response = %{
-        "id" => id,
-        "amount" => 43,
-        "description" => "some updated description",
-        "name" => "some updated name",
-        "price" => 456.7,
-        "sku" => "some-updated-sku",
-        "barcode" => "123456789"
-      }
-
-      assert json_response(conn, 200)["product"] == expected_response
+      assert updated_product.id == id
+      assert updated_product.amount == attrs.amount
+      assert updated_product.description == attrs.description
+      assert updated_product.name == attrs.name
+      assert updated_product.price == attrs.price
+      assert updated_product.sku == attrs.sku
+      assert updated_product.barcode == attrs.barcode
     end
 
     test_with_mock "creates new log when action is on update",
