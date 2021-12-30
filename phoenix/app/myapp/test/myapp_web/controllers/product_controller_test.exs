@@ -4,11 +4,8 @@ defmodule MyappWeb.ProductControllerTest do
   alias Myapp.Management
   alias Myapp.Management.Product
   alias Myapp.Repo
-  alias MyappWeb.Plugs.LogPlug
 
   import Mock
-
-  alias Myapp.Services.ElasticsearchService
 
   setup_all do
     %{
