@@ -50,7 +50,7 @@ defmodule MyappWeb.ProductControllerTest do
     end
 
     test_with_mock "creates new log when action is on index", %{conn: conn}, Tirexs.HTTP, [],
-      post: fn "/my_index/logs", data -> data end do
+      post: fn _path, data -> data end do
       conn = get(conn, Routes.product_path(conn, :index))
       assert json_response(conn, 200)
 
@@ -188,7 +188,7 @@ defmodule MyappWeb.ProductControllerTest do
                    %{conn: conn, product: %Product{id: id}},
                    Tirexs.HTTP,
                    [],
-                   post: fn "/my_index/logs", data -> data end do
+                   post: fn _path, data -> data end do
       conn = get(conn, Routes.product_path(conn, :show, id))
       assert json_response(conn, 200)
 
@@ -242,7 +242,7 @@ defmodule MyappWeb.ProductControllerTest do
                    },
                    Tirexs.HTTP,
                    [],
-                   post: fn "/my_index/logs", data -> data end do
+                   post: fn _path, data -> data end do
       conn = put(conn, Routes.product_path(conn, :update, product), product: attrs)
       assert json_response(conn, 200)
 
@@ -302,7 +302,7 @@ defmodule MyappWeb.ProductControllerTest do
                    %{conn: conn, product: product},
                    Tirexs.HTTP,
                    [],
-                   post: fn "/my_index/logs", data -> data end do
+                   post: fn _path, data -> data end do
       conn = delete(conn, Routes.product_path(conn, :delete, product))
       assert response(conn, 204)
 
