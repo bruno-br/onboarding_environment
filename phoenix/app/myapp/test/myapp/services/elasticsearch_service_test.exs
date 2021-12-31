@@ -13,11 +13,13 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
   describe "post/2" do
     test "calls Tirexs.HTTP.post function", %{path: path, data: data} do
       with_mock(Tirexs.HTTP,
-        post: fn path, data -> {path, data} end
+        post: fn path, data -> els_sucessful_response_mock({path, data}) end
       ) do
-        expected_response = {path, data}
+        expected_response = {:ok, [{path, data}]}
         assert ElasticsearchService.post(path, data) == expected_response
       end
     end
   end
+
+  defp els_sucessful_response_mock(value), do: {:ok, 200, %{hits: %{hits: [%{_source: value}]}}}
 end

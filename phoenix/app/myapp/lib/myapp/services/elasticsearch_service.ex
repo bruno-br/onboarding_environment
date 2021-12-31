@@ -5,12 +5,13 @@ defmodule Myapp.Services.ElasticsearchService do
 
   import Tirexs.HTTP
 
-  def post(path, data), do: Tirexs.HTTP.post(path, data)
+  def post(path, data), do: format_response(Tirexs.HTTP.post(path, data))
 
-  def search(path, key, value) do
-    case Tirexs.HTTP.get("#{path}/_search?q=#{key}:#{value}") do
-      {:ok, 200, search_result} -> {:ok, search_result.hits.hits}
-      _ -> {:error, :not_found}
-    end
-  end
+  def search(path, key, value),
+    do: format_response(Tirexs.HTTP.get("#{path}/_search?q=#{key}:#{value}"))
+
+  defp format_response({:ok, 200, %{:hits => %{:hits => hits_list}}}),
+    do: {:ok, Enum.map(hits_list, fn x -> x[:_source] end)}
+
+  defp format_response(any), do: {:error, :bad_request}
 end
