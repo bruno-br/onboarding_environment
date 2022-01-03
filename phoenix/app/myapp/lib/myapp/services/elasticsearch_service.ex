@@ -29,6 +29,10 @@ defmodule Myapp.Services.ElasticsearchService do
     format_response(Tirexs.HTTP.post("#{full_path}/_search", %{size: limit}))
   end
 
+  def clear() do
+    Tirexs.HTTP.delete(@index)
+  end
+
   defp format_response({:ok, 200, %{:hits => %{:hits => hits_list}}}),
     do: {:ok, Enum.map(hits_list, fn x -> x[:_source] end)}
 
