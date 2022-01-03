@@ -41,8 +41,15 @@ defmodule Myapp.ManagementTest do
     setup [:create_product]
     setup [:clear_els]
 
-    test "returns all products", %{product: product} do
-      assert Management.list_products() == [Product.get_attrs(product)]
+    test "returns all products when elasticsearch returns list", %{product: product} do
+      product_attrs = Product.get_attrs(product)
+
+      with_mock ElasticsearchService,
+        list: fn
+          _path -> {:ok, [product_attrs]}
+        end do
+        assert Management.list_products() == [product_attrs]
+      end
     end
 
     test "returns products from management when elasticsearchservice returns error", %{
