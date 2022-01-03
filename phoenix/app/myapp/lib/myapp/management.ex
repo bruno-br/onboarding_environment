@@ -13,9 +13,14 @@ defmodule Myapp.Management do
   @doc """
   Returns the list of products.
   """
-  def list_products do
-    client = RedisService.start()
-    Repo.all(Product)
+  def list_products() do
+    case list_products_on_els() do
+      {:ok, products_list} ->
+        products_list
+
+      _ ->
+        extract_attrs_from_products(Repo.all(Product))
+    end
   end
 
   @doc """
@@ -81,12 +86,11 @@ defmodule Myapp.Management do
     Product.changeset(product, attrs)
   end
 
-  defp save_product_on_els(product) do
-    data_to_be_saved = %{
-      id: product.id,
-      name: product.name
-    }
+  defp save_product_on_els(product),
+    do: ElasticsearchService.post("/my_index/products", Product.get_attrs(product))
 
-    ElasticsearchService.post("/my_index/products", data_to_be_saved)
-  end
+  defp extract_attrs_from_products([%Product{} | _] = products),
+    do: Enum.map(products, fn product -> Product.get_attrs(product) end)
+
+  defp list_products_on_els(), do: ElasticsearchService.list("/my_index/products")
 end

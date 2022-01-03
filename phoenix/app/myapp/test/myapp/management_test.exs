@@ -4,6 +4,9 @@ defmodule Myapp.ManagementTest do
   alias Myapp.Management
 
   alias Myapp.Management.Product
+  alias Myapp.Services.ElasticsearchService
+
+  import Mock
 
   setup_all do
     %{
@@ -38,7 +41,12 @@ defmodule Myapp.ManagementTest do
     setup [:create_product]
 
     test "returns all products", %{product: product} do
-      assert Management.list_products() == [product]
+      with_mock ElasticsearchService,
+        list: fn
+          _path -> :error
+        end do
+        assert Management.list_products() == [Product.get_attrs(product)]
+      end
     end
   end
 
