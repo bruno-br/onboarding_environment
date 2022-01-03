@@ -39,8 +39,15 @@ defmodule Myapp.ManagementTest do
 
   describe "list_products/0" do
     setup [:create_product]
+    setup [:clear_els]
 
     test "returns all products", %{product: product} do
+      assert Management.list_products() == [Product.get_attrs(product)]
+    end
+
+    test "returns products from management when elasticsearchservice returns error", %{
+      product: product
+    } do
       with_mock ElasticsearchService,
         list: fn
           _path -> :error
@@ -221,5 +228,10 @@ defmodule Myapp.ManagementTest do
 
   defp create_product(_) do
     %{product: product_fixture()}
+  end
+
+  defp clear_els(_) do
+    ElasticsearchService.clear()
+    :ok
   end
 end
