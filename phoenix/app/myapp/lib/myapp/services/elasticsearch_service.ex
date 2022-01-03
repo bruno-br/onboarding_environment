@@ -37,6 +37,8 @@ defmodule Myapp.Services.ElasticsearchService do
   defp format_response({:ok, 200, %{:hits => %{:hits => hits_list}}}),
     do: {:ok, Enum.map(hits_list, fn x -> x[:_source] end)}
 
+  defp format_response({:ok, 200}), do: {:ok, []}
+
   defp format_response(any), do: {:error, any}
 
   defp get_path_with_index(path), do: "#{@index}/#{path}"

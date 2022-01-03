@@ -18,6 +18,9 @@ defmodule Myapp.Management do
       {:ok, products_list} ->
         products_list
 
+      :ok ->
+        []
+
       _ ->
         extract_attrs_from_products(Repo.all(Product))
     end

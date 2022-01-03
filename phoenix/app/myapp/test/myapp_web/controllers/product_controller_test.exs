@@ -50,7 +50,7 @@ defmodule MyappWeb.ProductControllerTest do
     end
 
     test_with_mock "creates new log when action is on index", %{conn: conn}, Tirexs.HTTP, [],
-      post: fn _path, data -> data end do
+      post: fn _path, data -> els_sucessful_response_mock() end do
       conn = get(conn, Routes.product_path(conn, :index))
       assert json_response(conn, 200)
 
@@ -355,4 +355,6 @@ defmodule MyappWeb.ProductControllerTest do
       %{id: id} = _product -> id
     end)
   end
+
+  defp els_sucessful_response_mock(), do: {:ok, 200}
 end
