@@ -31,6 +31,7 @@ defmodule Myapp.Services.ElasticsearchService do
 
   def clear() do
     Tirexs.HTTP.delete(@index)
+    Tirexs.HTTP.put(@index)
   end
 
   defp format_response({:ok, 200, %{:hits => %{:hits => hits_list}}}),
