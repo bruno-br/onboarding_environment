@@ -10,12 +10,12 @@ defmodule Myapp.Management.Product do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "products" do
-    field :amount, :integer
-    field :description, :string
-    field :name, :string
-    field :price, :float
-    field :sku, :string
-    field :barcode, :string
+    field(:amount, :integer)
+    field(:description, :string)
+    field(:name, :string)
+    field(:price, :float)
+    field(:sku, :string)
+    field(:barcode, :string)
 
     timestamps()
   end
@@ -30,5 +30,17 @@ defmodule Myapp.Management.Product do
     )
     |> validate_number(:price, greater_than: 0)
     |> validate_length(:barcode, min: 8, max: 13)
+  end
+
+  def get_attrs(product) do
+    %{
+      amount: product.amount,
+      barcode: product.barcode,
+      description: product.description,
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      sku: product.sku
+    }
   end
 end
