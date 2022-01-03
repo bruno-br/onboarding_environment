@@ -56,7 +56,7 @@ defmodule MyappWeb.ProductControllerTest do
 
       assert_called(
         Tirexs.HTTP.post(
-          "/my_index/logs",
+          "my_index_test/logs",
           :meck.is(fn log ->
             assert log[:date] != nil
             assert log[:method] == conn.method
@@ -86,7 +86,7 @@ defmodule MyappWeb.ProductControllerTest do
 
       assert_called(
         Tirexs.HTTP.post(
-          "/my_index/logs",
+          "my_index_test/logs",
           :meck.is(fn log ->
             assert log[:date] != nil
             assert log[:method] == conn.method
@@ -194,7 +194,7 @@ defmodule MyappWeb.ProductControllerTest do
 
       assert_called(
         Tirexs.HTTP.post(
-          "/my_index/logs",
+          "my_index_test/logs",
           :meck.is(fn log ->
             assert log[:date] != nil
             assert log[:method] == conn.method
@@ -248,7 +248,7 @@ defmodule MyappWeb.ProductControllerTest do
 
       assert_called(
         Tirexs.HTTP.post(
-          "/my_index/logs",
+          "my_index_test/logs",
           :meck.is(fn log ->
             assert log[:date] != nil
             assert log[:method] == conn.method
@@ -308,7 +308,7 @@ defmodule MyappWeb.ProductControllerTest do
 
       assert_called(
         Tirexs.HTTP.post(
-          "/my_index/logs",
+          "my_index_test/logs",
           :meck.is(fn log ->
             assert log[:date] != nil
             assert log[:method] == conn.method

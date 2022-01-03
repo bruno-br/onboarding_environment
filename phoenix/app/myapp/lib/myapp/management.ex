@@ -87,10 +87,14 @@ defmodule Myapp.Management do
   end
 
   defp save_product_on_els(product),
-    do: ElasticsearchService.post("/my_index/products", Product.get_attrs(product))
+    do:
+      ElasticsearchService.post(
+        "products",
+        Product.get_attrs(product)
+      )
 
   defp extract_attrs_from_products([%Product{} | _] = products),
     do: Enum.map(products, fn product -> Product.get_attrs(product) end)
 
-  defp list_products_on_els(), do: ElasticsearchService.list("/my_index/products")
+  defp list_products_on_els(), do: ElasticsearchService.list("products", 1)
 end

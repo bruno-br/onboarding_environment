@@ -15,7 +15,7 @@ defmodule MyappWeb.Plugs.LogPlug do
     conn
   end
 
-  defp post_log(conn), do: ElasticsearchService.post("/my_index/logs", generate_log(conn))
+  defp post_log(conn), do: ElasticsearchService.post("logs", generate_log(conn))
 
   defp generate_log(conn) do
     date = DateTime.to_iso8601(DateTime.utc_now())

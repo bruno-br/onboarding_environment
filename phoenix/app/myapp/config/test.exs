@@ -18,5 +18,7 @@ config :myapp, MyappWeb.Endpoint,
   http: [port: 4002],
   server: false
 
+config :myapp, Myapp.Elasticsearch, index: "my_index_test"
+
 # Print only warnings and errors during test
 config :logger, level: :warn
