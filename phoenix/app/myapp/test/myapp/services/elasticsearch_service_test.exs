@@ -24,14 +24,14 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
   end
 
   describe "post" do
-    test "calls Tirexs.HTTP.post function", %{path: path, data: data, full_path: full_path} do
+    test "post data on elasticsearch", %{path: path, data: data, full_path: full_path} do
       assert ElasticsearchService.post(path, data) == {:ok, [data]}
       assert_called(Tirexs.HTTP.post(full_path, data))
     end
   end
 
   describe "search" do
-    test "calls Tirexs.HTTP.get function", %{
+    test "search data on elasticsearch", %{
       path: path,
       full_path: full_path,
       key: key,
@@ -39,6 +39,17 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
     } do
       assert ElasticsearchService.search(path, key, value) == {:ok, []}
       assert_called(Tirexs.HTTP.get("#{full_path}/_search?q=#{key}:#{value}"))
+    end
+  end
+
+  describe "list" do
+    test "list data from elasticsearch", %{
+      path: path,
+      full_path: full_path
+    } do
+      size = 1000
+      assert ElasticsearchService.list(path, size) == {:ok, [%{size: size}]}
+      assert_called(Tirexs.HTTP.post("#{full_path}/_search", %{size: size}))
     end
   end
 
