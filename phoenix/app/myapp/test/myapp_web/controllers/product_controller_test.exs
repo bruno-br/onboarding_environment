@@ -44,7 +44,8 @@ defmodule MyappWeb.ProductControllerTest do
   setup_with_mocks([
     {ElasticsearchService, [], post: fn _path, data -> els_sucessful_response_mock() end},
     {ElasticsearchService, [], list: fn _path -> :error end},
-    {ElasticsearchService, [], delete: fn _path, _key, _value -> :ok end}
+    {ElasticsearchService, [], delete: fn _path, _key, _value -> :ok end},
+    {ElasticsearchService, [], update: fn _path, _key, _value, _new_data -> :ok end}
   ]) do
     :ok
   end

@@ -84,12 +84,25 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
       key: key,
       value: value
     } do
-      assert ElasticsearchService.delete(path, key, value) == :ok
+      assert ElasticsearchService.delete(path, key, value) == {:ok, []}
       assert_called(Tirexs.HTTP.delete(:_))
     end
   end
 
-  defp els_sucessful_response_mock(value), do: {:ok, 200, %{hits: %{hits: [%{_source: value}]}}}
+  describe "update" do
+    test "updates item found on search", %{
+      path: path,
+      full_path: full_path,
+      key: key,
+      value: value
+    } do
+      assert ElasticsearchService.update(path, key, value, "data") == {:ok, ["data"]}
+      assert_called(Tirexs.HTTP.post(:_, "data"))
+    end
+  end
+
+  defp els_sucessful_response_mock(value),
+    do: {:ok, 200, %{hits: %{hits: [%{_source: value, _id: "valid_id"}]}}}
 
   defp els_sucessful_response_mock(), do: {:ok, 200, %{hits: %{hits: []}}}
 end
