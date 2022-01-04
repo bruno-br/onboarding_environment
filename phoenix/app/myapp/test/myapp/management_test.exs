@@ -174,6 +174,7 @@ defmodule Myapp.ManagementTest do
       assert product.price == 456.7
       assert product.sku == "some-updated-sku"
       assert product.barcode == "123456789"
+      assert Management.get_product(product.id) == product
     end
 
     test "returns error changeset when data is invalid", %{invalid_attrs: attrs, product: product} do

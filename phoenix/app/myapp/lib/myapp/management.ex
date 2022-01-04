@@ -69,9 +69,14 @@ defmodule Myapp.Management do
   Updates a product.
   """
   def update_product(%Product{} = product, attrs) do
-    product
-    |> Product.changeset(attrs)
-    |> Repo.update()
+    with product_changeset <- Product.changeset(product, attrs),
+         {:ok, updated_product} <- Repo.update(product_changeset),
+         updated_product_attrs <- Product.get_attrs(updated_product) do
+      update_product_on_els(updated_product_attrs)
+      {:ok, updated_product}
+    else
+      error -> error
+    end
   end
 
   @doc """
@@ -97,6 +102,15 @@ defmodule Myapp.Management do
       ElasticsearchService.post(
         "products",
         Product.get_attrs(product)
+      )
+
+  defp update_product_on_els(new_product),
+    do:
+      ElasticsearchService.update(
+        "products",
+        "id",
+        new_product.id,
+        new_product
       )
 
   defp delete_product_from_els(%Product{} = product),
