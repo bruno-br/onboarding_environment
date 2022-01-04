@@ -4,6 +4,7 @@ defmodule MyappWeb.ProductControllerTest do
   alias Myapp.Management
   alias Myapp.Management.Product
   alias Myapp.Repo
+  alias Myapp.Services.ElasticsearchService
 
   import Mock
 
@@ -49,14 +50,14 @@ defmodule MyappWeb.ProductControllerTest do
       assert products_map_id(products) == expected_ids
     end
 
-    test_with_mock "creates new log when action is on index", %{conn: conn}, Tirexs.HTTP, [],
+    test_with_mock "creates new log when action is on index", %{conn: conn}, ElasticsearchService, [],
       post: fn _path, data -> els_sucessful_response_mock() end do
       conn = get(conn, Routes.product_path(conn, :index))
       assert json_response(conn, 200)
 
       assert_called(
-        Tirexs.HTTP.post(
-          "my_index_test/logs",
+        ElasticsearchService.post(
+          "logs",
           :meck.is(fn log ->
             assert log[:date] != nil
             assert log[:method] == conn.method
@@ -78,15 +79,15 @@ defmodule MyappWeb.ProductControllerTest do
 
     test_with_mock "creates new log when action is on create",
                    %{conn: conn, valid_attrs: attrs},
-                   Tirexs.HTTP,
+                   ElasticsearchService,
                    [],
                    post: fn _path, data -> data end do
       conn = post(conn, Routes.product_path(conn, :create), product: attrs)
       assert json_response(conn, 201)
 
       assert_called(
-        Tirexs.HTTP.post(
-          "my_index_test/logs",
+        ElasticsearchService.post(
+          "logs",
           :meck.is(fn log ->
             assert log[:date] != nil
             assert log[:method] == conn.method
@@ -186,15 +187,15 @@ defmodule MyappWeb.ProductControllerTest do
 
     test_with_mock "creates new log when action is on show",
                    %{conn: conn, product: %Product{id: id}},
-                   Tirexs.HTTP,
+                   ElasticsearchService,
                    [],
                    post: fn _path, data -> data end do
       conn = get(conn, Routes.product_path(conn, :show, id))
       assert json_response(conn, 200)
 
       assert_called(
-        Tirexs.HTTP.post(
-          "my_index_test/logs",
+        ElasticsearchService.post(
+          "logs",
           :meck.is(fn log ->
             assert log[:date] != nil
             assert log[:method] == conn.method
@@ -240,15 +241,15 @@ defmodule MyappWeb.ProductControllerTest do
                      product: product,
                      update_attrs: attrs
                    },
-                   Tirexs.HTTP,
+                   ElasticsearchService,
                    [],
                    post: fn _path, data -> data end do
       conn = put(conn, Routes.product_path(conn, :update, product), product: attrs)
       assert json_response(conn, 200)
 
       assert_called(
-        Tirexs.HTTP.post(
-          "my_index_test/logs",
+        ElasticsearchService.post(
+          "logs",
           :meck.is(fn log ->
             assert log[:date] != nil
             assert log[:method] == conn.method
@@ -300,15 +301,15 @@ defmodule MyappWeb.ProductControllerTest do
 
     test_with_mock "creates new log when action is on delete",
                    %{conn: conn, product: product},
-                   Tirexs.HTTP,
+                   ElasticsearchService,
                    [],
                    post: fn _path, data -> data end do
       conn = delete(conn, Routes.product_path(conn, :delete, product))
       assert response(conn, 204)
 
       assert_called(
-        Tirexs.HTTP.post(
-          "my_index_test/logs",
+        ElasticsearchService.post(
+          "logs",
           :meck.is(fn log ->
             assert log[:date] != nil
             assert log[:method] == conn.method
