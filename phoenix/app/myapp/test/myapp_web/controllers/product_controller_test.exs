@@ -41,6 +41,14 @@ defmodule MyappWeb.ProductControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
+  setup_with_mocks([
+    {ElasticsearchService, [], post: fn _path, data -> els_sucessful_response_mock() end},
+    {ElasticsearchService, [], list: fn _path -> :error end}
+  ]) do
+    foo = "bar"
+    {:ok, foo: foo}
+  end
+
   describe "index" do
     test "lists all products", %{conn: conn} do
       conn = get(conn, Routes.product_path(conn, :index))
@@ -50,10 +58,10 @@ defmodule MyappWeb.ProductControllerTest do
       assert products_map_id(products) == expected_ids
     end
 
-    test_with_mock "creates new log when action is on index", %{conn: conn}, ElasticsearchService, [],
-      post: fn _path, data -> els_sucessful_response_mock() end do
+    test "creates new log when action is on index",
+         %{conn: conn} do
       conn = get(conn, Routes.product_path(conn, :index))
-      assert json_response(conn, 200)
+      assert products = json_response(conn, 200)["products"]
 
       assert_called(
         ElasticsearchService.post(
@@ -77,11 +85,8 @@ defmodule MyappWeb.ProductControllerTest do
       assert Repo.get(Product, product["id"]) != nil
     end
 
-    test_with_mock "creates new log when action is on create",
-                   %{conn: conn, valid_attrs: attrs},
-                   ElasticsearchService,
-                   [],
-                   post: fn _path, data -> data end do
+    test "creates new log when action is on create",
+         %{conn: conn, valid_attrs: attrs} do
       conn = post(conn, Routes.product_path(conn, :create), product: attrs)
       assert json_response(conn, 201)
 
@@ -185,11 +190,8 @@ defmodule MyappWeb.ProductControllerTest do
       assert json_response(conn, 200)["product"] == expected_response
     end
 
-    test_with_mock "creates new log when action is on show",
-                   %{conn: conn, product: %Product{id: id}},
-                   ElasticsearchService,
-                   [],
-                   post: fn _path, data -> data end do
+    test "creates new log when action is on show",
+         %{conn: conn, product: %Product{id: id}} do
       conn = get(conn, Routes.product_path(conn, :show, id))
       assert json_response(conn, 200)
 
@@ -235,15 +237,12 @@ defmodule MyappWeb.ProductControllerTest do
       assert updated_product.barcode == attrs.barcode
     end
 
-    test_with_mock "creates new log when action is on update",
-                   %{
-                     conn: conn,
-                     product: product,
-                     update_attrs: attrs
-                   },
-                   ElasticsearchService,
-                   [],
-                   post: fn _path, data -> data end do
+    test "creates new log when action is on update",
+         %{
+           conn: conn,
+           product: product,
+           update_attrs: attrs
+         } do
       conn = put(conn, Routes.product_path(conn, :update, product), product: attrs)
       assert json_response(conn, 200)
 
@@ -299,11 +298,8 @@ defmodule MyappWeb.ProductControllerTest do
       assert Repo.get(Product, product.id) == nil
     end
 
-    test_with_mock "creates new log when action is on delete",
-                   %{conn: conn, product: product},
-                   ElasticsearchService,
-                   [],
-                   post: fn _path, data -> data end do
+    test "creates new log when action is on delete",
+         %{conn: conn, product: product} do
       conn = delete(conn, Routes.product_path(conn, :delete, product))
       assert response(conn, 204)
 
