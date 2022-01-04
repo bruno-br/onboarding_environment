@@ -3,7 +3,6 @@ defmodule Myapp.Services.RedisServiceTest do
 
   alias Myapp.Services.RedisService
 
-  import Exredis
   import Mock
 
   setup_all do

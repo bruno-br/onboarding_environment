@@ -3,7 +3,6 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
 
   alias Myapp.Services.ElasticsearchService
 
-  import Tirexs.HTTP
   import Mock
 
   setup_all do
@@ -66,10 +65,7 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
   end
 
   describe "clear" do
-    test "recreates index", %{
-      path: path,
-      full_path: full_path
-    } do
+    test "recreates index" do
       els_index = ElasticsearchService.get_index()
       ElasticsearchService.clear()
       assert_called(Tirexs.HTTP.delete(els_index))
@@ -80,7 +76,6 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
   describe "delete" do
     test "deletes item found on search", %{
       path: path,
-      full_path: full_path,
       key: key,
       value: value
     } do
@@ -92,7 +87,6 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
   describe "update" do
     test "updates item found on search", %{
       path: path,
-      full_path: full_path,
       key: key,
       value: value
     } do
