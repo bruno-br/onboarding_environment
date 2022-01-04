@@ -18,7 +18,9 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
 
   setup_with_mocks([
     {Tirexs.HTTP, [], post: fn _path, data -> els_sucessful_response_mock(data) end},
-    {Tirexs.HTTP, [], get: fn _path -> els_sucessful_response_mock() end}
+    {Tirexs.HTTP, [], get: fn _path -> els_sucessful_response_mock() end},
+    {Tirexs.HTTP, [], delete: fn _index -> els_sucessful_response_mock() end},
+    {Tirexs.HTTP, [], put: fn _index -> els_sucessful_response_mock() end}
   ]) do
     :ok
   end
@@ -60,6 +62,18 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
       max_size = 10_000
       assert ElasticsearchService.list(path, invalid_size) == {:ok, [%{size: max_size}]}
       assert_called(Tirexs.HTTP.post("#{full_path}/_search", %{size: max_size}))
+    end
+  end
+
+  describe "clear" do
+    test "deletes and recreates index", %{
+      path: path,
+      full_path: full_path
+    } do
+      els_index = ElasticsearchService.get_index()
+      ElasticsearchService.clear()
+      assert_called(Tirexs.HTTP.delete(els_index))
+      assert_called(Tirexs.HTTP.put(els_index))
     end
   end
 
