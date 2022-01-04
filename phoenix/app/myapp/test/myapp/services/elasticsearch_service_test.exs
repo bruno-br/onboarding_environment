@@ -7,7 +7,13 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
   import Mock
 
   setup_all do
-    %{path: "valid_path", data: "valid_data", key: "valid_key", value: "valid_value"}
+    %{
+      path: "path",
+      full_path: ElasticsearchService.get_index() <> "/path",
+      data: "valid_data",
+      key: "valid_key",
+      value: "valid_value"
+    }
   end
 
   setup_with_mocks([
@@ -18,9 +24,21 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
   end
 
   describe "post" do
-    test "calls Tirexs.HTTP.post function", %{path: path, data: data} do
-      expected_response = {:ok, [data]}
-      assert ElasticsearchService.post(path, data) == expected_response
+    test "calls Tirexs.HTTP.post function", %{path: path, data: data, full_path: full_path} do
+      assert ElasticsearchService.post(path, data) == {:ok, [data]}
+      assert_called(Tirexs.HTTP.post(full_path, data))
+    end
+  end
+
+  describe "search" do
+    test "calls Tirexs.HTTP.get function", %{
+      path: path,
+      full_path: full_path,
+      key: key,
+      value: value
+    } do
+      assert ElasticsearchService.search(path, key, value) == {:ok, []}
+      assert_called(Tirexs.HTTP.get("#{full_path}/_search?q=#{key}:#{value}"))
     end
   end
 
