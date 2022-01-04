@@ -51,6 +51,16 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
       assert ElasticsearchService.list(path, size) == {:ok, [%{size: size}]}
       assert_called(Tirexs.HTTP.post("#{full_path}/_search", %{size: size}))
     end
+
+    test "limit size to 10000", %{
+      path: path,
+      full_path: full_path
+    } do
+      invalid_size = 999_999
+      max_size = 10_000
+      assert ElasticsearchService.list(path, invalid_size) == {:ok, [%{size: max_size}]}
+      assert_called(Tirexs.HTTP.post("#{full_path}/_search", %{size: max_size}))
+    end
   end
 
   defp els_sucessful_response_mock(value), do: {:ok, 200, %{hits: %{hits: [%{_source: value}]}}}
