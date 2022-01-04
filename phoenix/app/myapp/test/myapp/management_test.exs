@@ -200,7 +200,13 @@ defmodule Myapp.ManagementTest do
     setup [:create_product]
 
     test "deletes the product", %{product: product} do
-      assert {:ok, %Product{}} = Management.delete_product(product)
+      with_mock ElasticsearchService,
+        delete: fn
+          _path, _key, _value -> :ok
+        end do
+        assert {:ok, %Product{}} = Management.delete_product(product)
+        assert_called(ElasticsearchService.delete(:_, :_, :_))
+      end
     end
 
     test "returns error when product is not found", %{product: product} do

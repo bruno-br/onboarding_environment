@@ -78,6 +78,7 @@ defmodule Myapp.Management do
   Deletes a product.
   """
   def delete_product(%Product{} = product) do
+    delete_product_from_els(product)
     Repo.delete(product)
   end
 
@@ -89,6 +90,8 @@ defmodule Myapp.Management do
     Product.changeset(product, attrs)
   end
 
+  defp list_products_on_els(), do: ElasticsearchService.list("products")
+
   defp save_product_on_els(product),
     do:
       ElasticsearchService.post(
@@ -96,10 +99,11 @@ defmodule Myapp.Management do
         Product.get_attrs(product)
       )
 
+  defp delete_product_from_els(%Product{} = product),
+    do: ElasticsearchService.delete("products", "id", product.id)
+
   defp extract_attrs_from_products([%Product{} | _] = products),
     do: Enum.map(products, fn product -> Product.get_attrs(product) end)
 
   defp extract_attrs_from_products(any), do: any
-
-  defp list_products_on_els(), do: ElasticsearchService.list("products")
 end
