@@ -40,15 +40,19 @@ defmodule Myapp.Services.ElasticsearchService do
 
   def delete(path, key, value) do
     with full_path <- get_path_with_index(path),
-         search_result <- tirexs_search_key_value(full_path, key, value),
-         {:ok, els_ids_list} <- format_response_get_els_id(search_result),
-         1 <- length(els_ids_list),
-         els_id <- List.first(els_ids_list),
+         els_id <- search_and_get_els_id(full_path, key, value),
          {:ok, 200, details} <- tirexs_delete_by_els_id(full_path, els_id) do
       :ok
     else
-      error -> error
+      error -> :error
     end
+  end
+
+  defp search_and_get_els_id(full_path, key, value) do
+    full_path
+    |> tirexs_search_key_value(key, value)
+    |> format_response_get_els_id
+    |> List.first()
   end
 
   defp format_response({:ok, 200, %{:hits => %{:hits => hits_list}}}),
@@ -59,9 +63,7 @@ defmodule Myapp.Services.ElasticsearchService do
   defp format_response(any), do: {:error, any}
 
   defp format_response_get_els_id({:ok, 200, %{:hits => %{:hits => hits_list}}}),
-    do: {:ok, Enum.map(hits_list, fn x -> x[:_id] end)}
-
-  defp format_response_get_els_id(any), do: []
+    do: Enum.map(hits_list, fn x -> x[:_id] end)
 
   defp get_path_with_index(path), do: "#{@index}/#{path}"
 

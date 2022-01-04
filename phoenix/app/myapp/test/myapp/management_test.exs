@@ -191,8 +191,13 @@ defmodule Myapp.ManagementTest do
     end
 
     test "returns error when the product is not found", %{update_attrs: attrs, product: product} do
-      Management.delete_product(product)
-      catch_error(Management.update_product(product, attrs))
+      with_mock ElasticsearchService,
+        delete: fn
+          _path, _key, _value -> :error
+        end do
+        Management.delete_product(product)
+        catch_error(Management.update_product(product, attrs))
+      end
     end
   end
 
@@ -210,8 +215,13 @@ defmodule Myapp.ManagementTest do
     end
 
     test "returns error when product is not found", %{product: product} do
-      Management.delete_product(product)
-      catch_error(Management.delete_product(product))
+      with_mock ElasticsearchService,
+        delete: fn
+          _path, _key, _value -> :error
+        end do
+        Management.delete_product(product)
+        catch_error(Management.delete_product(product))
+      end
     end
   end
 
