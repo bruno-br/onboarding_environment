@@ -42,9 +42,19 @@ defmodule Myapp.Services.ElasticsearchService do
     with full_path <- get_path_with_index(path),
          els_id <- search_and_get_els_id(full_path, key, value),
          {:ok, 200, details} <- tirexs_delete_by_els_id(full_path, els_id) do
-      :ok
+      format_response({:ok, 200, details})
     else
-      error -> :error
+      error -> {:error, error}
+    end
+  end
+
+  def update(path, key, value, new_data) do
+    with full_path <- get_path_with_index(path),
+         els_id <- search_and_get_els_id(full_path, key, value),
+         {:ok, 200, details} <- Tirexs.HTTP.post("#{full_path}/#{els_id}", new_data) do
+      format_response({:ok, 200, details})
+    else
+      error -> {:error, error}
     end
   end
 
