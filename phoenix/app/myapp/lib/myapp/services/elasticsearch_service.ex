@@ -8,9 +8,7 @@ defmodule Myapp.Services.ElasticsearchService do
 
   import Tirexs.HTTP
 
-  def get_index() do
-    @index
-  end
+  def get_index(), do: @index
 
   def post(path, data) do
     path

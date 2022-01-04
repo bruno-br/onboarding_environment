@@ -99,5 +99,7 @@ defmodule Myapp.Management do
   defp extract_attrs_from_products([%Product{} | _] = products),
     do: Enum.map(products, fn product -> Product.get_attrs(product) end)
 
+  defp extract_attrs_from_products(any), do: any
+
   defp list_products_on_els(), do: ElasticsearchService.list("products")
 end
