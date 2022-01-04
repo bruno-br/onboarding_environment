@@ -45,8 +45,7 @@ defmodule MyappWeb.ProductControllerTest do
     {ElasticsearchService, [], post: fn _path, data -> els_sucessful_response_mock() end},
     {ElasticsearchService, [], list: fn _path -> :error end}
   ]) do
-    foo = "bar"
-    {:ok, foo: foo}
+    :ok
   end
 
   describe "index" do
