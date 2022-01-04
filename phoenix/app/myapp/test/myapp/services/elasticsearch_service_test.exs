@@ -18,7 +18,7 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
 
   setup_with_mocks([
     {Tirexs.HTTP, [], post: fn _path, data -> els_sucessful_response_mock(data) end},
-    {Tirexs.HTTP, [], get: fn _path -> els_sucessful_response_mock() end},
+    {Tirexs.HTTP, [], get: fn _path -> els_sucessful_response_mock("search_result") end},
     {Tirexs.HTTP, [], delete: fn _index -> els_sucessful_response_mock() end},
     {Tirexs.HTTP, [], put: fn _index -> els_sucessful_response_mock() end}
   ]) do
@@ -39,7 +39,7 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
       key: key,
       value: value
     } do
-      assert ElasticsearchService.search(path, key, value) == {:ok, []}
+      assert ElasticsearchService.search(path, key, value) == {:ok, ["search_result"]}
       assert_called(Tirexs.HTTP.get("#{full_path}/_search?q=#{key}:#{value}"))
     end
   end
@@ -66,7 +66,7 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
   end
 
   describe "clear" do
-    test "deletes and recreates index", %{
+    test "recreates index", %{
       path: path,
       full_path: full_path
     } do
@@ -74,6 +74,18 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
       ElasticsearchService.clear()
       assert_called(Tirexs.HTTP.delete(els_index))
       assert_called(Tirexs.HTTP.put(els_index))
+    end
+  end
+
+  describe "delete" do
+    test "deletes item found on search", %{
+      path: path,
+      full_path: full_path,
+      key: key,
+      value: value
+    } do
+      assert ElasticsearchService.delete(path, key, value) == :ok
+      assert_called(Tirexs.HTTP.delete(:_))
     end
   end
 
