@@ -18,8 +18,10 @@ defmodule Myapp.Services.ElasticsearchService do
   end
 
   def search(path, key, value) do
-    full_path = get_path_with_index(path)
-    format_response(Tirexs.HTTP.get("#{full_path}/_search?q=#{key}:#{value}"))
+    path
+    |> get_path_with_index
+    |> tirexs_search_key_value(key, value)
+    |> format_response
   end
 
   def list(path), do: list(path, @max_limit)
@@ -36,6 +38,19 @@ defmodule Myapp.Services.ElasticsearchService do
     Tirexs.HTTP.put(@index)
   end
 
+  def delete(path, key, value) do
+    with full_path <- get_path_with_index(path),
+         search_result <- tirexs_search_key_value(full_path, key, value),
+         {:ok, els_ids_list} <- format_response_get_els_id(search_result),
+         1 <- length(els_ids_list),
+         els_id <- List.first(els_ids_list),
+         {:ok, 200, details} <- tirexs_delete_by_els_id(full_path, els_id) do
+      :ok
+    else
+      error -> error
+    end
+  end
+
   defp format_response({:ok, 200, %{:hits => %{:hits => hits_list}}}),
     do: {:ok, Enum.map(hits_list, fn x -> x[:_source] end)}
 
@@ -43,5 +58,16 @@ defmodule Myapp.Services.ElasticsearchService do
 
   defp format_response(any), do: {:error, any}
 
+  defp format_response_get_els_id({:ok, 200, %{:hits => %{:hits => hits_list}}}),
+    do: {:ok, Enum.map(hits_list, fn x -> x[:_id] end)}
+
+  defp format_response_get_els_id(any), do: []
+
   defp get_path_with_index(path), do: "#{@index}/#{path}"
+
+  defp tirexs_search_key_value(full_path, key, value),
+    do: Tirexs.HTTP.get("#{full_path}/_search?q=#{key}:#{value}")
+
+  defp tirexs_delete_by_els_id(full_path, els_id),
+    do: Tirexs.HTTP.delete("#{full_path}/#{els_id}")
 end
