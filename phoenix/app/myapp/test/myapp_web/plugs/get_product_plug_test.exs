@@ -26,7 +26,7 @@ defmodule MyappWeb.Plugs.GetProductPlugTest do
           %{conn | params: %{"id" => attrs.id}}
           |> GetProductPlug.call(attrs.opts)
 
-        assert conn.assigns[:product] == {:ok, attrs.product}
+        assert conn.assigns[:product] == attrs.product
       end
     end
 
@@ -35,7 +35,7 @@ defmodule MyappWeb.Plugs.GetProductPlugTest do
         %{conn | params: %{"id" => attrs.invalid_id}}
         |> GetProductPlug.call(attrs.opts)
 
-      assert conn.assigns[:product] == {:error, :not_found}
+      assert conn.assigns[:product] == nil
     end
   end
 end
