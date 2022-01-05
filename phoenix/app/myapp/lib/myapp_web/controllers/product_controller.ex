@@ -32,14 +32,14 @@ defmodule MyappWeb.ProductController do
   end
 
   def show(conn, %{"id" => _id}) do
-    case conn.assigns[:get_product] do
+    case conn.assigns[:product] do
       {:ok, %Product{} = product} -> render(conn, "show.json", product: product)
       error -> error
     end
   end
 
   def update(conn, %{"id" => _id, "product" => product_params}) do
-    with {:ok, %Product{} = product} <- conn.assigns[:get_product],
+    with {:ok, %Product{} = product} <- conn.assigns[:product],
          {:ok, %Product{} = updated_product} <- Management.update_product(product, product_params) do
       render(conn, "show.json", product: updated_product)
     end
@@ -50,7 +50,7 @@ defmodule MyappWeb.ProductController do
   end
 
   def delete(conn, %{"id" => _id}) do
-    with {:ok, %Product{} = product} <- conn.assigns[:get_product],
+    with {:ok, %Product{} = product} <- conn.assigns[:product],
          {:ok, %Product{}} <- Management.delete_product(product) do
       send_resp(conn, :no_content, "")
     end

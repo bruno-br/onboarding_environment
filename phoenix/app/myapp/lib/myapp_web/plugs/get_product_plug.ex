@@ -17,12 +17,12 @@ defmodule MyappWeb.Plugs.GetProductPlug do
     find_product_by_id(conn, conn.params["id"])
   end
 
-  defp find_product_by_id(conn, nil), do: assign(conn, :get_product, {:error, :bad_request})
+  defp find_product_by_id(conn, nil), do: assign(conn, :product, {:error, :bad_request})
 
   defp find_product_by_id(conn, id) do
     case Management.get_product(id) do
-      nil -> assign(conn, :get_product, {:error, :not_found})
-      product -> assign(conn, :get_product, {:ok, product})
+      nil -> assign(conn, :product, {:error, :not_found})
+      product -> assign(conn, :product, {:ok, product})
     end
   end
 end
