@@ -62,20 +62,9 @@ defmodule MyappWeb.ProductControllerTest do
     test "creates new log when action is on index",
          %{conn: conn} do
       conn = get(conn, Routes.product_path(conn, :index))
-      assert products = json_response(conn, 200)["products"]
 
-      assert_called(
-        ElasticsearchService.post(
-          "logs",
-          :meck.is(fn log ->
-            assert log[:date] != nil
-            assert log[:method] == conn.method
-            assert log[:request_path] == conn.request_path
-            assert log[:req_headers] == conn.req_headers
-            assert log[:body_params] == conn.body_params
-          end)
-        )
-      )
+      assert products = json_response(conn, 200)["products"]
+      assert_log_created_correctly(conn)
     end
   end
 
@@ -89,20 +78,9 @@ defmodule MyappWeb.ProductControllerTest do
     test "creates new log when action is on create",
          %{conn: conn, valid_attrs: attrs} do
       conn = post(conn, Routes.product_path(conn, :create), product: attrs)
-      assert json_response(conn, 201)
 
-      assert_called(
-        ElasticsearchService.post(
-          "logs",
-          :meck.is(fn log ->
-            assert log[:date] != nil
-            assert log[:method] == conn.method
-            assert log[:request_path] == conn.request_path
-            assert log[:req_headers] == conn.req_headers
-            assert log[:body_params] == conn.body_params
-          end)
-        )
-      )
+      assert json_response(conn, 201)
+      assert_log_created_correctly(conn)
     end
 
     test "returns errors when data is invalid", %{conn: conn, invalid_attrs: attrs} do
@@ -194,20 +172,9 @@ defmodule MyappWeb.ProductControllerTest do
     test "creates new log when action is on show",
          %{conn: conn, product: %Product{id: id}} do
       conn = get(conn, Routes.product_path(conn, :show, id))
-      assert json_response(conn, 200)
 
-      assert_called(
-        ElasticsearchService.post(
-          "logs",
-          :meck.is(fn log ->
-            assert log[:date] != nil
-            assert log[:method] == conn.method
-            assert log[:request_path] == conn.request_path
-            assert log[:req_headers] == conn.req_headers
-            assert log[:body_params] == conn.body_params
-          end)
-        )
-      )
+      assert json_response(conn, 200)
+      assert_log_created_correctly(conn)
     end
 
     test "returns 404 if product is not found", %{conn: conn} do
@@ -245,20 +212,9 @@ defmodule MyappWeb.ProductControllerTest do
            update_attrs: attrs
          } do
       conn = put(conn, Routes.product_path(conn, :update, product), product: attrs)
-      assert json_response(conn, 200)
 
-      assert_called(
-        ElasticsearchService.post(
-          "logs",
-          :meck.is(fn log ->
-            assert log[:date] != nil
-            assert log[:method] == conn.method
-            assert log[:request_path] == conn.request_path
-            assert log[:req_headers] == conn.req_headers
-            assert log[:body_params] == conn.body_params
-          end)
-        )
-      )
+      assert json_response(conn, 200)
+      assert_log_created_correctly(conn)
     end
 
     test "returns errors when data is invalid", %{
@@ -302,20 +258,9 @@ defmodule MyappWeb.ProductControllerTest do
     test "creates new log when action is on delete",
          %{conn: conn, product: product} do
       conn = delete(conn, Routes.product_path(conn, :delete, product))
-      assert response(conn, 204)
 
-      assert_called(
-        ElasticsearchService.post(
-          "logs",
-          :meck.is(fn log ->
-            assert log[:date] != nil
-            assert log[:method] == conn.method
-            assert log[:request_path] == conn.request_path
-            assert log[:req_headers] == conn.req_headers
-            assert log[:body_params] == conn.body_params
-          end)
-        )
-      )
+      assert response(conn, 204)
+      assert_log_created_correctly(conn)
     end
 
     test "returns 404 if product is not found", %{conn: conn} do
@@ -352,6 +297,21 @@ defmodule MyappWeb.ProductControllerTest do
       %{"id" => id} = _product -> id
       %{id: id} = _product -> id
     end)
+  end
+
+  defp assert_log_created_correctly(conn) do
+    assert_called(
+      ElasticsearchService.post(
+        "logs",
+        :meck.is(fn log ->
+          assert log[:date] != nil
+          assert log[:method] == conn.method
+          assert log[:request_path] == conn.request_path
+          assert log[:req_headers] == conn.req_headers
+          assert log[:body_params] == conn.body_params
+        end)
+      )
+    )
   end
 
   defp els_sucessful_response_mock(), do: {:ok, 200}
