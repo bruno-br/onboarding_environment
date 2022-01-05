@@ -29,8 +29,10 @@ defmodule Myapp.Services.ElasticsearchService do
   def list(path, limit) when limit > @max_limit, do: list(path, @max_limit)
 
   def list(path, limit) do
-    full_path = get_path_with_index(path)
-    format_response(Tirexs.HTTP.post("#{full_path}/_search", %{size: limit}))
+    path
+    |> get_search_path()
+    |> Tirexs.HTTP.post(%{size: limit})
+    |> format_response()
   end
 
   def clear() do
@@ -76,6 +78,8 @@ defmodule Myapp.Services.ElasticsearchService do
     do: Enum.map(hits_list, fn x -> x[:_id] end)
 
   defp get_path_with_index(path), do: "#{@index}/#{path}"
+
+  defp get_search_path(path), do: "#{@index}/#{path}/_search"
 
   defp tirexs_search_key_value(full_path, key, value),
     do: Tirexs.HTTP.get("#{full_path}/_search?q=#{key}:#{value}")
