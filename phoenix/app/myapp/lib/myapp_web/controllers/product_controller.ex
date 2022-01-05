@@ -27,32 +27,31 @@ defmodule MyappWeb.ProductController do
     end
   end
 
-  def create(conn, _different_params) do
-    send_resp(conn, :bad_request, "")
+  def create(conn, _different_params), do: send_bad_request(conn)
+
+  def show(conn, %{"id" => _id}), do: send_product(conn, conn.assigns[:product])
+
+  def update(conn, %{"id" => _id, "product" => product_params}) do
+    with %Product{} = product <- conn.assigns[:product],
+         {:ok, %Product{} = updated_product} <- Management.update_product(product, product_params) do
+      send_product(conn, updated_product)
+    end
   end
 
-  def show(conn, %{"id" => _id}) do
-    case conn.assigns[:product] do
-      {:ok, %Product{} = product} -> render(conn, "show.json", product: product)
+  def update(conn, _different_params), do: send_bad_request(conn)
+
+  def delete(conn, %{"id" => _id}) do
+    with %Product{} = product <- conn.assigns[:product],
+         {:ok, %Product{}} <- Management.delete_product(product) do
+      send_resp(conn, :no_content, "")
+    else
       error -> error
     end
   end
 
-  def update(conn, %{"id" => _id, "product" => product_params}) do
-    with {:ok, %Product{} = product} <- conn.assigns[:product],
-         {:ok, %Product{} = updated_product} <- Management.update_product(product, product_params) do
-      render(conn, "show.json", product: updated_product)
-    end
-  end
+  defp send_product(conn, product), do: render(conn, "show.json", product: product)
 
-  def update(conn, _different_params) do
-    send_resp(conn, :bad_request, "")
-  end
+  defp send_bad_request(conn), do: send_resp(conn, :bad_request, "")
 
-  def delete(conn, %{"id" => _id}) do
-    with {:ok, %Product{} = product} <- conn.assigns[:product],
-         {:ok, %Product{}} <- Management.delete_product(product) do
-      send_resp(conn, :no_content, "")
-    end
-  end
+  defp send_no_content(conn), do: send_resp(conn, :no_content, "")
 end
