@@ -12,16 +12,16 @@ defmodule Myapp.Services.ElasticsearchService do
 
   def post(path, data) do
     path
-    |> get_path_with_index
+    |> get_path_with_index()
     |> Tirexs.HTTP.post(data)
-    |> format_response
+    |> format_response()
   end
 
   def search(path, key, value) do
     path
-    |> get_path_with_index
+    |> get_path_with_index()
     |> tirexs_search_key_value(key, value)
-    |> format_response
+    |> format_response()
   end
 
   def list(path), do: list(path, @max_limit)
@@ -61,7 +61,7 @@ defmodule Myapp.Services.ElasticsearchService do
   defp search_and_get_els_id(full_path, key, value) do
     full_path
     |> tirexs_search_key_value(key, value)
-    |> format_response_get_els_id
+    |> format_response_get_els_id()
     |> List.first()
   end
 
