@@ -1,10 +1,10 @@
 defmodule MyappWeb.Plugs.GetProductPlugTest do
   use MyappWeb.ConnCase, async: false
 
+  import Mock
+
   alias Myapp.Management
   alias MyappWeb.Plugs.GetProductPlug
-
-  import Mock
 
   setup_all do
     %{

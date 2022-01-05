@@ -1,9 +1,9 @@
 defmodule Myapp.Services.ElasticsearchServiceTest do
   use Myapp.DataCase, async: false
 
-  alias Myapp.Services.ElasticsearchService
-
   import Mock
+
+  alias Myapp.Services.ElasticsearchService
 
   setup_all do
     %{

@@ -1,12 +1,11 @@
 defmodule Myapp.ManagementTest do
   use Myapp.DataCase, async: false
 
-  alias Myapp.Management
+  import Mock
 
+  alias Myapp.Management
   alias Myapp.Management.Product
   alias Myapp.Services.ElasticsearchService
-
-  import Mock
 
   setup_all do
     %{

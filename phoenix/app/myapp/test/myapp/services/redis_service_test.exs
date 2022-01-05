@@ -1,9 +1,9 @@
 defmodule Myapp.Services.RedisServiceTest do
   use Myapp.DataCase, async: false
 
-  alias Myapp.Services.RedisService
-
   import Mock
+
+  alias Myapp.Services.RedisService
 
   setup_all do
     %{

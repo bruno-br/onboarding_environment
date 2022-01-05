@@ -1,12 +1,12 @@
 defmodule MyappWeb.ProductControllerTest do
   use MyappWeb.ConnCase, async: false
 
+  import Mock
+
   alias Myapp.Management
   alias Myapp.Management.Product
   alias Myapp.Repo
   alias Myapp.Services.ElasticsearchService
-
-  import Mock
 
   setup_all do
     %{

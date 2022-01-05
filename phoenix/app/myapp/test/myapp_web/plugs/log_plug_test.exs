@@ -1,10 +1,10 @@
 defmodule MyappWeb.Plugs.LogPlugTest do
   use MyappWeb.ConnCase, async: true
 
+  import Mock
+
   alias MyappWeb.Plugs.LogPlug
   alias Myapp.Services.ElasticsearchService
-
-  import Mock
 
   describe "call/2" do
     test "posts log with data from connection", %{conn: conn} do

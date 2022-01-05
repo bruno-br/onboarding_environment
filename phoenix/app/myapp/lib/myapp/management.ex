@@ -4,11 +4,10 @@ defmodule Myapp.Management do
   """
 
   import Ecto.Query, warn: false
-  alias Myapp.Repo
 
+  alias Myapp.Repo
   alias Myapp.Management.Product
-  alias Myapp.Services.RedisService
-  alias Myapp.Services.ElasticsearchService
+  alias Myapp.Services.{RedisService, ElasticsearchService}
 
   @doc """
   Returns the list of products.

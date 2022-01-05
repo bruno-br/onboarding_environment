@@ -1,5 +1,6 @@
 defmodule MyappWeb.ProductView do
   use MyappWeb, :view
+
   alias MyappWeb.ProductView
 
   def render("index.json", %{products: products}) do
