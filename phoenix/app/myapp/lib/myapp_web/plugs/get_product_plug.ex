@@ -19,7 +19,7 @@ defmodule MyappWeb.Plugs.GetProductPlug do
 
   defp find_product_by_id(conn, nil) do
     conn
-    |> Plug.Conn.halt()
+    |> halt()
     |> send_resp(:bad_request, "")
   end
 
@@ -27,7 +27,7 @@ defmodule MyappWeb.Plugs.GetProductPlug do
     case Management.get_product(id) do
       nil ->
         conn
-        |> Plug.Conn.halt()
+        |> halt()
         |> send_resp(:not_found, "")
 
       product ->
