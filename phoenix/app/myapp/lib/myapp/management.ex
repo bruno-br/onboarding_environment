@@ -13,9 +13,7 @@ defmodule Myapp.Management do
   Returns the list of products.
   """
 
-  def list_products(), do: list_products([])
-
-  def list_products(filters) do
+  def list_products(filters \\ []) do
     case list_products_on_els(filters) do
       {:ok, products_list} ->
         products_list
