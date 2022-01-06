@@ -29,8 +29,6 @@ defmodule MyappWeb.ProductController do
     end
   end
 
-  def create(conn, _different_params), do: send_bad_request(conn)
-
   def show(conn, %{"id" => _id}), do: send_product(conn, conn.assigns[:product])
 
   def update(conn, %{"id" => _id, "product" => product_params}) do
@@ -39,8 +37,6 @@ defmodule MyappWeb.ProductController do
       send_product(conn, updated_product)
     end
   end
-
-  def update(conn, _different_params), do: send_bad_request(conn)
 
   def delete(conn, %{"id" => _id}) do
     with %Product{} = product <- conn.assigns[:product],
@@ -54,6 +50,4 @@ defmodule MyappWeb.ProductController do
   defp send_product(conn, product), do: render(conn, "show.json", product: product)
 
   defp send_products_list(products, conn), do: render(conn, "index.json", products: products)
-
-  defp send_bad_request(conn), do: send_resp(conn, :bad_request, "")
 end
