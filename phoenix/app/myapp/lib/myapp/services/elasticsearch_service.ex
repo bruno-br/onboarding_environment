@@ -6,8 +6,6 @@ defmodule Myapp.Services.ElasticsearchService do
   @max_limit 10_000
   @index Application.get_env(:myapp, Myapp.Elasticsearch)[:index]
 
-  import Tirexs.HTTP
-
   def get_index(), do: @index
 
   def post(document, data) do
@@ -18,7 +16,7 @@ defmodule Myapp.Services.ElasticsearchService do
 
   def search(document, key, value), do: search(document, [{key, value}])
 
-  def search(document, [{key, value} | _] = filters) do
+  def search(document, [{_key, _value} | _] = filters) do
     document
     |> tirexs_search(filters)
     |> format_response()
@@ -100,7 +98,7 @@ defmodule Myapp.Services.ElasticsearchService do
   defp get_search_url(document, filters),
     do: "#{get_doc_url(document)}/_search?#{generate_query(filters)}"
 
-  defp generate_query([{key, value} | _] = filters),
+  defp generate_query([{_key, _value} | _] = filters),
     do: "q=" <> Enum.map_join(filters, "%20AND%20", fn {key, value} -> "#{key}:#{value}" end)
 
   defp generate_query(_), do: ""
