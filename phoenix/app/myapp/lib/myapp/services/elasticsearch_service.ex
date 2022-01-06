@@ -63,7 +63,7 @@ defmodule Myapp.Services.ElasticsearchService do
   end
 
   defp format_response({:ok, 200, %{:hits => %{:hits => hits_list}}}),
-    do: {:ok, Enum.map(hits_list, fn x -> x[:_source] end)}
+    do: {:ok, Enum.map(hits_list, & &1[:_source])}
 
   defp format_response({:ok, 200}), do: {:ok, []}
 
