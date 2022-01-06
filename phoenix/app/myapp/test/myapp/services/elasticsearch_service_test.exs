@@ -41,6 +41,16 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
       assert ElasticsearchService.search(document, key, value) == {:ok, ["search_result"]}
       assert_called(Tirexs.HTTP.get("#{full_path}/_search?q=#{key}:#{value}"))
     end
+
+    test "search data with multiple filters", %{
+      document: document,
+      full_path: full_path
+    } do
+      filters = [{"key1", "val1"}, {"key2", "val2"}]
+
+      assert ElasticsearchService.search(document, filters) == {:ok, ["search_result"]}
+      assert_called(Tirexs.HTTP.get("#{full_path}/_search?q=key1:val1%20AND%20key2:val2"))
+    end
   end
 
   describe "list" do
