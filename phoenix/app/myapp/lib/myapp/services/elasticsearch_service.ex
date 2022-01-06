@@ -18,7 +18,7 @@ defmodule Myapp.Services.ElasticsearchService do
 
   def search(document, key, value) do
     document
-    |> tirexs_search(key, value)
+    |> tirexs_search([{key, value}])
     |> format_response()
   end
 
@@ -28,7 +28,7 @@ defmodule Myapp.Services.ElasticsearchService do
 
   def list(document, limit) do
     document
-    |> tirexs_search(%{size: limit})
+    |> tirexs_search([], %{size: limit})
     |> format_response()
   end
 
@@ -57,7 +57,7 @@ defmodule Myapp.Services.ElasticsearchService do
 
   defp search_and_get_els_id(document, key, value) do
     document
-    |> tirexs_search(key, value)
+    |> tirexs_search([{key, value}])
     |> format_response_get_els_id()
     |> List.first()
   end
@@ -72,23 +72,37 @@ defmodule Myapp.Services.ElasticsearchService do
   defp format_response_get_els_id({:ok, 200, %{:hits => %{:hits => hits_list}}}),
     do: Enum.map(hits_list, fn x -> x[:_id] end)
 
-  defp get_full_path(document), do: "#{@index}/#{document}"
-
   defp tirexs_post(document, data),
-    do: Tirexs.HTTP.post("#{get_full_path(document)}", data)
+    do: Tirexs.HTTP.post("#{get_doc_url(document)}", data)
 
-  defp tirexs_search(document, key, value, body),
-    do: Tirexs.HTTP.post("#{get_full_path(document)}/_search?q=#{key}:#{value}", body)
+  defp tirexs_search(document, filters, body) do
+    document
+    |> get_search_url(filters)
+    |> Tirexs.HTTP.post(body)
+  end
 
-  defp tirexs_search(document, body),
-    do: Tirexs.HTTP.post("#{get_full_path(document)}/_search", body)
-
-  defp tirexs_search(document, key, value),
-    do: Tirexs.HTTP.get("#{get_full_path(document)}/_search?q=#{key}:#{value}")
+  defp tirexs_search(document, filters) do
+    document
+    |> get_search_url(filters)
+    |> Tirexs.HTTP.get()
+  end
 
   defp tirexs_delete_by_els_id(document, els_id),
-    do: Tirexs.HTTP.delete("#{get_full_path(document)}/#{els_id}")
+    do: Tirexs.HTTP.delete("#{get_doc_url(document)}/#{els_id}")
 
   defp tirexs_update_by_els_id(document, els_id, new_data),
-    do: Tirexs.HTTP.post("#{get_full_path(document)}/#{els_id}", new_data)
+    do: Tirexs.HTTP.post("#{get_doc_url(document)}/#{els_id}", new_data)
+
+  defp get_doc_url(document), do: "#{@index}/#{document}"
+
+  defp get_search_url(document, filters),
+    do: "#{get_doc_url(document)}/_search?#{generate_query(filters)}"
+
+  defp generate_query([{key, value} | _] = filters) do
+    filters
+    |> Enum.map(fn {key, value} -> "q=#{key}:#{value}" end)
+    |> Enum.join("&")
+  end
+
+  defp generate_query(_), do: ""
 end
