@@ -16,9 +16,11 @@ defmodule Myapp.Services.ElasticsearchService do
     |> format_response()
   end
 
-  def search(document, key, value) do
+  def search(document, key, value), do: search(document, [{key, value}])
+
+  def search(document, [{key, value} | _] = filters) do
     document
-    |> tirexs_search([{key, value}])
+    |> tirexs_search(filters)
     |> format_response()
   end
 
@@ -98,11 +100,8 @@ defmodule Myapp.Services.ElasticsearchService do
   defp get_search_url(document, filters),
     do: "#{get_doc_url(document)}/_search?#{generate_query(filters)}"
 
-  defp generate_query([{key, value} | _] = filters) do
-    filters
-    |> Enum.map(fn {key, value} -> "q=#{key}:#{value}" end)
-    |> Enum.join("&")
-  end
+  defp generate_query([{key, value} | _] = filters),
+    do: "q=" <> Enum.map_join(filters, "%20AND%20", fn {key, value} -> "#{key}:#{value}" end)
 
   defp generate_query(_), do: ""
 end

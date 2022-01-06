@@ -10,9 +10,11 @@ defmodule MyappWeb.ProductController do
 
   action_fallback(MyappWeb.FallbackController)
 
-  def index(conn, _params) do
-    products = Management.list_products()
-    render(conn, "index.json", products: products)
+  def index(conn, params) do
+    params
+    |> Map.to_list()
+    |> Management.list_products()
+    |> send_products_list(conn)
   end
 
   def create(conn, %{"product" => product_params}) do
@@ -51,7 +53,7 @@ defmodule MyappWeb.ProductController do
 
   defp send_product(conn, product), do: render(conn, "show.json", product: product)
 
-  defp send_bad_request(conn), do: send_resp(conn, :bad_request, "")
+  defp send_products_list(products, conn), do: render(conn, "index.json", products: products)
 
-  defp send_no_content(conn), do: send_resp(conn, :no_content, "")
+  defp send_bad_request(conn), do: send_resp(conn, :bad_request, "")
 end
