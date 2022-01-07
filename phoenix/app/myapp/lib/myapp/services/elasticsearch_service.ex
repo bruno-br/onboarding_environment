@@ -4,9 +4,8 @@ defmodule Myapp.Services.ElasticsearchService do
   """
 
   @max_limit 10_000
-  @index Application.get_env(:myapp, Myapp.Elasticsearch)[:index]
 
-  def get_index(), do: @index
+  def get_index(), do: Application.get_env(:myapp, Myapp.Elasticsearch)[:index]
 
   def post(document, data) do
     document
@@ -33,8 +32,8 @@ defmodule Myapp.Services.ElasticsearchService do
   end
 
   def clear() do
-    Tirexs.HTTP.delete(@index)
-    Tirexs.HTTP.put(@index)
+    Tirexs.HTTP.delete(get_index())
+    Tirexs.HTTP.put(get_index())
   end
 
   def delete(document, key, value) do
@@ -98,7 +97,7 @@ defmodule Myapp.Services.ElasticsearchService do
   defp tirexs_update_by_els_id(document, els_id, new_data),
     do: Tirexs.HTTP.post("#{get_doc_url(document)}/#{els_id}", new_data)
 
-  defp get_doc_url(document), do: "#{@index}/#{document}"
+  defp get_doc_url(document), do: "#{get_index()}/#{document}"
 
   defp get_search_url(document, filters),
     do: "#{get_doc_url(document)}/_search?#{generate_query(filters)}"
