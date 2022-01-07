@@ -67,6 +67,8 @@ defmodule Myapp.Services.ElasticsearchService do
 
   defp format_response({:ok, 200}), do: {:ok, []}
 
+  defp format_response({:ok, 201, %{:created => true}}), do: {:ok, :created}
+
   defp format_response(any), do: {:error, any}
 
   defp format_response_get_els_id({:ok, 200, %{:hits => %{:hits => hits_list}}}),

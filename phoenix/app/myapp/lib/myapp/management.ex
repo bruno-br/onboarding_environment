@@ -57,8 +57,8 @@ defmodule Myapp.Management do
   """
   def create_product(attrs \\ %{}) do
     with product_changeset <- Product.changeset(%Product{}, attrs),
-         {:ok, product} <- Repo.insert(product_changeset) do
-      save_product_on_els(product)
+         {:ok, product} <- Repo.insert(product_changeset),
+         {:ok, :created} <- save_product_on_els(product) do
       {:ok, product}
     else
       error -> error
