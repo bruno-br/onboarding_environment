@@ -93,17 +93,14 @@ defmodule Myapp.Management do
 
   """
 
-  def change_product(%Product{} = product, attrs \\ %{}) do
-    Product.changeset(product, attrs)
-  end
+  def change_product(%Product{} = product, attrs \\ %{}),
+    do: Product.changeset(product, attrs)
 
-  defp save_product_on_cache(client, key, %Product{} = product) do
-    RedisService.set(client, key, product)
-  end
+  defp save_product_on_cache(client, key, %Product{} = product),
+    do: RedisService.set(client, key, product)
 
-  defp load_product_from_cache(client, key) do
-    RedisService.get(client, key)
-  end
+  defp load_product_from_cache(client, key),
+    do: RedisService.get(client, key)
 
   defp list_products_on_els([{_key, _value} | _] = filters),
     do: ElasticsearchService.search("products", filters)
