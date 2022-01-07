@@ -99,6 +99,9 @@ defmodule Myapp.Management do
   defp save_product_on_cache(client, key, %Product{} = product),
     do: RedisService.set(client, key, product)
 
+  defp save_product_on_cache(_client, _key, _any),
+    do: :error
+
   defp load_product_from_cache(client, key),
     do: RedisService.get(client, key)
 
