@@ -38,7 +38,7 @@ defmodule Myapp.Services.ElasticsearchService do
   end
 
   def delete(document, key, value) do
-    with els_id <- search_and_get_els_id(document, key, value),
+    with els_id <- find_els_id(document, key, value),
          {:ok, 200, details} <- tirexs_delete_by_els_id(document, els_id) do
       format_response({:ok, 200, details})
     else
@@ -47,19 +47,12 @@ defmodule Myapp.Services.ElasticsearchService do
   end
 
   def update(document, key, value, new_data) do
-    with els_id <- search_and_get_els_id(document, key, value),
-         {:ok, status, details} <- tirexs_update_by_els_id(document, els_id, new_data) do
+    with els_id <- find_els_id(document, key, value),
+         {:ok, _status, _details} <- tirexs_update_by_els_id(document, els_id, new_data) do
       :ok
     else
       error -> {:error, error}
     end
-  end
-
-  defp search_and_get_els_id(document, key, value) do
-    document
-    |> tirexs_search([{key, value}])
-    |> format_response_get_els_id()
-    |> List.first()
   end
 
   defp format_response({:ok, 200, %{:hits => %{:hits => hits_list}}}),
@@ -73,6 +66,16 @@ defmodule Myapp.Services.ElasticsearchService do
 
   defp format_response_get_els_id({:ok, 200, %{:hits => %{:hits => hits_list}}}),
     do: Enum.map(hits_list, fn x -> x[:_id] end)
+
+  defp find_els_id(document, key, value) do
+    with search_result <- tirexs_search(document, [{key, value}]),
+         els_id_list <- format_response_get_els_id(search_result),
+         1 <- length(els_id_list) do
+      List.first(els_id_list)
+    else
+      _ -> :not_found
+    end
+  end
 
   defp tirexs_post(document, data),
     do: Tirexs.HTTP.post("#{get_doc_url(document)}", data)
