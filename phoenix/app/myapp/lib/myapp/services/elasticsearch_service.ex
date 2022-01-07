@@ -48,8 +48,8 @@ defmodule Myapp.Services.ElasticsearchService do
 
   def update(document, key, value, new_data) do
     with els_id <- search_and_get_els_id(document, key, value),
-         {:ok, 200, details} <- tirexs_update_by_els_id(document, els_id, new_data) do
-      format_response({:ok, 200, details})
+         {:ok, status, details} <- tirexs_update_by_els_id(document, els_id, new_data) do
+      :ok
     else
       error -> {:error, error}
     end

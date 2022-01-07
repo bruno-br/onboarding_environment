@@ -71,11 +71,12 @@ defmodule Myapp.Management do
   def update_product(%Product{} = product, attrs) do
     with product_changeset <- Product.changeset(product, attrs),
          {:ok, updated_product} <- Repo.update(product_changeset),
-         updated_product_attrs <- Product.get_attrs(updated_product) do
-      update_product_on_els(updated_product_attrs)
+         updated_product_attrs <- Product.get_attrs(updated_product),
+         :ok <- update_product_on_els(updated_product_attrs) do
       {:ok, updated_product}
     else
-      error -> error
+      error ->
+        error
     end
   end
 

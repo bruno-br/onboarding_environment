@@ -100,7 +100,7 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
       key: key,
       value: value
     } do
-      assert ElasticsearchService.update(document, key, value, "data") == {:ok, ["data"]}
+      assert ElasticsearchService.update(document, key, value, "data") == :ok
       assert_called(Tirexs.HTTP.post(:_, "data"))
     end
   end
