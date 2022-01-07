@@ -36,13 +36,13 @@ defmodule Myapp.Management do
 
     product_key = "product_" <> to_string(id)
 
-    case RedisService.get(client, product_key) do
+    case load_product_from_cache(client, product_key) do
       {:ok, product} ->
         product
 
       {:error, :not_found} ->
         product = Repo.get(Product, id)
-        RedisService.set(client, product_key, product)
+        save_product_on_cache(client, product_key, product)
         product
 
       _ ->
@@ -92,8 +92,17 @@ defmodule Myapp.Management do
   Returns an `%Ecto.Changeset{}` for tracking product changes.
 
   """
+
   def change_product(%Product{} = product, attrs \\ %{}) do
     Product.changeset(product, attrs)
+  end
+
+  defp save_product_on_cache(client, key, %Product{} = product) do
+    RedisService.set(client, key, product)
+  end
+
+  defp load_product_from_cache(client, key) do
+    RedisService.get(client, key)
   end
 
   defp list_products_on_els([{_key, _value} | _] = filters),
