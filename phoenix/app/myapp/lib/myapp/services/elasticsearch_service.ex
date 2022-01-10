@@ -64,7 +64,7 @@ defmodule Myapp.Services.ElasticsearchService do
   defp format_response(any), do: {:error, any}
 
   defp format_response_get_els_id({:ok, 200, %{:hits => %{:hits => hits_list}}}),
-    do: Enum.map(hits_list, fn x -> x[:_id] end)
+    do: Enum.map(hits_list, & &1[:_id])
 
   defp find_els_id(document, key, value) do
     with search_result <- tirexs_search(document, [{key, value}]),
