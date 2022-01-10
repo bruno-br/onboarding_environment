@@ -54,7 +54,7 @@ defmodule MyappWeb.ProductControllerTest do
   describe "index" do
     test "lists all products", %{conn: conn} do
       conn = get(conn, Routes.product_path(conn, :index))
-      assert products = json_response(conn, 200)["products"]
+      assert %{"products" => products} = json_response(conn, 200)
 
       expected_ids = products_map_id(list_products())
       assert products_map_id(products) == expected_ids
@@ -64,7 +64,7 @@ defmodule MyappWeb.ProductControllerTest do
          %{conn: conn} do
       conn = get(conn, Routes.product_path(conn, :index))
 
-      assert products = json_response(conn, 200)["products"]
+      json_response(conn, 200)["products"]
       assert_log_created_correctly(conn)
     end
   end
@@ -80,7 +80,7 @@ defmodule MyappWeb.ProductControllerTest do
          %{conn: conn, valid_attrs: attrs} do
       conn = post(conn, Routes.product_path(conn, :create), product: attrs)
 
-      assert json_response(conn, 201)
+      json_response(conn, 201)
       assert_log_created_correctly(conn)
     end
 
@@ -174,13 +174,13 @@ defmodule MyappWeb.ProductControllerTest do
          %{conn: conn, product: %Product{id: id}} do
       conn = get(conn, Routes.product_path(conn, :show, id))
 
-      assert json_response(conn, 200)
+      json_response(conn, 200)
       assert_log_created_correctly(conn)
     end
 
     test "returns 404 if product is not found", %{conn: conn} do
       conn = get(conn, Routes.product_path(conn, :show, "invalid_id"))
-      assert response(conn, 404)
+      response(conn, 404)
     end
   end
 
@@ -214,7 +214,7 @@ defmodule MyappWeb.ProductControllerTest do
          } do
       conn = put(conn, Routes.product_path(conn, :update, product), product: attrs)
 
-      assert json_response(conn, 200)
+      json_response(conn, 200)
       assert_log_created_correctly(conn)
     end
 
@@ -239,8 +239,7 @@ defmodule MyappWeb.ProductControllerTest do
 
     test "returns 404 if product is not found", %{conn: conn, update_attrs: attrs} do
       conn = put(conn, Routes.product_path(conn, :update, "invalid_product_id"), product: attrs)
-
-      assert response(conn, 404)
+      response(conn, 404)
     end
   end
 
@@ -251,7 +250,7 @@ defmodule MyappWeb.ProductControllerTest do
       assert Repo.get(Product, product.id) == product
 
       conn = delete(conn, Routes.product_path(conn, :delete, product))
-      assert response(conn, 204)
+      response(conn, 204)
 
       assert Repo.get(Product, product.id) == nil
     end
@@ -260,13 +259,13 @@ defmodule MyappWeb.ProductControllerTest do
          %{conn: conn, product: product} do
       conn = delete(conn, Routes.product_path(conn, :delete, product))
 
-      assert response(conn, 204)
+      response(conn, 204)
       assert_log_created_correctly(conn)
     end
 
     test "returns 404 if product is not found", %{conn: conn} do
       conn = delete(conn, Routes.product_path(conn, :delete, "invalid_product_id"))
-      assert response(conn, 404)
+      response(conn, 404)
     end
   end
 
