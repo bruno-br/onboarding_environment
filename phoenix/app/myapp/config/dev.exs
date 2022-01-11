@@ -20,6 +20,8 @@ config :myapp, MyappWeb.Endpoint,
   check_origin: false,
   watchers: []
 
+config :myapp, Myapp.Elasticsearch, index: "my_index"
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

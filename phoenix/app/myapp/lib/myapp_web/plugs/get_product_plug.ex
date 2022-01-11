@@ -1,26 +1,37 @@
 defmodule MyappWeb.Plugs.GetProductPlug do
+  @moduledoc """
+  Plug used to get a product before the
+  action goes to the controller
+  """
+
   import Plug.Conn
 
   alias Myapp.Management
+  alias Myapp.Management.Product
 
   def init(props) do
     props
   end
 
   def call(conn, _opts) do
-    get_product(conn)
+    find_product_by_id(conn, conn.params["id"])
   end
 
-  def get_product(conn), do: find_by_id(conn, conn.params["id"])
+  defp find_product_by_id(conn, nil) do
+    conn
+    |> halt()
+    |> send_resp(:bad_request, "")
+  end
 
-  defp find_by_id(conn, nil), do: assign(conn, :get_product, {:error, :bad_request})
+  defp find_product_by_id(conn, id) do
+    case Management.get_product(id) do
+      nil ->
+        conn
+        |> halt()
+        |> send_resp(:not_found, "")
 
-  defp find_by_id(conn, id) do
-    with product <- Management.get_product!(id),
-         true <- product != nil do
-      assign(conn, :get_product, {:ok, product})
-    else
-      _ -> assign(conn, :get_product, {:error, :not_found})
+      product ->
+        assign(conn, :product, product)
     end
   end
 end

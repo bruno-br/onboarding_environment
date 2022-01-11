@@ -1,5 +1,6 @@
 defmodule MyappWeb.ProductView do
   use MyappWeb, :view
+
   alias MyappWeb.ProductView
 
   def render("index.json", %{products: products}) do
@@ -11,11 +12,14 @@ defmodule MyappWeb.ProductView do
   end
 
   def render("product.json", %{product: product}) do
-    %{id: product.id,
+    %{
+      id: product.id,
       sku: product.sku,
       amount: product.amount,
       description: product.description,
       name: product.name,
-      price: product.price}
+      price: product.price,
+      barcode: product.barcode
+    }
   end
 end

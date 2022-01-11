@@ -23,6 +23,7 @@ defmodule MyappWeb do
 
       import Plug.Conn
       import MyappWeb.Gettext
+
       alias MyappWeb.Router.Helpers, as: Routes
     end
   end
@@ -62,9 +63,9 @@ defmodule MyappWeb do
     quote do
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
-
       import MyappWeb.ErrorHelpers
       import MyappWeb.Gettext
+
       alias MyappWeb.Router.Helpers, as: Routes
     end
   end

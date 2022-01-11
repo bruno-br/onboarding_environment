@@ -36,7 +36,11 @@ $ mix phx.server
 
 <a id="index"></a>
 
-### Listar Produtos  (index) **[GET /products]**
+### Listar Produtos (index) **[GET /products]**
+
+Quando não é passado nenhum filtro, todos os produtos são listados:
+
+- Request: `GET /products`
 
 - Response (OK)
 
@@ -61,6 +65,31 @@ $ mix phx.server
           "name": "Monitor V302 Cinza",
           "description": "Monitor LED Cinza",
           "amount": 12,
+          "price": 1200.0
+        }
+      ]
+    }
+    ```
+
+É possível filtrar os produtos a serem listados:
+
+- Request: `GET /products?amount=10&price=1200`
+
+- Response (OK)
+
+  - Status Code: 200
+  
+  - Body:
+
+    ```json
+    {
+      "products": [
+        {
+          "id": "61a918f018a4c200a09a9f9e",
+          "sku": "CC-LED-32-V302-P",
+          "name": "Monitor V302 Preto",
+          "description": "Monitor LED Preto",
+          "amount": 10,
           "price": 1200.0
         }
       ]
