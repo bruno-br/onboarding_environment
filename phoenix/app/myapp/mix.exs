@@ -47,7 +47,9 @@ defmodule Myapp.MixProject do
       {:tirexs, "~> 0.8"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:mock, "~> 0.3.0", only: :test},
-      {:exq, "~> 0.8.1"}
+      {:exq, "~> 0.9"},
+      {:exq_ui, "~> 0.10.0"},
+      {:poison, "~> 3.1"}
     ]
   end
 
