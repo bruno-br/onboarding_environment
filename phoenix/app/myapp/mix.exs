@@ -20,7 +20,7 @@ defmodule Myapp.MixProject do
   def application do
     [
       mod: {Myapp.Application, []},
-      extra_applications: [:logger, :runtime_tools, :tirexs]
+      extra_applications: [:logger, :runtime_tools, :tirexs, :exq]
     ]
   end
 
@@ -46,7 +46,8 @@ defmodule Myapp.MixProject do
       {:exredis, ">= 0.2.4"},
       {:tirexs, "~> 0.8"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:mock, "~> 0.3.0", only: :test}
+      {:mock, "~> 0.3.0", only: :test},
+      {:exq, "~> 0.8.1"}
     ]
   end
 
