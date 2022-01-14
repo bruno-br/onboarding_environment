@@ -19,11 +19,12 @@ defmodule MyappWeb.Router do
   scope "/", MyappWeb do
     pipe_through(:api)
     resources("/products", ProductController, except: [:new, :edit])
+    resources("/reports", ReportController, only: [:index])
   end
 
   scope "/exq", ExqUi do
     pipe_through(:exq)
-    forward "/", RouterPlug.Router, :index
+    forward("/", RouterPlug.Router, :index)
   end
 
   if Mix.env() in [:dev, :test] do
