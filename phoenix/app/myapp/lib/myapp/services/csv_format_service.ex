@@ -9,9 +9,10 @@ defmodule Myapp.Services.CsvFormatService do
     headers = get_headers(maps_list)
     rows = get_rows(maps_list)
     matrix = [headers | rows]
+    matrix
   end
 
-  defp get_matrix([] = maps_list), do: [[]]
+  defp get_matrix([]), do: [[]]
 
   defp get_headers(maps_list) do
     maps_list
