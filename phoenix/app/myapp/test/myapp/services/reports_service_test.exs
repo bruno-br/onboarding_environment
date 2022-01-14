@@ -5,7 +5,6 @@ defmodule Myapp.Services.ReportsServiceTest do
 
   alias Myapp.Services.ReportsService
   alias Myapp.Services.RedisService
-  alias Myapp.Services.CsvFormatService
 
   @valid_key "report1"
   @invalid_key "report2"

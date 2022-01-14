@@ -1,7 +1,6 @@
 defmodule Myapp.Workers.GenerateReportWorker do
   alias Myapp.Services.RedisService
   alias Myapp.Services.CsvFormatService
-  alias Myapp.Management
 
   def perform(report_title, get_list_function) do
     list = get_list(get_list_function)
@@ -17,7 +16,7 @@ defmodule Myapp.Workers.GenerateReportWorker do
         save_report(report_title, "")
 
       error ->
-        :error
+        error
     end
   end
 
