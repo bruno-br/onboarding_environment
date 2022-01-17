@@ -20,21 +20,23 @@ $ mix phx.server
 
 ## Rotas
 
+- [Listar Produtos  (index)](#products_index)
 
-- [Listar Produtos  (index)](#index)
+- [Criar produto (create)](#products_create)
 
-- [Criar produto (create)](#create)
+- [Detalhes de um produto (show)](#products_show)
 
-- [Detalhes de um produto (show)](#show)
-
-- [Atualizar Produto (update)](#update)
+- [Atualizar Produto (update)](#products_update)
   
-- [Apagar Produto (destroy)](#destroy)
+- [Apagar Produto (destroy)](#products_destroy)
 
+- [Solicitar Relatório](#reports_index)
+
+- [Exq UI](#exq_ui)
 
 ---
 
-<a id="index"></a>
+<a id="products_index"></a>
 
 ### Listar Produtos (index) **[GET /products]**
 
@@ -96,7 +98,7 @@ Quando não é passado nenhum filtro, todos os produtos são listados:
     }
     ```
 
-<a id="create"></a>
+<a id="products_create"></a>
 
 ### Criar produto (create) **[POST /products]**
 
@@ -155,7 +157,7 @@ Quando não é passado nenhum filtro, todos os produtos são listados:
   
   - Status Code: 400
 
-<a id="show"></a>
+<a id="products_show"></a>
 
 ### Detalhes de um produto (show) **[GET /products/:id]**
 
@@ -188,7 +190,7 @@ Quando não é passado nenhum filtro, todos os produtos são listados:
  
   - Status Code: 404
 
-<a id="update"></a>
+<a id="products_update"></a>
 
 ### Atualizar Produto (update) **[PATCH /products/:id]**
 
@@ -253,7 +255,7 @@ Quando não é passado nenhum filtro, todos os produtos são listados:
   - Status Code: 404
 
 
-<a id="destroy"></a>
+<a id="products_destroy"></a>
 
 ### Apagar Produto (destroy) **[DELETE /products/:id]**
 
@@ -286,3 +288,23 @@ Quando não é passado nenhum filtro, todos os produtos são listados:
  
   - Status Code: 404
 
+
+<a id="reports_index"></a>
+
+### Solicitar relatorio (index) **[GET /reports]**
+
+- Response:
+
+- Se o relatorio ainda nao foi gerado:
+    - Status Code: 202
+    - Mensagem: `"The report is being generated"`
+  
+
+- Se o relatorio ja foi gerado:
+    - Status Code: 200
+    - CSV com relatorio de produtos
+
+
+<a id="exq_ui"></a>
+
+### Exq UI **[GET /exq]**
