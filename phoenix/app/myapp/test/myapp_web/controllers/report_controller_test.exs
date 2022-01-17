@@ -2,8 +2,6 @@ defmodule MyappWeb.ReportControllerTest do
   use MyappWeb.ConnCase, async: false
 
   import Mock
-
-  alias MyappWeb.ReportController
   alias Myapp.Services.ProductsReportsService
 
   setup %{conn: conn} do
