@@ -25,6 +25,14 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
       assert GenerateReportWorker.perform(report_title, get_list_function) == :ok
     end
 
+    test "converts list to csv format" do
+      {report_title, get_list_function} = get_report_mock_data()
+      GenerateReportWorker.perform(report_title, get_list_function)
+
+      list = get_list_function_mock()
+      assert_called(CsvFormatService.get_csv_string(list))
+    end
+
     test "updates report status and data on redis" do
       {report_title, get_list_function} = get_report_mock_data()
       GenerateReportWorker.perform(report_title, get_list_function)
