@@ -6,18 +6,20 @@ defmodule Myapp.Services.ReportsServiceTest do
   alias Myapp.Services.ReportsService
   alias Myapp.Services.RedisService
 
-  @valid_key "report1"
-  @invalid_key "report2"
-  @report_data "report_data"
+  @key_completed "report1"
+  @key_generating "report2"
+  @key_nonexistent "report3"
+  @report_completed {:ok, %{status: :completed, data: "report_data"}}
+  @report_generating {:ok, %{status: :generating, data: ""}}
+  @report_nonexistent {:error, :not_found}
   @get_list_function ["module", :function_name, []]
 
   setup_with_mocks([
     {RedisService, [], start: fn -> "redis_client" end},
     {RedisService, [],
      get: fn _redis_client, key ->
-       if key == @valid_key,
-         do: {:ok, %{status: :completed, data: @report_data}},
-         else: {:error, :not_found}
+       (key == @key_completed && @report_completed) ||
+         (key == @key_generating && @report_generating) || @report_nonexistent
      end},
     {RedisService, [], set: fn _redis_client, _key, _data -> :ok end},
     {Exq, [], enqueue: fn _exq, _queue, _worker, _args -> :ok end}
@@ -27,13 +29,24 @@ defmodule Myapp.Services.ReportsServiceTest do
 
   describe "request_report/2" do
     test "returns report if it already exists" do
-      expected_response = {:ok, @report_data}
-      assert ReportsService.request_report(@valid_key, @get_list_function) == expected_response
+      expected_response = {:ok, "report_data"}
+
+      assert ReportsService.request_report(@key_completed, @get_list_function) ==
+               expected_response
     end
 
     test "generates report as a background job if it does not exist" do
       expected_response = {:accepted, "The report will be generated"}
-      assert ReportsService.request_report(@invalid_key, @get_list_function) == expected_response
+
+      assert ReportsService.request_report(@key_nonexistent, @get_list_function) ==
+               expected_response
+    end
+
+    test "returns 503 if report is being generated" do
+      expected_response = {:service_unavailable, "This report is still being generated"}
+
+      assert ReportsService.request_report(@key_generating, @get_list_function) ==
+               expected_response
     end
   end
 end
