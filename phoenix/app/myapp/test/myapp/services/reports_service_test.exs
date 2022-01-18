@@ -15,7 +15,9 @@ defmodule Myapp.Services.ReportsServiceTest do
     {RedisService, [], start: fn -> "redis_client" end},
     {RedisService, [],
      get: fn _redis_client, key ->
-       if key == @valid_key, do: {:ok, @report_data}, else: {:error, :not_found}
+       if key == @valid_key,
+         do: {:ok, %{status: :completed, data: @report_data}},
+         else: {:error, :not_found}
      end},
     {RedisService, [], set: fn _redis_client, _key, _data -> :ok end},
     {Exq, [], enqueue: fn _exq, _queue, _worker, _args -> :ok end}
@@ -30,7 +32,7 @@ defmodule Myapp.Services.ReportsServiceTest do
     end
 
     test "generates report as a background job if it does not exist" do
-      expected_response = {:accepted, "The report is being generated"}
+      expected_response = {:accepted, "The report will be generated"}
       assert ReportsService.request_report(@invalid_key, @get_list_function) == expected_response
     end
   end
