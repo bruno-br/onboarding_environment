@@ -23,6 +23,13 @@ defmodule MyappWeb.ReportControllerTest do
       end
     end
 
+    test "returns 503 if report is being generated", %{conn: conn} do
+      with_mock(ProductsReportsService, [], request_report: fn -> {:service_unavailable, ""} end) do
+        conn = get(conn, Routes.report_path(conn, :index))
+        response(conn, 503)
+      end
+    end
+
     test "returns 400 if there is an error getting the report", %{conn: conn} do
       with_mock(ProductsReportsService, [], request_report: fn -> {:error, ""} end) do
         conn = get(conn, Routes.report_path(conn, :index))
