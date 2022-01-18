@@ -5,12 +5,15 @@ defmodule Myapp.Services.ReportsService do
 
   def request_report(report_title, get_list_function) do
     case get_saved_report(report_title) do
-      {:ok, report} ->
+      {:ok, %{status: :completed, data: report}} ->
         {:ok, report}
+
+      {:ok, %{status: :generating, data: _report}} ->
+        {:service_unavailable, "This report is still being generated"}
 
       {:error, :not_found} ->
         generate_report(report_title, get_list_function)
-        {:accepted, "The report is being generated"}
+        {:accepted, "The report will be generated"}
 
       error ->
         {:error, error}
