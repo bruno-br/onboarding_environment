@@ -27,10 +27,10 @@ defmodule Myapp.Services.CsvFormatServiceTest do
       assert CsvFormatService.get_csv_string(data) == expected_response
     end
 
-    test "returns error when data is invalid ", %{
-      invalid_data: invalid_data
-    } do
-      catch_error(CsvFormatService.get_csv_string(invalid_data))
+    test "replace quotation marks with single quotes" do
+      data = [%{a: "1\"\"\""}]
+      expected_reponse = "\"a\"\n\"1'''\""
+      assert CsvFormatService.get_csv_string(data) == expected_reponse
     end
   end
 end
