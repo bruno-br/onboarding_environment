@@ -297,8 +297,11 @@ Quando não é passado nenhum filtro, todos os produtos são listados:
 
 - Se o relatorio ainda nao foi gerado:
     - Status Code: 202
-    - Mensagem: `"The report is being generated"`
+    - Mensagem: `"The report will be generated"`
   
+- Se o relatorio esta sendo gerado:
+    - Status Code: 503
+    - Mensagem: `"This report is still being generated"`
 
 - Se o relatorio ja foi gerado:
     - Status Code: 200
