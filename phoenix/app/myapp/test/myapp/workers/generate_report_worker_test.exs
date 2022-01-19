@@ -14,6 +14,7 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
   setup_with_mocks([
     {RedisService, [], start: fn -> "redis_client" end},
     {RedisService, [], set: fn _redis_client, _key, _data -> :ok end},
+    {RedisService, [], set: fn _redis_client, _key, _data, _expiration -> :ok end},
     {RedisService, [], del: fn _redis_client, _key -> :ok end},
     {CsvFormatService, [], get_csv_string: fn _list -> @csv_formated end},
     {File, [], write: fn _path, _data -> :ok end}
@@ -38,11 +39,12 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
     test "updates report status on redis" do
       {report_title, get_list_function} = get_report_mock_data()
       report_status_key = "#{report_title}_status"
+      expiration_time = 60
 
-      GenerateReportWorker.perform(report_title, get_list_function)
+      GenerateReportWorker.perform(report_title, get_list_function, expiration_time)
 
-      assert_called(RedisService.set("redis_client", report_status_key, :generating))
-      assert_called(RedisService.set("redis_client", report_status_key, :completed))
+      assert_called(RedisService.set("redis_client", report_status_key, :generating, expiration_time))
+      assert_called(RedisService.set("redis_client", report_status_key, :completed, expiration_time))
     end
 
     test "deletes key from redis if there is an error generating the report" do
