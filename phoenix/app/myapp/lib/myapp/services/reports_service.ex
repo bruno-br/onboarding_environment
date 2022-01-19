@@ -12,7 +12,7 @@ defmodule Myapp.Services.ReportsService do
         {:service_unavailable, "This report is still being generated"}
 
       {:error, :not_found} ->
-        generate_report(report_title, get_list_function)
+        enqueue_report(report_title, get_list_function)
         {:accepted, "The report will be generated"}
 
       error ->
@@ -25,7 +25,7 @@ defmodule Myapp.Services.ReportsService do
     |> RedisService.get(report_title)
   end
 
-  defp generate_report(report_title, get_list_function) do
+  defp enqueue_report(report_title, get_list_function) do
     Exq.enqueue(Exq, "report", GenerateReportWorker, [report_title, get_list_function])
   end
 end
