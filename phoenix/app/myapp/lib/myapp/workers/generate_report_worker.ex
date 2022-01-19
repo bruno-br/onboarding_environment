@@ -4,17 +4,18 @@ defmodule Myapp.Workers.GenerateReportWorker do
 
   def perform(report_title, get_list_function) do
     with redis_client <- RedisService.start(),
-         :ok <- save_report(redis_client, report_title, :generating, ""),
+         :ok <- set_report_status(redis_client, report_title, :generating),
          list <- get_list(get_list_function),
-         {:ok, report_data} <- generate_report(report_title, list),
-         :ok <- save_report(redis_client, report_title, :completed, report_data) do
+         {:ok, report_data} <- generate_report_data(report_title, list),
+         :ok <- save_report(report_title, report_data),
+         :ok <- set_report_status(redis_client, report_title, :completed) do
       :ok
     else
-      error -> delete_report_key(report_title)
+      error -> delete_report_status(report_title)
     end
   end
 
-  defp generate_report(report_title, list) do
+  defp generate_report_data(report_title, list) do
     with [%{} | _] <- list,
          csv <- CsvFormatService.get_csv_string(list) do
       {:ok, csv}
@@ -27,12 +28,15 @@ defmodule Myapp.Workers.GenerateReportWorker do
     end
   end
 
-  defp save_report(redis_client, report_title, report_status, report_data) do
-    report = %{status: report_status, data: report_data}
-    RedisService.set(redis_client, report_title, report)
-  end
+  defp get_report_status_key(report_title), do: "#{report_title}_status"
 
-  defp delete_report_key(report_title), do: RedisService.start() |> RedisService.del(report_title)
+  defp set_report_status(redis_client, report_title, report_status),
+    do: RedisService.set(redis_client, get_report_status_key(report_title), report_status)
+
+  defp delete_report_status(report_title),
+    do: RedisService.start() |> RedisService.del(get_report_status_key(report_title))
+
+  defp save_report(report_title, report_data), do: File.write("#{report_title}.csv", report_data)
 
   defp get_list(%{"module" => module, "function_name" => function_name, "args" => args}) do
     module_str = String.to_existing_atom(module)

@@ -4,11 +4,11 @@ defmodule Myapp.Services.ReportsService do
   alias Myapp.Management
 
   def request_report(report_title, get_list_function) do
-    case get_saved_report(report_title) do
-      {:ok, %{status: :completed, data: report}} ->
-        {:ok, report}
-
-      {:ok, %{status: :generating, data: _report}} ->
+    with {:ok, :completed} <- get_report_status(report_title),
+         {:ok, report_data} <- get_saved_report(report_title) do
+      {:ok, report_data}
+    else
+      {:ok, :generating} ->
         {:service_unavailable, "This report is still being generated"}
 
       {:error, :not_found} ->
@@ -20,9 +20,16 @@ defmodule Myapp.Services.ReportsService do
     end
   end
 
-  defp get_saved_report(report_title) do
+  defp get_report_status(report_title) do
     RedisService.start()
-    |> RedisService.get(report_title)
+    |> RedisService.get("#{report_title}_status")
+  end
+
+  defp get_saved_report(report_title) do
+    case File.read("#{report_title}.csv") do
+      {:ok, data} -> {:ok, data}
+      _ -> {:error, :not_found}
+    end
   end
 
   defp enqueue_report(report_title, get_list_function) do
