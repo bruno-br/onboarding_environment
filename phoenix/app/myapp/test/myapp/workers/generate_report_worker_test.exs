@@ -9,13 +9,12 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
 
   def get_list_function_mock(), do: [%{a: 1}, %{a: 2}]
 
-  @csv_formated "list_csv"
-
   setup_with_mocks([
     {RedisService, [], start: fn -> "redis_client" end},
     {RedisService, [], set: fn _redis_client, _key, _data -> :ok end},
     {RedisService, [], del: fn _redis_client, _key -> :ok end},
-    {CsvFormatService, [], get_csv_string: fn _list -> @csv_formated end}
+    {CsvFormatService, [], get_csv_string: fn _list -> "list_csv" end},
+    {File, [], write: fn _path, _data -> :ok end}
   ]) do
     :ok
   end
@@ -28,27 +27,29 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
 
     test "converts list to csv format" do
       {report_title, get_list_function} = get_report_mock_data()
-      GenerateReportWorker.perform(report_title, get_list_function)
-
       list = get_list_function_mock()
+
+      GenerateReportWorker.perform(report_title, get_list_function)
       assert_called(CsvFormatService.get_csv_string(list))
     end
 
-    test "updates report status and data on redis" do
+    test "updates report status on redis" do
       {report_title, get_list_function} = get_report_mock_data()
+      report_status_key = "#{report_title}_status"
+
       GenerateReportWorker.perform(report_title, get_list_function)
 
-      report_value_generating = %{data: "", status: :generating}
-      assert_called(RedisService.set("redis_client", report_title, report_value_generating))
-
-      report_value_completed = %{data: @csv_formated, status: :completed}
-      assert_called(RedisService.set("redis_client", report_title, report_value_completed))
+      assert_called(RedisService.set("redis_client", report_status_key, :generating))
+      assert_called(RedisService.set("redis_client", report_status_key, :completed))
     end
 
     test "deletes key from redis if there is an error generating the report" do
       report_title = "any_title"
+      report_status_key = "any_title_status"
+
       GenerateReportWorker.perform(report_title, "invalid_arg")
-      assert_called(RedisService.del("redis_client", report_title))
+
+      assert_called(RedisService.del("redis_client", report_status_key))
     end
   end
 

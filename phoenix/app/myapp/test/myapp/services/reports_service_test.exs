@@ -9,27 +9,27 @@ defmodule Myapp.Services.ReportsServiceTest do
   @key_completed "report1"
   @key_generating "report2"
   @key_nonexistent "report3"
-  @report_completed {:ok, %{status: :completed, data: "report_data"}}
-  @report_generating {:ok, %{status: :generating, data: ""}}
-  @report_nonexistent {:error, :not_found}
   @get_list_function ["module", :function_name, []]
+  @report_data "csv_data"
 
   setup_with_mocks([
     {RedisService, [], start: fn -> "redis_client" end},
     {RedisService, [],
      get: fn _redis_client, key ->
-       (key == @key_completed && @report_completed) ||
-         (key == @key_generating && @report_generating) || @report_nonexistent
+       (key == "#{@key_completed}_status" && {:ok, :completed}) ||
+         (key == "#{@key_generating}_status" && {:ok, :generating}) ||
+         {:error, :not_found}
      end},
     {RedisService, [], set: fn _redis_client, _key, _data -> :ok end},
-    {Exq, [], enqueue: fn _exq, _queue, _worker, _args -> :ok end}
+    {Exq, [], enqueue: fn _exq, _queue, _worker, _args -> :ok end},
+    {File, [], read: fn _path -> {:ok, @report_data} end}
   ]) do
     :ok
   end
 
   describe "request_report/2" do
     test "returns report if it already exists" do
-      expected_response = {:ok, "report_data"}
+      expected_response = {:ok, @report_data}
 
       assert ReportsService.request_report(@key_completed, @get_list_function) ==
                expected_response
