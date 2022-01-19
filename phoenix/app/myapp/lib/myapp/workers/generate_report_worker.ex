@@ -9,6 +9,8 @@ defmodule Myapp.Workers.GenerateReportWorker do
          {:ok, report_data} <- generate_report(report_title, list),
          :ok <- save_report(redis_client, report_title, :completed, report_data) do
       :ok
+    else
+      error -> delete_report_key(report_title)
     end
   end
 
@@ -30,9 +32,14 @@ defmodule Myapp.Workers.GenerateReportWorker do
     RedisService.set(redis_client, report_title, report)
   end
 
+  defp delete_report_key(report_title), do: RedisService.start() |> RedisService.del(report_title)
+
   defp get_list(%{"module" => module, "function_name" => function_name, "args" => args}) do
     module_str = String.to_existing_atom(module)
     function_name_str = String.to_existing_atom(function_name)
-    apply(module_str, function_name_str, args)
+    list = apply(module_str, function_name_str, args)
+    list
   end
+
+  defp get_list(invalid_params), do: :error
 end
