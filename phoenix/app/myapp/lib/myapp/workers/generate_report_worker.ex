@@ -6,16 +6,18 @@ defmodule Myapp.Workers.GenerateReportWorker do
     with redis_client <- RedisService.start(),
          :ok <- set_report_status(redis_client, report_title, :generating, expiration_in_seconds),
          list <- get_list(get_list_function),
-         {:ok, report_data} <- generate_report_data(report_title, list),
+         {:ok, report_data} <- generate_report_data(list),
          :ok <- save_report(report_title, report_data),
          :ok <- set_report_status(redis_client, report_title, :completed, expiration_in_seconds) do
       :ok
     else
-      error -> delete_report_status(report_title)
+      _error ->
+        delete_report_status(report_title)
+        :error
     end
   end
 
-  defp generate_report_data(report_title, list) do
+  defp generate_report_data(list) do
     with [%{} | _] <- list,
          csv <- CsvFormatService.get_csv_string(list) do
       {:ok, csv}
@@ -47,9 +49,9 @@ defmodule Myapp.Workers.GenerateReportWorker do
   defp get_list(%{"module" => module, "function_name" => function_name, "args" => args}) do
     module_str = String.to_existing_atom(module)
     function_name_str = String.to_existing_atom(function_name)
-    list = apply(module_str, function_name_str, args)
-    list
+
+    apply(module_str, function_name_str, args)
   end
 
-  defp get_list(invalid_params), do: :error
+  defp get_list(_invalid_params), do: :error
 end
