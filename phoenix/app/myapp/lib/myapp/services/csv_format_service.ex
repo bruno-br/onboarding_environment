@@ -1,18 +1,22 @@
 defmodule Myapp.Services.CsvFormatService do
   def get_csv_string(data) do
-    data
-    |> get_matrix()
-    |> matrix_to_csv()
+    with {:ok, matrix} <- get_matrix(data),
+         csv <- matrix_to_csv(matrix) do
+      {:ok, csv}
+    else
+      error -> {:error, error}
+    end
   end
 
   defp get_matrix([%{} | _] = maps_list) do
     headers = get_headers(maps_list)
     rows = get_rows(maps_list)
     matrix = [headers | rows]
-    matrix
+
+    {:ok, matrix}
   end
 
-  defp get_matrix([]), do: [[]]
+  defp get_matrix([]), do: {:ok, [[]]}
 
   defp get_headers(maps_list) do
     maps_list

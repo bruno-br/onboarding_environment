@@ -7,9 +7,10 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
   alias Myapp.Services.CsvFormatService
   alias Myapp.Workers.GenerateReportWorker
 
+  @valid_list [%{a: 1}, %{a: 2}]
   @csv_formated "list_csv"
 
-  def get_list_function_mock(), do: [%{a: 1}, %{a: 2}]
+  def get_list_function_mock(), do: @valid_list
 
   setup_with_mocks([
     {RedisService, [],
@@ -17,7 +18,11 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
      set: fn _redis_client, _key, _data -> :ok end,
      set: fn _redis_client, _key, _data, _expiration -> :ok end,
      del: fn _redis_client, _key -> :ok end},
-    {CsvFormatService, [], get_csv_string: fn _list -> @csv_formated end},
+    {CsvFormatService, [],
+     get_csv_string: fn
+       @valid_list -> {:ok, @csv_formated}
+       _invalid_list -> {:error, "invalid_list"}
+     end},
     {File, [], write: fn _path, _data -> :ok end}
   ]) do
     :ok

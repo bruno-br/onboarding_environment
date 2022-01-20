@@ -17,18 +17,7 @@ defmodule Myapp.Workers.GenerateReportWorker do
     end
   end
 
-  defp generate_report_data(list) do
-    with [%{} | _] <- list,
-         csv <- CsvFormatService.get_csv_string(list) do
-      {:ok, csv}
-    else
-      [] ->
-        {:ok, ""}
-
-      error ->
-        {:error, error}
-    end
-  end
+  defp generate_report_data(list), do: CsvFormatService.get_csv_string(list)
 
   defp get_report_status_key(report_title), do: "#{report_title}_status"
 

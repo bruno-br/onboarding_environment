@@ -8,7 +8,7 @@ defmodule Myapp.Services.CsvFormatServiceTest do
       map_list_string_keys: [%{"a" => 1, "b" => 2}, %{"a" => 10, "b" => 20}],
       map_list_atom_keys: [%{a: 1, b: 2}, %{a: 10, b: 20}],
       invalid_data: nil,
-      expected_response: "\"a\",\"b\"\n\"1\",\"2\"\n\"10\",\"20\""
+      expected_response: {:ok, "\"a\",\"b\"\n\"1\",\"2\"\n\"10\",\"20\""}
     }
   end
 
@@ -29,7 +29,7 @@ defmodule Myapp.Services.CsvFormatServiceTest do
 
     test "replace quotation marks with single quotes" do
       data = [%{a: "1\"\"\""}]
-      expected_reponse = "\"a\"\n\"1'''\""
+      expected_reponse = {:ok, "\"a\"\n\"1'''\""}
       assert CsvFormatService.get_csv_string(data) == expected_reponse
     end
   end
