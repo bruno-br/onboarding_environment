@@ -12,10 +12,11 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
   def get_list_function_mock(), do: [%{a: 1}, %{a: 2}]
 
   setup_with_mocks([
-    {RedisService, [], start: fn -> "redis_client" end},
-    {RedisService, [], set: fn _redis_client, _key, _data -> :ok end},
-    {RedisService, [], set: fn _redis_client, _key, _data, _expiration -> :ok end},
-    {RedisService, [], del: fn _redis_client, _key -> :ok end},
+    {RedisService, [],
+     start: fn -> "redis_client" end,
+     set: fn _redis_client, _key, _data -> :ok end,
+     set: fn _redis_client, _key, _data, _expiration -> :ok end,
+     del: fn _redis_client, _key -> :ok end},
     {CsvFormatService, [], get_csv_string: fn _list -> @csv_formated end},
     {File, [], write: fn _path, _data -> :ok end}
   ]) do
@@ -43,8 +44,13 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
 
       GenerateReportWorker.perform(report_title, get_list_function, expiration_time)
 
-      assert_called(RedisService.set("redis_client", report_status_key, :generating, expiration_time))
-      assert_called(RedisService.set("redis_client", report_status_key, :completed, expiration_time))
+      assert_called(
+        RedisService.set("redis_client", report_status_key, :generating, expiration_time)
+      )
+
+      assert_called(
+        RedisService.set("redis_client", report_status_key, :completed, expiration_time)
+      )
     end
 
     test "deletes key from redis if there is an error generating the report" do

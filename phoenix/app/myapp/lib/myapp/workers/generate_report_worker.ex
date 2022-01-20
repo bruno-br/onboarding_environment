@@ -31,7 +31,13 @@ defmodule Myapp.Workers.GenerateReportWorker do
   defp get_report_status_key(report_title), do: "#{report_title}_status"
 
   defp set_report_status(redis_client, report_title, report_status, expiration_in_seconds),
-    do: RedisService.set(redis_client, get_report_status_key(report_title), report_status, expiration_in_seconds)
+    do:
+      RedisService.set(
+        redis_client,
+        get_report_status_key(report_title),
+        report_status,
+        expiration_in_seconds
+      )
 
   defp delete_report_status(report_title),
     do: RedisService.start() |> RedisService.del(get_report_status_key(report_title))

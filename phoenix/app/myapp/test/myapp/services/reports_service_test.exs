@@ -13,14 +13,14 @@ defmodule Myapp.Services.ReportsServiceTest do
   @report_data "csv_data"
 
   setup_with_mocks([
-    {RedisService, [], start: fn -> "redis_client" end},
     {RedisService, [],
-     get: fn _redis_client, key ->
-       (key == "#{@key_completed}_status" && {:ok, :completed}) ||
-         (key == "#{@key_generating}_status" && {:ok, :generating}) ||
-         {:error, :not_found}
-     end},
-    {RedisService, [], set: fn _redis_client, _key, _data -> :ok end},
+     start: fn -> "redis_client" end,
+     get: fn
+       _client, "#{@key_completed}_status" -> {:ok, :completed}
+       _client, "#{@key_generating}_status" -> {:ok, :generating}
+       _client, "#{@key_nonexistent}_status" -> {:error, :not_found}
+     end,
+     set: fn _redis_client, _key, _data -> :ok end},
     {File, [], read: fn _path -> {:ok, @report_data} end}
   ]) do
     :ok

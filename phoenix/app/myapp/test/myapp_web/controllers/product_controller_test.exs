@@ -42,11 +42,12 @@ defmodule MyappWeb.ProductControllerTest do
   end
 
   setup_with_mocks([
-    {ElasticsearchService, [], post: fn _path, _data -> {:ok, :created} end},
-    {ElasticsearchService, [], list: fn _path -> :error end},
-    {ElasticsearchService, [], delete: fn _path, _key, _value -> :ok end},
-    {ElasticsearchService, [], update: fn _path, _key, _value, _new_data -> :ok end},
-    {ElasticsearchService, [], search: fn _document, _filters -> :error end}
+    {ElasticsearchService, [],
+     post: fn _path, _data -> {:ok, :created} end,
+     list: fn _path -> :error end,
+     delete: fn _path, _key, _value -> :ok end,
+     update: fn _path, _key, _value, _new_data -> :ok end,
+     search: fn _document, _filters -> :error end}
   ]) do
     :ok
   end
