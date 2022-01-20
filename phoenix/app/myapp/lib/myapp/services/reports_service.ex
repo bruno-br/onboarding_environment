@@ -13,7 +13,6 @@ defmodule Myapp.Services.ReportsService do
 
       {:error, :not_found} ->
         enqueue_report(report_title, get_list_function)
-        {:accepted, "The report will be generated"}
 
       error ->
         {:error, error}
@@ -33,6 +32,9 @@ defmodule Myapp.Services.ReportsService do
   end
 
   defp enqueue_report(report_title, get_list_function) do
-    Exq.enqueue(Exq, "report", GenerateReportWorker, [report_title, get_list_function])
+    case Exq.enqueue(Exq, "report", GenerateReportWorker, [report_title, get_list_function]) do
+      {:ok, _jid} -> {:accepted, "The report will be generated"}
+      error -> {:error, "There was an error trying to generate the report"}
+    end
   end
 end
