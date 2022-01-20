@@ -40,7 +40,7 @@ defmodule Myapp.Workers.GenerateReportWorker do
       )
 
   defp delete_report_status(report_title),
-    do: RedisService.start() |> RedisService.del(get_report_status_key(report_title))
+    do: RedisService.del(RedisService.start(), get_report_status_key(report_title))
 
   defp save_report(report_title, report_data), do: File.write("#{report_title}.csv", report_data)
 
