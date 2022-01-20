@@ -43,9 +43,9 @@ defmodule Myapp.Services.ReportsServiceTest do
                expected_response
     end
 
-    test_with_mock "returns 503 if report is being generated", Exq,
+    test_with_mock "returns :too_early if report is being generated", Exq,
       enqueue: fn _exq, _queue, _worker, _args -> {:ok, "job_id"} end do
-      expected_response = {:service_unavailable, "This report is still being generated"}
+      expected_response = {:too_early, "This report is still being generated"}
 
       assert ReportsService.request_report(@key_generating, @get_list_function) ==
                expected_response

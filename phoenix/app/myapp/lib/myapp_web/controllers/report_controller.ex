@@ -18,8 +18,8 @@ defmodule MyappWeb.ReportController do
       {:accepted, message} ->
         send_resp(conn, :accepted, message)
 
-      {:service_unavailable, message} ->
-        send_resp(conn, :service_unavailable, message)
+      {:too_early, message} ->
+        send_resp(conn, :too_early, message)
 
       _ ->
         send_resp(conn, :bad_request, "")

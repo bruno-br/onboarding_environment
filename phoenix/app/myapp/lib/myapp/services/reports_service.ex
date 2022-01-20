@@ -9,7 +9,7 @@ defmodule Myapp.Services.ReportsService do
       {:ok, report_data}
     else
       {:ok, :generating} ->
-        {:service_unavailable, "This report is still being generated"}
+        {:too_early, "This report is still being generated"}
 
       {:error, :not_found} ->
         enqueue_report(report_title, get_list_function)

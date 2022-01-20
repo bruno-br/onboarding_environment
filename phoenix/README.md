@@ -300,7 +300,7 @@ Quando não é passado nenhum filtro, todos os produtos são listados:
     - Mensagem: `"The report will be generated"`
   
 - Se o relatorio esta sendo gerado:
-    - Status Code: 503
+    - Status Code: 425
     - Mensagem: `"This report is still being generated"`
 
 - Se o relatorio ja foi gerado:
