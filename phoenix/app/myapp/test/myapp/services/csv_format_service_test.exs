@@ -32,5 +32,12 @@ defmodule Myapp.Services.CsvFormatServiceTest do
       expected_reponse = {:ok, "\"a\"\n\"1'''\""}
       assert CsvFormatService.get_csv_string(data) == expected_reponse
     end
+
+    test "returns error when data is invalid", %{
+      invalid_data: data
+    } do
+      expected_reponse = {:error, :invalid_format}
+      assert CsvFormatService.get_csv_string(data) == expected_reponse
+    end
   end
 end

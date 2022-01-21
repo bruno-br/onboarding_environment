@@ -1,10 +1,10 @@
 defmodule Myapp.Services.CsvFormatService do
   def get_csv_string(data) do
-    with {:ok, matrix} <- get_matrix(data),
-         csv <- matrix_to_csv(matrix) do
-      {:ok, csv}
+    with {:ok, matrix} <- get_matrix(data) do
+      {:ok, matrix_to_csv(matrix)}
     else
-      error -> {:error, error}
+      {:error, reason} -> {:error, reason}
+      any -> {:error, any}
     end
   end
 
@@ -17,6 +17,8 @@ defmodule Myapp.Services.CsvFormatService do
   end
 
   defp get_matrix([]), do: {:ok, [[]]}
+
+  defp get_matrix(_any), do: {:error, :invalid_format}
 
   defp get_headers(first_element) do
     first_element
