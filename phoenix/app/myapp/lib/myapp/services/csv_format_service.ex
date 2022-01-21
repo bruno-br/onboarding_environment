@@ -8,8 +8,8 @@ defmodule Myapp.Services.CsvFormatService do
     end
   end
 
-  defp get_matrix([%{} | _] = maps_list) do
-    headers = get_headers(maps_list)
+  defp get_matrix([%{} = first_element | _] = maps_list) do
+    headers = get_headers(first_element)
     rows = get_rows(maps_list)
     matrix = [headers | rows]
 
@@ -18,9 +18,8 @@ defmodule Myapp.Services.CsvFormatService do
 
   defp get_matrix([]), do: {:ok, [[]]}
 
-  defp get_headers(maps_list) do
-    maps_list
-    |> List.first()
+  defp get_headers(first_element) do
+    first_element
     |> Map.keys()
     |> Enum.map(&ensure_key_is_string(&1))
   end
