@@ -16,14 +16,14 @@ defmodule MyappWeb.ReportControllerTest do
       end
     end
 
-    test "returns 202 if report is being created", %{conn: conn} do
+    test "returns 202 if report does not exist and will be created", %{conn: conn} do
       with_mock(ProductsReportsService, [], request_report: fn -> {:accepted, ""} end) do
         conn = get(conn, Routes.report_path(conn, :index))
         response(conn, 202)
       end
     end
 
-    test "returns 425 if report is being generated", %{conn: conn} do
+    test "returns 425 if report is still being generated", %{conn: conn} do
       with_mock(ProductsReportsService, [], request_report: fn -> {:too_early, ""} end) do
         conn = get(conn, Routes.report_path(conn, :index))
         response(conn, 425)
