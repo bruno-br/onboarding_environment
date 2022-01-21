@@ -27,32 +27,36 @@ defmodule Myapp.Services.ReportsServiceTest do
   end
 
   describe "request_report/2" do
-    test_with_mock "returns report if it already exists", Exq,
-      enqueue: fn _exq, _queue, _worker, _args -> {:ok, "job_id"} end do
+    test_with_mock("returns report if it already exists", Exq,
+      enqueue: fn _exq, _queue, _worker, _args -> {:ok, "job_id"} end
+    ) do
       expected_response = {:ok, @report_data}
 
       assert ReportsService.request_report(@key_completed, @get_list_function) ==
                expected_response
     end
 
-    test_with_mock "generates report as a background job if it does not exist", Exq,
-      enqueue: fn _exq, _queue, _worker, _args -> {:ok, "job_id"} end do
+    test_with_mock("generates report as a background job if it does not exist", Exq,
+      enqueue: fn _exq, _queue, _worker, _args -> {:ok, "job_id"} end
+    ) do
       expected_response = {:accepted, "The report will be generated"}
 
       assert ReportsService.request_report(@key_nonexistent, @get_list_function) ==
                expected_response
     end
 
-    test_with_mock "returns :too_early if report is being generated", Exq,
-      enqueue: fn _exq, _queue, _worker, _args -> {:ok, "job_id"} end do
+    test_with_mock("returns :too_early if report is being generated", Exq,
+      enqueue: fn _exq, _queue, _worker, _args -> {:ok, "job_id"} end
+    ) do
       expected_response = {:too_early, "This report is still being generated"}
 
       assert ReportsService.request_report(@key_generating, @get_list_function) ==
                expected_response
     end
 
-    test_with_mock "returns error message when there is an error enqueing the job", Exq,
-      enqueue: fn _exq, _queue, _worker, _args -> {:error, "error_reason"} end do
+    test_with_mock("returns error message when there is an error enqueing the job", Exq,
+      enqueue: fn _exq, _queue, _worker, _args -> {:error, "error_reason"} end
+    ) do
       expected_response = {:error, "There was an error trying to generate the report"}
 
       assert ReportsService.request_report(@key_nonexistent, @get_list_function) ==
