@@ -1,8 +1,7 @@
 defmodule Myapp.Services.CsvFormatService do
   def get_csv_string(data) do
-    with {:ok, matrix} <- get_matrix(data) do
-      {:ok, matrix_to_csv(matrix)}
-    else
+    case get_matrix(data) do
+      {:ok, matrix} -> {:ok, matrix_to_csv(matrix)}
       {:error, reason} -> {:error, reason}
       any -> {:error, any}
     end
