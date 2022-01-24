@@ -14,7 +14,6 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
 
   setup_with_mocks([
     {RedisService, [],
-     start_link: fn -> {:ok, "redis_client"} end,
      set: fn _key, _data -> :ok end,
      set: fn _key, _data, _expiration -> :ok end,
      del: fn _key -> :ok end},

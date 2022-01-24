@@ -6,8 +6,6 @@ defmodule Myapp.Services.RedisServiceTest do
   alias Myapp.Services.RedisService
 
   setup_all do
-    RedisService.start_link()
-
     %{
       client: "valid_client",
       key: "valid_key",

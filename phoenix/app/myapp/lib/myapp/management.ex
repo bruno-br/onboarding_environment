@@ -32,8 +32,6 @@ defmodule Myapp.Management do
   Raises `Ecto.NoResultsError` if the Product does not exist.
   """
   def get_product(id) do
-    RedisService.start_link()
-
     product_key = "product_" <> to_string(id)
 
     case load_product_from_cache(product_key) do

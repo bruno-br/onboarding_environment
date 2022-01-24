@@ -3,8 +3,6 @@ defmodule Myapp.Workers.GenerateReportWorker do
   alias Myapp.Services.CsvFormatService
 
   def perform(report_title, get_list_function, expiration_in_seconds \\ 60) do
-    RedisService.start_link()
-
     with :ok <- set_report_status(report_title, :generating, expiration_in_seconds),
          list <- get_list(get_list_function),
          {:ok, report_data} <- generate_report_data(list),

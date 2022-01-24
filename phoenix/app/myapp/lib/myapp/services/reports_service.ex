@@ -1,7 +1,6 @@
 defmodule Myapp.Services.ReportsService do
   alias Myapp.Services.RedisService
   alias Myapp.Workers.GenerateReportWorker
-  alias Myapp.Management
 
   def request_report(report_title, get_list_function) do
     with {:ok, :completed} <- get_report_status(report_title),
@@ -19,10 +18,7 @@ defmodule Myapp.Services.ReportsService do
     end
   end
 
-  defp get_report_status(report_title) do
-    RedisService.start_link()
-    RedisService.get("#{report_title}_status")
-  end
+  defp get_report_status(report_title), do: RedisService.get("#{report_title}_status")
 
   defp get_saved_report(report_title) do
     case File.read("#{report_title}.csv") do
@@ -34,7 +30,7 @@ defmodule Myapp.Services.ReportsService do
   defp enqueue_report(report_title, get_list_function) do
     case Exq.enqueue(Exq, "report", GenerateReportWorker, [report_title, get_list_function]) do
       {:ok, _jid} -> {:accepted, "The report will be generated"}
-      error -> {:error, "There was an error trying to generate the report"}
+      _error -> {:error, "There was an error trying to generate the report"}
     end
   end
 end

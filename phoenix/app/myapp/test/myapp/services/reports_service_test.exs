@@ -14,7 +14,6 @@ defmodule Myapp.Services.ReportsServiceTest do
 
   setup_with_mocks([
     {RedisService, [],
-     start_link: fn -> {:ok, "redis_client"} end,
      get: fn
        "#{@key_completed}_status" -> {:ok, :completed}
        "#{@key_generating}_status" -> {:ok, :generating}
