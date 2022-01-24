@@ -32,17 +32,17 @@ defmodule Myapp.Management do
   Raises `Ecto.NoResultsError` if the Product does not exist.
   """
   def get_product(id) do
-    client = RedisService.start()
+    RedisService.start_link()
 
     product_key = "product_" <> to_string(id)
 
-    case load_product_from_cache(client, product_key) do
+    case load_product_from_cache(product_key) do
       {:ok, product} ->
         product
 
       {:error, :not_found} ->
         product = Repo.get(Product, id)
-        save_product_on_cache(client, product_key, product)
+        save_product_on_cache(product_key, product)
         product
 
       _ ->
@@ -96,14 +96,14 @@ defmodule Myapp.Management do
   def change_product(%Product{} = product, attrs \\ %{}),
     do: Product.changeset(product, attrs)
 
-  defp save_product_on_cache(client, key, %Product{} = product),
-    do: RedisService.set(client, key, product)
+  defp save_product_on_cache(key, %Product{} = product),
+    do: RedisService.set(key, product)
 
-  defp save_product_on_cache(_client, _key, _any),
+  defp save_product_on_cache(_key, _any),
     do: :error
 
-  defp load_product_from_cache(client, key),
-    do: RedisService.get(client, key)
+  defp load_product_from_cache(key),
+    do: RedisService.get(key)
 
   defp list_products_on_els([{_key, _value} | _] = filters),
     do: ElasticsearchService.search("products", filters)

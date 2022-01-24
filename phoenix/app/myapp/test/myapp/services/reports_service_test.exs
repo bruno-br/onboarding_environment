@@ -14,13 +14,13 @@ defmodule Myapp.Services.ReportsServiceTest do
 
   setup_with_mocks([
     {RedisService, [],
-     start: fn -> "redis_client" end,
+     start_link: fn -> {:ok, "redis_client"} end,
      get: fn
-       _client, "#{@key_completed}_status" -> {:ok, :completed}
-       _client, "#{@key_generating}_status" -> {:ok, :generating}
-       _client, "#{@key_nonexistent}_status" -> {:error, :not_found}
+       "#{@key_completed}_status" -> {:ok, :completed}
+       "#{@key_generating}_status" -> {:ok, :generating}
+       "#{@key_nonexistent}_status" -> {:error, :not_found}
      end,
-     set: fn _redis_client, _key, _data -> :ok end},
+     set: fn _key, _data -> :ok end},
     {File, [], read: fn _path -> {:ok, @report_data} end}
   ]) do
     :ok

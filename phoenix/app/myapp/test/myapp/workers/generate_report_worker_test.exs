@@ -14,10 +14,10 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
 
   setup_with_mocks([
     {RedisService, [],
-     start: fn -> "redis_client" end,
-     set: fn _redis_client, _key, _data -> :ok end,
-     set: fn _redis_client, _key, _data, _expiration -> :ok end,
-     del: fn _redis_client, _key -> :ok end},
+     start_link: fn -> {:ok, "redis_client"} end,
+     set: fn _key, _data -> :ok end,
+     set: fn _key, _data, _expiration -> :ok end,
+     del: fn _key -> :ok end},
     {CsvFormatService, [],
      get_csv_string: fn
        @valid_list -> {:ok, @csv_formated}
@@ -50,11 +50,11 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
       GenerateReportWorker.perform(report_title, get_list_function, expiration_time)
 
       assert_called(
-        RedisService.set("redis_client", report_status_key, :generating, expiration_time)
+        RedisService.set(report_status_key, :generating, expiration_time)
       )
 
       assert_called(
-        RedisService.set("redis_client", report_status_key, :completed, expiration_time)
+        RedisService.set(report_status_key, :completed, expiration_time)
       )
     end
 
@@ -64,7 +64,7 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
 
       GenerateReportWorker.perform(report_title, "invalid_arg")
 
-      assert_called(RedisService.del("redis_client", report_status_key))
+      assert_called(RedisService.del(report_status_key))
     end
 
     test "creates new csv file with correct name and data" do

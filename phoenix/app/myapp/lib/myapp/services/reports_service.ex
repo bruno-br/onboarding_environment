@@ -19,8 +19,10 @@ defmodule Myapp.Services.ReportsService do
     end
   end
 
-  defp get_report_status(report_title),
-    do: RedisService.get(RedisService.start(), "#{report_title}_status")
+  defp get_report_status(report_title) do
+    RedisService.start_link()
+    RedisService.get("#{report_title}_status")
+  end
 
   defp get_saved_report(report_title) do
     case File.read("#{report_title}.csv") do
