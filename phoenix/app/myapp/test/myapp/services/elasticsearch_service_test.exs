@@ -16,10 +16,11 @@ defmodule Myapp.Services.ElasticsearchServiceTest do
   end
 
   setup_with_mocks([
-    {Tirexs.HTTP, [], post: fn _document, data -> els_sucessful_response_mock(data) end},
-    {Tirexs.HTTP, [], get: fn _document -> els_sucessful_response_mock("search_result") end},
-    {Tirexs.HTTP, [], delete: fn _index -> els_sucessful_response_mock() end},
-    {Tirexs.HTTP, [], put: fn _index -> els_sucessful_response_mock() end}
+    {Tirexs.HTTP, [],
+     post: fn _document, data -> els_sucessful_response_mock(data) end,
+     get: fn _document -> els_sucessful_response_mock("search_result") end,
+     delete: fn _index -> els_sucessful_response_mock() end,
+     put: fn _index -> els_sucessful_response_mock() end}
   ]) do
     :ok
   end
