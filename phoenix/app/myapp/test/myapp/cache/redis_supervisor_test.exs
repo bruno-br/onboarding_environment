@@ -29,6 +29,7 @@ defmodule Myapp.Cache.RedisSupervisorTest do
       children = [
         Myapp.Cache.RedisServer
       ]
+
       assert RedisSupervisor.init(:ok) == @init_success_response
       assert_called(Supervisor.init(children, strategy: :one_for_one))
     end

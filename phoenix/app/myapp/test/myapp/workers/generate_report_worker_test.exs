@@ -48,13 +48,9 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
 
       GenerateReportWorker.perform(report_title, get_list_function, expiration_time)
 
-      assert_called(
-        RedisService.set(report_status_key, :generating, expiration_time)
-      )
+      assert_called(RedisService.set(report_status_key, :generating, expiration_time))
 
-      assert_called(
-        RedisService.set(report_status_key, :completed, expiration_time)
-      )
+      assert_called(RedisService.set(report_status_key, :completed, expiration_time))
     end
 
     test "deletes key from redis if there is an error generating the report" do
