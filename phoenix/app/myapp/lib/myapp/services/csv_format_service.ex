@@ -3,7 +3,6 @@ defmodule Myapp.Services.CsvFormatService do
     case get_matrix(data) do
       {:ok, matrix} -> {:ok, matrix_to_csv(matrix)}
       {:error, reason} -> {:error, reason}
-      any -> {:error, any}
     end
   end
 
