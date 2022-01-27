@@ -33,10 +33,12 @@ defmodule Mailer.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:gettext, "~> 0.11"},
+      {:mock, "~> 0.3.0", only: :test},
       {:phoenix, "~> 1.5.13"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
-      {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"}
     ]
