@@ -1,4 +1,4 @@
-defmodule MailerApp.Management.Email do
+defmodule MailerApp.Email do
   import Bamboo.Email
 
   def report_email() do
