@@ -40,7 +40,8 @@ defmodule MailerApp.MixProject do
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:jason, "~> 1.0"},
-      {:bamboo, "~> 0.8"},
+      {:bamboo, "~> 1.5"},
+      {:bamboo_smtp, "~> 3.0.0"},
       {:plug_cowboy, "~> 2.0"}
     ]
   end
