@@ -5,6 +5,10 @@ defmodule MailerWeb.Router do
     plug :accepts, ["json"]
   end
 
+  if Mix.env == :dev do
+    forward "/sent_emails", Bamboo.EmailPreviewPlug
+  end
+
   scope "/", MailerWeb do
     pipe_through :api
     resources("/send_email", SendEmailController, only: [:index])

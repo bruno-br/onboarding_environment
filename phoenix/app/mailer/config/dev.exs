@@ -19,16 +19,7 @@ config :mailer, MailerWeb.Endpoint,
   http: [port: 4444],
   debug_errors: true,
   code_reloader: true,
-  check_origin: false,
-  watchers: [
-    node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
-      cd: Path.expand("../assets", __DIR__)
-    ]
-  ]
+  check_origin: false
 
 # ## SSL Support
 #
@@ -56,6 +47,9 @@ config :mailer, MailerWeb.Endpoint,
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
+
+config :mailer, Mailer.Mailer,
+  adapter: Bamboo.LocalAdapter
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.

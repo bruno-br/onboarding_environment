@@ -20,7 +20,7 @@ defmodule Mailer.MixProject do
   def application do
     [
       mod: {Mailer.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :bamboo]
     ]
   end
 
@@ -40,6 +40,7 @@ defmodule Mailer.MixProject do
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:jason, "~> 1.0"},
+      {:bamboo, "~> 0.8"},
       {:plug_cowboy, "~> 2.0"}
     ]
   end
