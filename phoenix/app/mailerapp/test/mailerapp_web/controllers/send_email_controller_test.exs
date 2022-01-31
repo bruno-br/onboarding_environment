@@ -10,11 +10,18 @@ defmodule MailerAppWeb.SendEmailControllerTest do
   end
 
   describe "index/1" do
-    test_with_mock("returns 200 status code", %{conn: conn}, SendEmailService, [],
+    test_with_mock("returns 200 status code if SendEmailService.send is successful", %{conn: conn}, SendEmailService, [],
       send: fn _data -> {:ok, "message"} end
     ) do
       conn = post(conn, Routes.send_email_path(conn, :handle))
       response(conn, 200)
     end
+
+   test_with_mock("return 500 if there is an error on SendEmailService.send", %{conn: conn}, SendEmailService, [],
+    send: fn _data -> {:error, "any error"} end
+   ) do
+    conn = post(conn, Routes.send_email_path(conn, :handle))
+    response(conn, 500)
+   end
   end
 end
