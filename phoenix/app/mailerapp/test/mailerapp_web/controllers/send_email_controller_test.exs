@@ -5,11 +5,13 @@ defmodule MailerAppWeb.SendEmailControllerTest do
 
   import Mock
 
+  @send_email_params %{"from" => "from@mail.com", "to" => "to@mail.com"}
+
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
-  describe "index/1" do
+  describe "handle/2" do
     test_with_mock("returns 200 status code if SendEmailService.send is successful", %{conn: conn}, SendEmailService, [],
       send: fn _data -> {:ok, "message"} end
     ) do
@@ -24,4 +26,11 @@ defmodule MailerAppWeb.SendEmailControllerTest do
     response(conn, 500)
    end
   end
+
+ test_with_mock("send correct params to SendEmailService.send", %{conn: conn}, SendEmailService, [],
+  send: fn _data -> {:ok, "message"} end
+ ) do
+  conn = post(conn, Routes.send_email_path(conn, :handle), @send_email_params)
+  assert_called(SendEmailService.send(@send_email_params))
+ end
 end
