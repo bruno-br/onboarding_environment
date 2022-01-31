@@ -7,6 +7,6 @@ defmodule MailerAppWeb.Router do
 
   scope "/", MailerAppWeb do
     pipe_through :api
-    resources("/send_email", SendEmailController, only: [:index])
+    post("/send_email", SendEmailController, :handle)
   end
 end
