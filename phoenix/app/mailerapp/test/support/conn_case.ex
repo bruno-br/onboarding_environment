@@ -1,5 +1,4 @@
 defmodule MailerAppWeb.ConnCase do
-
   use ExUnit.CaseTemplate
 
   using do
