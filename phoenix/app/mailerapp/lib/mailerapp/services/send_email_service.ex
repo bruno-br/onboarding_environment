@@ -8,6 +8,8 @@ defmodule MailerApp.Services.SendEmailService do
     |> Mailer.deliver_later()
 
     {:ok, "Email sent successfully"}
+  rescue
+    _ -> {:error, "There was an error trying to send the email"}
   end
 
   defp map_string_keys_to_atoms(map_string_keys),
