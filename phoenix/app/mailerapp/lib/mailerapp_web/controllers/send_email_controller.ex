@@ -7,7 +7,7 @@ defmodule MailerAppWeb.SendEmailController do
   def handle(conn, params) do
     case SendEmailService.send(params) do
       {:ok, message} -> send_resp(conn, :ok, message)
-      _ -> send_resp(conn, :internal_server_error, "There was an error trying to send the email")
+      {:error, reason} -> send_resp(conn, :internal_server_error, reason)
     end
   end
 end
