@@ -26,5 +26,10 @@ defmodule MailerApp.Services.SendEmailServiceTest do
       expected_response = {:ok, "Email sent successfully"}
       assert SendEmailService.send(@email_params_string) == expected_response
     end
+
+    test "returns error message if there is an error" do
+      expected_response = {:error, "There was an error trying to send the email"}
+      assert SendEmailService.send(@email_params_atom) == expected_response
+    end
   end
 end
