@@ -1,14 +1,8 @@
 defmodule MailerApp.Email do
   import Bamboo.Email
 
-  def report_email() do
-    new_email(
-      from: "from@mail.com",
-      to: "to@mail.com",
-      subject: "Report",
-      text_body: "Report text body",
-      html_body: "Report html body"
-    )
+  def create(%{from: from, html_body: html_body, subject: subject, text_body: text_body, to: to} = email_params) do
+    new_email(email_params)
   end
 
 end
