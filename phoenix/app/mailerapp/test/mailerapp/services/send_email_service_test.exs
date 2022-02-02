@@ -23,7 +23,7 @@ defmodule MailerApp.Services.SendEmailServiceTest do
 
   describe "send/1" do
     test "returns success message if there were no errors" do
-      expected_response = {:ok, "Email sent successfully"}
+      expected_response = {:accepted, "The Email is going to be sent"}
       assert SendEmailService.send(@email_params_string) == expected_response
     end
 

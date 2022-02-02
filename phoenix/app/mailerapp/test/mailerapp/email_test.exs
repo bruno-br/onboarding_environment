@@ -29,7 +29,7 @@ defmodule MailerApp.EmailTest do
       assert Email.create(@email_params) == @valid_email
     end
 
-    test("calls Bamboo.Email new_email function") do
+    test("calls Bamboo.Email new_email/1 function") do
       Email.create(@email_params)
       assert_called(Bamboo.Email.new_email(@email_params))
     end

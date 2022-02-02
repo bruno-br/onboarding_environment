@@ -7,7 +7,7 @@ defmodule MailerAppWeb.SendEmailControllerTest do
 
   @send_email_params %{"from" => "from@mail.com", "to" => "to@mail.com"}
   @send_email_error_response {:error, "There was an error trying to send the email"}
-  @send_email_success_response {:ok, "Email sent successfully"}
+  @send_email_success_response {:accepted, "The Email is going to be sent"}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -15,14 +15,14 @@ defmodule MailerAppWeb.SendEmailControllerTest do
 
   describe "handle/2" do
     test_with_mock(
-      "returns 200 status code if SendEmailService.send is successful",
+      "returns 202 status code if SendEmailService.send is successful",
       %{conn: conn},
       SendEmailService,
       [],
       send: fn _data -> @send_email_success_response end
     ) do
       conn = post(conn, Routes.send_email_path(conn, :handle))
-      response(conn, 200)
+      response(conn, 202)
     end
 
     test_with_mock(

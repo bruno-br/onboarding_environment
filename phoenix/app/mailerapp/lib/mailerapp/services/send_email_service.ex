@@ -7,7 +7,7 @@ defmodule MailerApp.Services.SendEmailService do
     |> Email.create()
     |> Mailer.deliver_later()
 
-    {:ok, "Email sent successfully"}
+    {:accepted, "The Email is going to be sent"}
   rescue
     _ -> {:error, "There was an error trying to send the email"}
   end
