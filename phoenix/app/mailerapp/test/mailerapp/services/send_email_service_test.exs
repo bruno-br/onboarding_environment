@@ -31,5 +31,11 @@ defmodule MailerApp.Services.SendEmailServiceTest do
       expected_response = {:error, "There was an error trying to send the email"}
       assert SendEmailService.send(@email_params_atom) == expected_response
     end
+
+    test "calls Email.create/1 and Mailer.deliver_later/1 with correct params" do
+      SendEmailService.send(@email_params_string)
+      assert_called(Email.create(@email_params_atom))
+      assert_called(Mailer.deliver_later(@valid_email))
+    end
   end
 end
