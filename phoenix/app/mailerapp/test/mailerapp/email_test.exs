@@ -5,15 +5,33 @@ defmodule MailerApp.EmailTest do
 
   import Mock
 
-  @email_params %{from: "from", html_body: "html_body", subject: "subject", text_body: "text_body", to: "to"}
+  @email_params %{
+    from: "from",
+    html_body: "html_body",
+    subject: "subject",
+    text_body: "text_body",
+    to: "to"
+  }
+  @valid_email "valid_email"
 
-  describe "create/1" do
-   test_with_mock("calls Bamboo.Email new_email function", %{}, Bamboo.Email, [],
-     new_email: fn @email_params -> "valid_email" end
-   ) do
-    Email.create(@email_params)
-    assert_called(Bamboo.Email.new_email(@email_params))
-   end
+  setup_with_mocks([
+    {
+      Bamboo.Email,
+      [],
+      new_email: fn @email_params -> @valid_email end
+    }
+  ]) do
+    :ok
   end
 
+  describe "create/1" do
+    test("returns valid_email on success") do
+      assert Email.create(@email_params) == @valid_email
+    end
+
+    test("calls Bamboo.Email new_email function") do
+      Email.create(@email_params)
+      assert_called(Bamboo.Email.new_email(@email_params))
+    end
+  end
 end
