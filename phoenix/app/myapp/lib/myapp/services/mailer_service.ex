@@ -1,16 +1,7 @@
 defmodule Myapp.Services.MailerService do
-  def send_email() do
+  def send_email(body) do
     url = get_send_email_url()
     headers = get_default_headers()
-
-    body = %{
-      from: "hattie.block86@ethereal.email",
-      to: "ascrvf7j5vfyc46y@ethereal.email",
-      subject: "Email Subject",
-      text_body: "Email text body",
-      html_body: "Email html body"
-    }
-
     encoded_body = encode_body(body)
 
     HTTPoison.post(url, encoded_body, headers, [])
