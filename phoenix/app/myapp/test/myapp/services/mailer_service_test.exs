@@ -21,7 +21,14 @@ defmodule Myapp.Services.MailerServiceTest do
       post: fn _url, _body, _headers, _opts -> @response_accepted end
     ) do
       expected_response = {:ok, @response_body_success}
-      assert MailerService.send_email(%{}) == expected_response
+      assert MailerService.send_email(@request_body) == expected_response
+    end
+
+    test_with_mock("calls HTTPoison.post/4 function", HTTPoison, [],
+      post: fn _url, _body, _headers, _opts -> @response_accepted end
+    ) do
+      MailerService.send_email(@request_body)
+      assert_called(HTTPoison.post(:_, :_, :_, []))
     end
   end
 end
