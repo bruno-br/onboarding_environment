@@ -22,6 +22,8 @@ config :myapp, MyappWeb.Endpoint,
 
 config :myapp, Myapp.Elasticsearch, index: "my_index"
 
+config :myapp, MailerApi, url: "localhost:4444"
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

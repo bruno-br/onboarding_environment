@@ -20,5 +20,7 @@ config :myapp, MyappWeb.Endpoint,
 
 config :myapp, Myapp.Elasticsearch, index: "my_index_test"
 
+config :myapp, MailerApi, url: "localhost:4444"
+
 # Print only warnings and errors during test
 config :logger, level: :warn
