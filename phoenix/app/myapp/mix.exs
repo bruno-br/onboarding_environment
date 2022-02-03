@@ -20,7 +20,7 @@ defmodule Myapp.MixProject do
   def application do
     [
       mod: {Myapp.Application, []},
-      extra_applications: [:logger, :runtime_tools, :tirexs, :exq]
+      extra_applications: [:logger, :runtime_tools, :tirexs, :exq, :httpoison]
     ]
   end
 
@@ -49,7 +49,8 @@ defmodule Myapp.MixProject do
       {:mock, "~> 0.3.0", only: :test},
       {:exq, "~> 0.9"},
       {:exq_ui, "~> 0.10.0"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 
