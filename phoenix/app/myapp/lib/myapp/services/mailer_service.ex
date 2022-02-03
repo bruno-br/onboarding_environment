@@ -4,7 +4,11 @@ defmodule Myapp.Services.MailerService do
     headers = get_default_headers()
     encoded_body = encode_body(body)
 
-    HTTPoison.post(url, encoded_body, headers, [])
+    case HTTPoison.post(url, encoded_body, headers, []) do
+      {:ok, %HTTPoison.Response{body: response_body, status_code: 202}} -> {:ok, response_body}
+      {:ok, %HTTPoison.Response{body: response_body}} -> {:error, response_body}
+      error -> error
+    end
   end
 
   defp get_mailer_base_url(), do: Application.get_env(:myapp, MailerApi)[:url]
