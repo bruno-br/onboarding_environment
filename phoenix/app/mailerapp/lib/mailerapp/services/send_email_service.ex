@@ -12,6 +12,14 @@ defmodule MailerApp.Services.SendEmailService do
     _ -> {:error, "There was an error trying to send the email"}
   end
 
-  defp map_string_keys_to_atoms(map_string_keys),
-    do: for({key, val} <- map_string_keys, into: %{}, do: {String.to_existing_atom(key), val})
+  defp map_string_keys_to_atoms(%{} = map_string_keys),
+    do:
+      for(
+        {key, val} <- map_string_keys,
+        into: %{},
+        do: {String.to_existing_atom(key), map_string_keys_to_atoms(val)}
+      )
+
+  defp map_string_keys_to_atoms(not_a_map),
+    do: not_a_map
 end
