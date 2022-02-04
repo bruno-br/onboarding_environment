@@ -5,6 +5,7 @@ defmodule Myapp.Services.ReportsMailerServiceTest do
 
   import Mock
 
+  @attachment %{content_type: "text/csv", filename: "report.csv", data: "data"}
   @success_response {:ok, "Email sent successfully"}
 
   setup_with_mocks([
@@ -18,12 +19,12 @@ defmodule Myapp.Services.ReportsMailerServiceTest do
 
   describe "send_email/2" do
     test "calls MailerService.send_email/1" do
-      ReportsMailerService.send_email()
+      ReportsMailerService.send_email("report title", @attachment)
       assert_called(MailerService.send_email(:_))
     end
 
     test "returns response from MailerService.send_email/1" do
-      assert ReportsMailerService.send_email() == @success_response
+      assert ReportsMailerService.send_email("report title", @attachment) == @success_response
     end
   end
 end
