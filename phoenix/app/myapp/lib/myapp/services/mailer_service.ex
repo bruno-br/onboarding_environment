@@ -17,8 +17,11 @@ defmodule Myapp.Services.MailerService do
 
   defp get_default_headers(), do: [{"Content-type", "application/json"}]
 
-  defp encode_body(%{} = map), do: "{ #{format_keys_and_values(map)} }"
+  defp encode_body(%{} = map), do: format_keys_and_values(map)
 
   defp format_keys_and_values(%{} = map),
-    do: Enum.map_join(map, ", ", fn {key, val} -> ~s{"#{key}": "#{val}"} end)
+    do: "{" <> Enum.map_join(map, ", ", fn {key, val} -> "\"#{key}\": #{format_keys_and_values(val)}" end) <> "}"
+
+  defp format_keys_and_values(not_a_map),
+    do: "\"#{not_a_map}\""
 end
