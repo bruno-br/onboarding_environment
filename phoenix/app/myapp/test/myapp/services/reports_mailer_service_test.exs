@@ -16,7 +16,7 @@ defmodule Myapp.Services.ReportsMailerServiceTest do
     :ok
   end
 
-  describe "send_email/0" do
+  describe "send_email/2" do
     test "calls MailerService.send_email/1" do
       ReportsMailerService.send_email()
       assert_called(MailerService.send_email(:_))
