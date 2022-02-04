@@ -12,13 +12,15 @@ defmodule MailerApp.EmailTest do
     text_body: "text_body",
     to: "to"
   }
+  @attachment %{content_type: "text/csv", filename: "file.csv", data: "data"}
   @valid_email "valid_email"
 
   setup_with_mocks([
     {
       Bamboo.Email,
       [],
-      new_email: fn @email_params -> @valid_email end
+      new_email: fn @email_params -> @valid_email end,
+      put_attachment: fn _email, _attachment -> @valid_email end
     }
   ]) do
     :ok
@@ -29,9 +31,15 @@ defmodule MailerApp.EmailTest do
       assert Email.create(@email_params) == @valid_email
     end
 
-    test("calls Bamboo.Email new_email/1 function") do
+    test("calls Bamboo.Email.new_email/1 function") do
       Email.create(@email_params)
       assert_called(Bamboo.Email.new_email(@email_params))
+    end
+
+    test("calls Bamboo.Email.put_attachment/2 when params contains attachment") do
+      email_params_with_attachment = Map.merge(@email_params, %{attachment: @attachment})
+      Email.create(email_params_with_attachment)
+      assert_called(Bamboo.Email.put_attachment(@valid_email, :_))
     end
   end
 end
