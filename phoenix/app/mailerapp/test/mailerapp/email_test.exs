@@ -41,5 +41,10 @@ defmodule MailerApp.EmailTest do
       Email.create(email_params_with_attachment)
       assert_called(Bamboo.Email.put_attachment(@valid_email, :_))
     end
+
+    test("does not call Bamboo.Email.put_attachment/2 when params does not contain attachment") do
+      Email.create(@email_params)
+      assert_not_called(Bamboo.Email.put_attachment(@valid_email, :_))
+    end
   end
 end
