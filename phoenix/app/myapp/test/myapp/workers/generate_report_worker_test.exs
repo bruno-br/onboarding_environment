@@ -71,6 +71,15 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
 
       assert_called(File.write(expected_file_name, expected_file_data))
     end
+
+    test "sends email with correct report title and data" do
+      {report_title, get_list_function} = get_report_mock_data()
+      attachment = %{content_type: "text/csv", filename: "#{report_title}.csv", data: @csv_formated}
+
+      GenerateReportWorker.perform(report_title, get_list_function)
+
+      assert_called(ReportsMailerService.send_email(report_title, attachment))
+    end
   end
 
   defp get_report_mock_data() do
