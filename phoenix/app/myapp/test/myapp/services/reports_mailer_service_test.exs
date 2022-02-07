@@ -12,7 +12,7 @@ defmodule Myapp.Services.ReportsMailerServiceTest do
     {MailerService, [],
      send_email: fn
        _body -> @success_response
-     end}
+     end},{Base, [], encode16: fn _data -> "encoded_data" end}
   ]) do
     :ok
   end
@@ -26,5 +26,10 @@ defmodule Myapp.Services.ReportsMailerServiceTest do
     test "returns response from MailerService.send_email/1" do
       assert ReportsMailerService.send_email("report title", @attachment) == @success_response
     end
+
+   test "encodes attachment data before sending" do
+    ReportsMailerService.send_email("report title", @attachment)
+    assert_called(Base.encode16(@attachment[:data]))
+   end
   end
 end
