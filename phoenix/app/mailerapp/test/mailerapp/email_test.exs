@@ -21,7 +21,7 @@ defmodule MailerApp.EmailTest do
       [],
       new_email: fn @email_params -> @valid_email end,
       put_attachment: fn _email, _attachment -> @valid_email end
-    }
+    },{Base, decode16, fn _encoded_data -> "data"}
   ]) do
     :ok
   end
@@ -45,6 +45,11 @@ defmodule MailerApp.EmailTest do
     test("does not call Bamboo.Email.put_attachment/2 when params does not contain attachment") do
       Email.create(@email_params)
       assert_not_called(Bamboo.Email.put_attachment(@valid_email, :_))
+    end
+
+    test("decodes attachment data") do
+      Email.create(@email_params)
+      assert_called(Base.decode16(@attachment[:data]))
     end
   end
 end
