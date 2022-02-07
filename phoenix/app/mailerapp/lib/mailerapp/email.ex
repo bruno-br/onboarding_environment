@@ -12,10 +12,12 @@ defmodule MailerApp.Email do
     email =
       create(%{from: from, html_body: html_body, subject: subject, text_body: text_body, to: to})
 
+    decoded_data = decode_attachment_data(data)
+
     put_attachment(email, %Bamboo.Attachment{
       content_type: content_type,
       filename: filename,
-      data: data
+      data: decoded_data
     })
   end
 
@@ -24,5 +26,12 @@ defmodule MailerApp.Email do
           email_params
       ) do
     new_email(email_params)
+  end
+
+  defp decode_attachment_data(data) do
+    case Base.decode16(data) do
+      {:ok, decoded_data} -> decoded_data
+      _error -> data
+    end
   end
 end
