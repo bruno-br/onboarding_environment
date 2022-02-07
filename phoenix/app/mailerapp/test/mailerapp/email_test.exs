@@ -13,6 +13,7 @@ defmodule MailerApp.EmailTest do
     to: "to"
   }
   @attachment %{content_type: "text/csv", filename: "file.csv", data: "data"}
+  @email_params_with_attachment Map.merge(@email_params, %{attachment: @attachment})
   @valid_email "valid_email"
 
   setup_with_mocks([
@@ -21,7 +22,8 @@ defmodule MailerApp.EmailTest do
       [],
       new_email: fn @email_params -> @valid_email end,
       put_attachment: fn _email, _attachment -> @valid_email end
-    },{Base, decode16, fn _encoded_data -> "data"}
+    },
+    {Base, [], decode16: fn _encoded_data -> "data" end}
   ]) do
     :ok
   end
@@ -37,8 +39,7 @@ defmodule MailerApp.EmailTest do
     end
 
     test("calls Bamboo.Email.put_attachment/2 when params contains attachment") do
-      email_params_with_attachment = Map.merge(@email_params, %{attachment: @attachment})
-      Email.create(email_params_with_attachment)
+      Email.create(@email_params_with_attachment)
       assert_called(Bamboo.Email.put_attachment(@valid_email, :_))
     end
 
@@ -48,7 +49,7 @@ defmodule MailerApp.EmailTest do
     end
 
     test("decodes attachment data") do
-      Email.create(@email_params)
+      Email.create(@email_params_with_attachment)
       assert_called(Base.decode16(@attachment[:data]))
     end
   end
