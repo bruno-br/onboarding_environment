@@ -23,5 +23,7 @@ defmodule Myapp.Services.MailerService do
     do: "{" <> Enum.map_join(map, ", ", fn {key, val} -> "\"#{key}\": #{format_keys_and_values(val)}" end) <> "}"
 
   defp format_keys_and_values(not_a_map),
-    do: "\"#{not_a_map}\""
+    do: "\"#{format_value(not_a_map)}\""
+
+  defp format_value(value), do: String.replace(value, "\"", "\\\"")
 end
