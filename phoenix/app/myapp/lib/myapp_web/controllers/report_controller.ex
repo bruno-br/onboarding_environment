@@ -3,7 +3,6 @@ defmodule MyappWeb.ReportController do
   use Plug.ErrorHandler
 
   alias Myapp.Management
-  alias Myapp.Management.Product
   alias Myapp.Services.ProductsReportsService
 
   action_fallback(MyappWeb.FallbackController)

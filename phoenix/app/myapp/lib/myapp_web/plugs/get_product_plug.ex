@@ -7,7 +7,6 @@ defmodule MyappWeb.Plugs.GetProductPlug do
   import Plug.Conn
 
   alias Myapp.Management
-  alias Myapp.Management.Product
 
   def init(props) do
     props

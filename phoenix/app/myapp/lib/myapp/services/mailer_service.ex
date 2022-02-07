@@ -20,7 +20,10 @@ defmodule Myapp.Services.MailerService do
   defp encode_body(%{} = map), do: format_keys_and_values(map)
 
   defp format_keys_and_values(%{} = map),
-    do: "{" <> Enum.map_join(map, ", ", fn {key, val} -> "\"#{key}\": #{format_keys_and_values(val)}" end) <> "}"
+    do:
+      "{" <>
+        Enum.map_join(map, ", ", fn {key, val} -> "\"#{key}\": #{format_keys_and_values(val)}" end) <>
+        "}"
 
   defp format_keys_and_values(not_a_map),
     do: "\"#{format_value(not_a_map)}\""

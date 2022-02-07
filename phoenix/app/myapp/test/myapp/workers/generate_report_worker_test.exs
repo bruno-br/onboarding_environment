@@ -22,7 +22,8 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
        _invalid_list -> {:error, "invalid_list"}
      end},
     {File, [], write: fn _path, _data -> :ok end},
-    {ReportsMailerService, [], send_email: fn _title, _attachment -> {:ok, "Email sent successfully"} end}
+    {ReportsMailerService, [],
+     send_email: fn _title, _attachment -> {:ok, "Email sent successfully"} end}
   ]) do
     :ok
   end
@@ -74,7 +75,12 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
 
     test "sends email with correct report title and data" do
       {report_title, get_list_function} = get_report_mock_data()
-      attachment = %{content_type: "text/csv", filename: "#{report_title}.csv", data: @csv_formated}
+
+      attachment = %{
+        content_type: "text/csv",
+        filename: "#{report_title}.csv",
+        data: @csv_formated
+      }
 
       GenerateReportWorker.perform(report_title, get_list_function)
 

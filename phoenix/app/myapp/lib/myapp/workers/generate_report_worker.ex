@@ -7,9 +7,8 @@ defmodule Myapp.Workers.GenerateReportWorker do
          {:ok, report_data} <- generate_report_data(list),
          :ok <- save_report(report_title, report_data),
          :ok <- set_report_status(report_title, :completed, expiration_in_seconds),
-         {:ok, _message} <- send_report_email(report_title, report_data)
-        do
-        :ok
+         {:ok, _message} <- send_report_email(report_title, report_data) do
+      :ok
     else
       _error ->
         delete_report_status(report_title)
@@ -44,6 +43,10 @@ defmodule Myapp.Workers.GenerateReportWorker do
   defp get_list(_invalid_params), do: :error
 
   defp send_report_email(report_title, report_data) do
-    ReportsMailerService.send_email(report_title, %{content_type: "text/csv", filename: "#{report_title}.csv", data: report_data})
+    ReportsMailerService.send_email(report_title, %{
+      content_type: "text/csv",
+      filename: "#{report_title}.csv",
+      data: report_data
+    })
   end
 end

@@ -1,8 +1,10 @@
 defmodule Myapp.Services.ReportsMailerService do
   alias Myapp.Services.MailerService
 
-  def send_email(title, %{content_type: _content_type, filename: _filename, data: data} = attachment) do
-
+  def send_email(
+        title,
+        %{content_type: _content_type, filename: _filename, data: data} = attachment
+      ) do
     encoded_data = Base.encode16(data)
     attachment = %{attachment | data: encoded_data}
 
@@ -14,6 +16,7 @@ defmodule Myapp.Services.ReportsMailerService do
       html_body: "<h1>This Email contains a Report</h1>",
       attachment: attachment
     }
+
     MailerService.send_email(body)
   end
 end
