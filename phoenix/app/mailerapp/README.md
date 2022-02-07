@@ -14,11 +14,20 @@
 
     ```json
     {
+      // Campos obrigatorios
       "from": "from@mail.com",
 	    "to": "to@mail.com",
 	    "subject": "Email Subject",
 	    "text_body": "Report text body",
-	    "html_body": "Report html body"
+	    "html_body": "Report html body",
+
+      // Opcional
+      "attachment": {
+        "content_type": "text/csv", 
+        "filename": "sheet.csv",
+        // attachment.data precisa estar encodado em Base16
+        "data": "656E636F646564"
+      }
     }
     ```
 
