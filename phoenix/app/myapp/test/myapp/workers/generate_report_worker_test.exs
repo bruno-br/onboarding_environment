@@ -3,8 +3,7 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
 
   import Mock
 
-  alias Myapp.Services.RedisService
-  alias Myapp.Services.CsvFormatService
+  alias Myapp.Services.{RedisService, CsvFormatService, ReportsMailerService}
   alias Myapp.Workers.GenerateReportWorker
 
   @valid_list [%{a: 1}, %{a: 2}]
@@ -22,7 +21,8 @@ defmodule Myapp.Workers.GenerateReportWorkerTest do
        @valid_list -> {:ok, @csv_formated}
        _invalid_list -> {:error, "invalid_list"}
      end},
-    {File, [], write: fn _path, _data -> :ok end}
+    {File, [], write: fn _path, _data -> :ok end},
+    {ReportsMailerService, [], send_email: fn _title, _attachment -> {:ok, "Email sent successfully"} end}
   ]) do
     :ok
   end
