@@ -10,7 +10,7 @@ defmodule MailerAppWeb.SendEmailControllerTest do
   @send_email_success_response {:accepted, "The Email is going to be sent"}
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    [conn: put_req_header(conn, "accept", "application/json")]
   end
 
   describe "handle/2" do
