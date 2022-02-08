@@ -19,13 +19,9 @@ defmodule Myapp.Services.ReportsMailerServiceTest do
   end
 
   describe "send_email/2" do
-    test "calls MailerService.send_email/1" do
-      ReportsMailerService.send_email("report title", @attachment)
-      assert_called(MailerService.send_email(:_))
-    end
-
-    test "returns response from MailerService.send_email/1" do
+    test "calls and returns response from MailerService.send_email/1" do
       assert ReportsMailerService.send_email("report title", @attachment) == @success_response
+      assert_called(MailerService.send_email(:_))
     end
 
     test "encodes attachment data before sending" do
