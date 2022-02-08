@@ -40,9 +40,13 @@ defmodule Myapp.Services.MailerServiceTest do
       assert MailerService.send_email(@request_body) == expected_response
     end
 
-    test "calls HTTPoison.post/4 function" do
+    test "calls HTTPoison.post/4 function with correct params" do
+      send_email_url = Application.get_env(:myapp, MailerApi)[:url] <> "/send_email"
+      headers = [{"Content-type", "application/json"}]
+
       MailerService.send_email(@request_body)
-      assert_called(HTTPoison.post(:_, :_, :_, []))
+
+      assert_called(HTTPoison.post(send_email_url, @request_body_encoded, headers, []))
     end
 
     test "returns error message when response status code is different from 202" do
