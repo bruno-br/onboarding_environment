@@ -15,17 +15,6 @@ defmodule MailerAppWeb.SendEmailControllerTest do
 
   describe "handle/2" do
     test_with_mock(
-      "returns 202 status code if SendEmailService.send is successful",
-      %{conn: conn},
-      SendEmailService,
-      [],
-      send: fn _data -> @send_email_success_response end
-    ) do
-      conn = post(conn, Routes.send_email_path(conn, :handle))
-      response(conn, 202)
-    end
-
-    test_with_mock(
       "returns error message if there is an error on SendEmailService.send",
       %{conn: conn},
       SendEmailService,
@@ -41,13 +30,18 @@ defmodule MailerAppWeb.SendEmailControllerTest do
   end
 
   test_with_mock(
-    "send correct params to SendEmailService.send",
+    "send correct params to SendEmailService.send and return success response",
     %{conn: conn},
     SendEmailService,
     [],
     send: fn _data -> @send_email_success_response end
   ) do
-    post(conn, Routes.send_email_path(conn, :handle), @send_email_params)
+    conn = post(conn, Routes.send_email_path(conn, :handle), @send_email_params)
+
     assert_called(SendEmailService.send(@send_email_params))
+
+    {:accepted, expected_response} = @send_email_success_response
+
+    assert response(conn, 202) == expected_response
   end
 end
