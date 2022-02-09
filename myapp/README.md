@@ -1,5 +1,20 @@
 # Myapp
 
+Ambiente contendo:
+- Elixir 1.8.1
+- Mix 1.8.1
+- Phoenix 1.5.13
+
+## Uso
+
+```bash
+$ docker-compose run myapp bash
+
+$ cd myapp
+
+$ mix phx.server
+```
+
 ## Rotas
 
 - [Listar Produtos  (index)](#products_index)

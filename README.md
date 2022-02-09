@@ -11,7 +11,8 @@ docker-compose build
 ## Ambientes
 
 - [Rails](rails)
-- [Phoenix](phoenix)
+- [MyApp](myapp)
+- [MailerApp](mailerapp)
 
 ## Serviços
 

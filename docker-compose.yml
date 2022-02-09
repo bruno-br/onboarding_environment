@@ -14,12 +14,12 @@ services:
     volumes:
       - ./rails/app/:/app
 
-  phoenix:
+  myapp:
     network_mode: host
     expose:
       - 4000
     build:
-      context: ./phoenix
+      context: ./myapp
       dockerfile: Dockerfile
     tty: true
     stdin_open: true
@@ -29,7 +29,24 @@ services:
       - HEX_HTTP_CONCURRENCY=1
       - HEX_HTTP_TIMEOUT=120
     volumes:
-      - ./phoenix/app/:/app
+      - ./myapp/:/myapp
+
+  mailerapp:
+    network_mode: host
+    expose:
+      - 4444
+    build:
+      context: ./mailerapp
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    environment:
+      - TYPE=WEB
+      - PORT=4444
+      - HEX_HTTP_CONCURRENCY=1
+      - HEX_HTTP_TIMEOUT=120
+    volumes:
+      - ./mailerapp/:/mailerapp
 
   mongo:
     image: dubc/mongodb-4.0
