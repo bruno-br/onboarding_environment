@@ -32,11 +32,8 @@ defmodule MailerApp.EmailTest do
   describe "create/1" do
     test("returns valid_email on success") do
       assert Email.create(@email_params) == @valid_email
-    end
-
-    test("calls Bamboo.Email.new_email/1 function") do
-      Email.create(@email_params)
       assert_called(Bamboo.Email.new_email(@email_params))
+      assert_not_called(Bamboo.Email.put_attachment(@valid_email, :_))
     end
 
     test("calls Bamboo.Email.put_attachment/2 when an attachment is sent on params") do
@@ -49,11 +46,6 @@ defmodule MailerApp.EmailTest do
       }
 
       assert_called(Bamboo.Email.put_attachment(@valid_email, bamboo_attachment))
-    end
-
-    test("does not call Bamboo.Email.put_attachment/2 when params does not contain attachment") do
-      Email.create(@email_params)
-      assert_not_called(Bamboo.Email.put_attachment(@valid_email, :_))
     end
 
     test("decodes attachment data") do
