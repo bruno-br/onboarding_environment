@@ -20,6 +20,6 @@ RUN mix archive.install hex phx_new 1.5.13 --force
 
 WORKDIR /mailerapp
 
-EXPOSE 4000
+EXPOSE 4444
 
 CMD ["tail", "-f", "/dev/null"]

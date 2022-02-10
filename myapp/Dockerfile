@@ -20,6 +20,6 @@ RUN mix archive.install hex phx_new 1.5.13 --force
 
 WORKDIR /myapp
 
-EXPOSE 4444
+EXPOSE 4000
 
 CMD ["tail", "-f", "/dev/null"]
