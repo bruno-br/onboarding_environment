@@ -1,4 +1,6 @@
 data
 .elixir_ls
-phoenix/app/myapp/_build
-phoenix/app/myapp/deps
+myapp/myapp/_build
+myapp/myapp/deps
+mailerapp/myamailerapppp/_build
+mailerapp/mailerapp/deps
