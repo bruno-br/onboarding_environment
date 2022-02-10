@@ -51,7 +51,9 @@ defmodule MailerApp.EmailTest do
       assert_not_called(Bamboo.Email.put_attachment(@valid_email, :_))
     end
 
-    test("calls Bamboo.Email.put_attachment/2 when an attachment is sent on params", %{email_params_with_attachment: email_params_with_attachment}) do
+    test("put attachment and decode its data when it is sent on params", %{
+      email_params_with_attachment: email_params_with_attachment
+    }) do
       Email.create(email_params_with_attachment)
 
       attachment = email_params_with_attachment[:attachment]
@@ -63,13 +65,6 @@ defmodule MailerApp.EmailTest do
       }
 
       assert_called(Bamboo.Email.put_attachment(@valid_email, bamboo_attachment))
-    end
-
-    test("decodes attachment data", %{email_params_with_attachment: email_params_with_attachment}) do
-      Email.create(email_params_with_attachment)
-
-      attachment = email_params_with_attachment[:attachment]
-
       assert_called(Base.decode16(attachment[:data]))
     end
   end
