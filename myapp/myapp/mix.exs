@@ -50,7 +50,8 @@ defmodule Myapp.MixProject do
       {:exq, "~> 0.9"},
       {:exq_ui, "~> 0.10.0"},
       {:poison, "~> 3.1"},
-      {:httpoison, "~> 1.8"}
+      {:httpoison, "~> 1.8"},
+      {:sentry, "~> 8.0"}
     ]
   end
 
