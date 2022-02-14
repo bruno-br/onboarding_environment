@@ -17,7 +17,7 @@ config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
 config :sentry,
-  dsn: "http://23322d5f40914fe38ba74a89ce5fe680@127.0.0.1:9000/1",
+  dsn: "http://9c4038263a2e40e9b6fddb8736a4fbd3@127.0.0.1:9000/2",
   environment_name: :dev,
   enable_source_code_context: true,
   root_source_code_path: File.cwd!(),
