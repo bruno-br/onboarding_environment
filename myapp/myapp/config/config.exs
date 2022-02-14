@@ -53,12 +53,6 @@ config :exq_ui,
   web_namespace: "",
   server: true
 
-config :sentry,
-  dsn: "http://23322d5f40914fe38ba74a89ce5fe680@127.0.0.1:9000/1",
-  environment_name: :prod,
-  enable_source_code_context: true,
-  root_source_code_path: File.cwd!(),
-  included_environments: [:prod, :dev]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
