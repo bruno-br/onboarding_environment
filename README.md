@@ -41,4 +41,7 @@ Iniciar o RabbitMQ
 docker-compose up -d rabbitmq
 ```
 ### Sentry
-https://develop.sentry.dev/self-hosted/
+Iniciar o Sentry
+```bash
+docker-compose up -d sentry
+```

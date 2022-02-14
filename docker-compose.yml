@@ -97,3 +97,8 @@ services:
       - 15672
       - 15692
       - 5672
+
+  sentry:
+    extends:
+      file: sentry/docker-compose.yml
+      service: sentry
