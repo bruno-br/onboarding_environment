@@ -43,5 +43,5 @@ docker-compose up -d rabbitmq
 ### Sentry
 Iniciar o Sentry
 ```bash
-docker-compose up -d sentry
+docker-compose -f sentry/docker-compose.yml up -d
 ```
