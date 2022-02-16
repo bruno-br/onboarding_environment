@@ -4,3 +4,4 @@ myapp/myapp/_build
 myapp/myapp/deps
 mailerapp/myamailerapppp/_build
 mailerapp/mailerapp/deps
+.env
