@@ -6,24 +6,27 @@ defmodule Myapp.Application do
   use Application
 
   def start(_type, _args) do
+
+    spandex_opts =
+      [
+        host: System.get_env("DATADOG_HOST") || "localhost",
+        port: System.get_env("DATADOG_PORT") || 8126,
+        batch_size: System.get_env("SPANDEX_BATCH_SIZE") || 10,
+        sync_threshold: System.get_env("SPANDEX_SYNC_THRESHOLD") || 100,
+        http: HTTPoison
+      ]
+
     children = [
-      # Start the Ecto repository
+      {SpandexDatadog.ApiServer, spandex_opts},
       Myapp.Repo,
-      # Start the Telemetry supervisor
       MyappWeb.Telemetry,
-      # Start the PubSub system
       {Phoenix.PubSub, name: Myapp.PubSub},
-      # Start the Endpoint (http/https)
       MyappWeb.Endpoint,
-      # Start a worker by calling: Myapp.Worker.start_link(arg)
-      # {Myapp.Worker, arg}
       Myapp.Cache.RedisSupervisor
     ]
 
     Logger.add_backend(Sentry.LoggerBackend)
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Myapp.Supervisor]
     Supervisor.start_link(children, opts)
   end

@@ -18,10 +18,16 @@ config :myapp, MyappWeb.Endpoint,
   pubsub_server: Myapp.PubSub,
   live_view: [signing_salt: "knpjupim"]
 
+config :myapp, Myapp.Tracing.Tracer,
+  service: :myapp,
+  adapter: SpandexDatadog.Adapter,
+  disabled?: false,
+  env: "DEV"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
+  metadata: [:request_id, :trace_id, :span_id]
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
@@ -52,7 +58,6 @@ config :exq_ui,
   webport: 4040,
   web_namespace: "",
   server: true
-
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
