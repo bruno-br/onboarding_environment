@@ -51,7 +51,9 @@ defmodule Myapp.MixProject do
       {:exq_ui, "~> 0.10.0"},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.8"},
-      {:sentry, "~> 8.0"}
+      {:sentry, "~> 8.0"},
+      {:spandex, "~> 3.0.3"},
+      {:spandex_datadog, "~> 1.2"}
     ]
   end
 
