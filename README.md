@@ -45,3 +45,9 @@ Iniciar o Sentry
 ```bash
 docker-compose -f sentry/docker-compose.yml up -d
 ```
+
+### Data Dog
+Iniciar o Sentry
+```bash
+docker-compose up -d datadog
+```
