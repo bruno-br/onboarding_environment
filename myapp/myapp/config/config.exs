@@ -12,6 +12,7 @@ config :myapp,
 
 # Configures the endpoint
 config :myapp, MyappWeb.Endpoint,
+  instrumenters: [SpandexPhoenix.Instrumenter],
   url: [host: "localhost"],
   secret_key_base: "RYdsnixXkf7WLeAYqt+4HVDXBHUQ8hTR6i2TqqFU/IO46n4JjwZmQOAjxt0GtkTr",
   render_errors: [view: MyappWeb.ErrorView, accepts: ~w(json), layout: false, format: "json"],
@@ -21,8 +22,24 @@ config :myapp, MyappWeb.Endpoint,
 config :myapp, Myapp.Tracing.Tracer,
   service: :myapp,
   adapter: SpandexDatadog.Adapter,
-  disabled?: false,
-  env: "DEV"
+  type: :web
+
+config :spandex, :decorators, tracer: Myapp.Tracing.Tracer
+
+config :spandex, :datadog,
+  batch_size: 10,
+  sync_threshold: 20
+
+config :spandex,
+  levels: [:low, :medium, :high],
+  default_span_level: :low
+
+config :spandex_phoenix, tracer: Myapp.Tracing.Tracer
+
+config :spandex_ecto, SpandexEcto.EctoLogger,
+  service: :phoenix_backend_ecto,
+  tracer: PhoenixBackend.Tracer,
+  otp_app: :phoenix_backend
 
 # Configures Elixir's Logger
 config :logger, :console,

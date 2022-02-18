@@ -7,13 +7,15 @@ defmodule Myapp.Application do
 
   def start(_type, _args) do
 
+    config = Application.get_all_env(:spandex_datadog)
+
     spandex_opts =
       [
-        host: System.get_env("DATADOG_HOST") || "localhost",
-        port: System.get_env("DATADOG_PORT") || 8126,
-        batch_size: System.get_env("SPANDEX_BATCH_SIZE") || 10,
-        sync_threshold: System.get_env("SPANDEX_SYNC_THRESHOLD") || 100,
-        http: HTTPoison
+        host: System.get_env("DATADOG_HOST") || config[:host] || "localhost",
+        port: System.get_env("DATADOG_PORT") || config[:port] || 8126,
+        batch_size: System.get_env("SPANDEX_BATCH_SIZE") || config[:batch_size] || 10,
+        sync_threshold: System.get_env("SPANDEX_SYNC_THRESHOLD") || config[:sync_threshold] || 100,
+        http: config[:http] || HTTPoison
       ]
 
     children = [

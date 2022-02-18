@@ -1,6 +1,7 @@
 defmodule MyappWeb.Endpoint do
   use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :myapp
+  use SpandexPhoenix
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
@@ -16,6 +17,9 @@ defmodule MyappWeb.Endpoint do
     longpoll: false
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+
+  # plug Spandex.Plug.StartTrace,
+  #   tracer: Tracer
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -51,4 +55,10 @@ defmodule MyappWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug MyappWeb.Router
+
+  # plug Spandex.Plug.AddContext,
+  #   tracer: Tracer
+
+  # plug Spandex.Plug.EndTrace,
+  #   tracer: Tracer
 end

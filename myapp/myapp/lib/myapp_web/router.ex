@@ -1,5 +1,6 @@
 defmodule MyappWeb.Router do
   use MyappWeb, :router
+  use Spandex.Decorators
 
   alias MyappWeb.Plugs.LogPlug
 
