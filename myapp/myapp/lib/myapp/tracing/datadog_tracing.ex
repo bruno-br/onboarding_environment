@@ -2,10 +2,13 @@ defmodule Myapp.Tracing.DatadogTracing do
   alias Myapp.Tracing.Tracer
 
   def send_trace() do
-    with {:ok, span} <- Tracer.finish_span(),
-         {:ok, formated_span} <- format_span(span) do
-      res = send_to_datadog_agent(formated_span)
-      IO.puts("\n\n res - #{inspect(res)}")
+    with finished_spans_list <- finish_active_spans(),
+         {:ok, trace} <- Tracer.finish_trace(),
+         trace_spans_list <- get_trace_spans(trace),
+         all_spans <- List.flatten(trace_spans_list, finished_spans_list),
+         spans_formated <- format_spans(all_spans),
+         {:ok, encoded_body} <- Poison.encode([spans_formated]) do
+      res = send_to_datadog_agent(encoded_body)
     end
   end
 
@@ -22,6 +25,22 @@ defmodule Myapp.Tracing.DatadogTracing do
     "#{host}:#{port}/v0.3/traces"
   end
 
+  def finish_active_spans() do
+    case Tracer.current_span() do
+      nil ->
+        []
+
+      _ ->
+        {:ok, span} = Tracer.finish_span()
+        span_list = finish_active_spans()
+        [span | span_list]
+    end
+  end
+
+  def get_trace_spans(%{stack: span_list}), do: span_list
+
+  def format_spans(span_list), do: Enum.map(span_list, &format_span(&1))
+
   def format_span(%{
         completion_time: completion_time,
         http: http,
@@ -31,20 +50,15 @@ defmodule Myapp.Tracing.DatadogTracing do
         start: start,
         trace_id: trace_id,
         type: type_atom
-      }) do
-    Poison.encode([
-      [
-        %{
-          duration: completion_time - start,
-          http: http,
-          span_id: span_id,
-          name: name,
-          service: Atom.to_string(service_atom),
-          start: start,
-          trace_id: trace_id,
-          type: Atom.to_string(type_atom)
-        }
-      ]
-    ])
-  end
+      }),
+      do: %{
+        duration: (completion_time != nil && completion_time - start) || nil,
+        http: http,
+        span_id: span_id,
+        name: name,
+        service: Atom.to_string(service_atom),
+        start: start,
+        trace_id: trace_id,
+        type: Atom.to_string(type_atom)
+      }
 end
