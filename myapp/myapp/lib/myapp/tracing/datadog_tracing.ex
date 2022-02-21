@@ -10,9 +10,16 @@ defmodule Myapp.Tracing.DatadogTracing do
   end
 
   def send_to_datadog_agent(trace) do
-    url = "http://localhost:8126/v0.3/traces"
+    url = get_datadog_traces_url()
     headers = [{"Content-type", "application/json"}]
     HTTPoison.put(url, trace, headers)
+  end
+
+  def get_datadog_traces_url() do
+    config = Application.get_all_env(:spandex_datadog)
+    host = System.get_env("DATADOG_HOST") || config[:host] || "localhost"
+    port = System.get_env("DATADOG_PORT") || config[:port] || 8126
+    "#{host}:#{port}/v0.3/traces"
   end
 
   def format_span(%{
