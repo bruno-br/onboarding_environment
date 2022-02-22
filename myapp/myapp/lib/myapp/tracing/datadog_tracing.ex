@@ -12,20 +12,20 @@ defmodule Myapp.Tracing.DatadogTracing do
     end
   end
 
-  def send_to_datadog_agent(trace) do
+  defp send_to_datadog_agent(trace) do
     url = get_datadog_traces_url()
     headers = [{"Content-type", "application/json"}]
     HTTPoison.put(url, trace, headers)
   end
 
-  def get_datadog_traces_url() do
+  defp get_datadog_traces_url() do
     config = Application.get_all_env(:spandex_datadog)
     host = System.get_env("DATADOG_HOST") || config[:host] || "localhost"
     port = System.get_env("DATADOG_PORT") || config[:port] || 8126
     "#{host}:#{port}/v0.3/traces"
   end
 
-  def finish_active_spans() do
+  defp finish_active_spans() do
     case Tracer.current_span() do
       nil ->
         []
@@ -37,28 +37,38 @@ defmodule Myapp.Tracing.DatadogTracing do
     end
   end
 
-  def get_trace_spans(%{stack: span_list}), do: span_list
+  defp get_trace_spans(%{stack: span_list}), do: span_list
 
-  def format_spans(span_list), do: Enum.map(span_list, &format_span(&1))
+  defp format_spans(span_list), do: Enum.map(span_list, &format_span(&1))
 
-  def format_span(%{
-        completion_time: completion_time,
-        http: http,
-        id: span_id,
-        name: name,
-        service: service_atom,
-        start: start,
-        trace_id: trace_id,
-        type: type_atom
-      }),
-      do: %{
-        duration: (completion_time != nil && completion_time - start) || nil,
-        http: http,
-        span_id: span_id,
-        name: name,
-        service: Atom.to_string(service_atom),
-        start: start,
-        trace_id: trace_id,
-        type: Atom.to_string(type_atom)
-      }
+  defp format_span(%{
+         completion_time: completion_time,
+         http: http,
+         id: span_id,
+         name: name,
+         service: service_atom,
+         start: start,
+         trace_id: trace_id,
+         type: type_atom
+       }),
+       do: %{
+         duration: (completion_time != nil && completion_time - start) || nil,
+         meta: format_keyword_list(http, "http"),
+         span_id: span_id,
+         name: name,
+         service: Atom.to_string(service_atom),
+         start: start,
+         trace_id: trace_id,
+         type: Atom.to_string(type_atom)
+       }
+
+  defp format_keyword_list(list, field_name) do
+    if Keyword.keyword?(list) do
+      Map.new(list, fn {key, val} ->
+        {String.to_atom("#{field_name}.#{Atom.to_string(key)}"), to_string(val)}
+      end)
+    else
+      list
+    end
+  end
 end
