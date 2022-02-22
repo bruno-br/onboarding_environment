@@ -43,7 +43,13 @@ defmodule MailerApp.MixProject do
       {:bamboo, "~> 1.5"},
       {:bamboo_smtp, "~> 3.0.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:sentry, "~> 8.0"}
+      {:sentry, "~> 8.0"},
+      {:spandex, "~> 3.0.3"},
+      {:spandex_phoenix, "~> 0.2"},
+      {:spandex_datadog, "~> 1.2"},
+      {:decorator, "~> 1.2"},
+      {:poison, "~> 3.1"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 
