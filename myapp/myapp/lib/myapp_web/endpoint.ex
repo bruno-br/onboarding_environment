@@ -19,7 +19,7 @@ defmodule MyappWeb.Endpoint do
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
   # plug Spandex.Plug.StartTrace,
-  #   tracer: Tracer
+  #   tracer: Myapp.Tracing.Tracer
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -55,10 +55,7 @@ defmodule MyappWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug MyappWeb.Router
-
-  # plug Spandex.Plug.AddContext,
-  #   tracer: Tracer
-
+  plug MyappWeb.Plugs.DatadogTracingPlug
   # plug Spandex.Plug.EndTrace,
   #   tracer: Tracer
 end
