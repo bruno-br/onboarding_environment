@@ -37,13 +37,12 @@ config :spandex,
 config :spandex_phoenix, tracer: Myapp.Tracing.Tracer
 
 config :spandex_ecto, SpandexEcto.EctoLogger,
-  service: :phoenix_backend_ecto,
-  tracer: PhoenixBackend.Tracer,
-  otp_app: :phoenix_backend
+  tracer: Myapp.Tracing.Tracer,
+  otp_app: :myapp
 
 # Configures Elixir's Logger
 config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
+  format: "$time $metadata[$level] $levelpad$message\n",
   metadata: [:request_id, :trace_id, :span_id]
 
 # Use Jason for JSON parsing in Phoenix

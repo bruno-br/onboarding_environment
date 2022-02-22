@@ -49,7 +49,7 @@ config :myapp, MailerApi, url: "localhost:4444"
 # different ports.
 
 config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
+  format: "$time $metadata[$level] $levelpad$message\n",
   metadata: [:request_id, :trace_id, :span_id]
 
 # Set a higher stacktrace during development. Avoid configuring such
