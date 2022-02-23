@@ -67,6 +67,7 @@ defmodule MailerApp.Tracing.DatadogTracing do
   defp format_keyword_list(list, field_name) do
     if Keyword.keyword?(list) do
       list = Keyword.drop(list, [:query_string])
+
       Map.new(list, fn {key, val} ->
         {String.to_atom("#{field_name}.#{Atom.to_string(key)}"), to_string(val)}
       end)

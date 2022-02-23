@@ -63,8 +63,8 @@ config :phoenix, :plug_init_mode, :runtime
 config :tirexs, :uri, "http://127.0.0.1:9200"
 
 config :sentry,
-dsn: "http://23322d5f40914fe38ba74a89ce5fe680@127.0.0.1:9000/1",
-environment_name: :dev,
-enable_source_code_context: true,
-root_source_code_path: File.cwd!(),
-included_environments: [:dev]
+  dsn: "http://23322d5f40914fe38ba74a89ce5fe680@127.0.0.1:9000/1",
+  environment_name: :dev,
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!(),
+  included_environments: [:dev]

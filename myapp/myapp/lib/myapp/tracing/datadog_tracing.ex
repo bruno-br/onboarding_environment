@@ -8,7 +8,7 @@ defmodule Myapp.Tracing.DatadogTracing do
          all_spans <- List.flatten(trace_spans_list, finished_spans_list),
          spans_formated <- format_spans(all_spans),
          {:ok, encoded_body} <- Poison.encode([spans_formated]) do
-      res = send_to_datadog_agent(encoded_body)
+      send_to_datadog_agent(encoded_body)
     end
   end
 

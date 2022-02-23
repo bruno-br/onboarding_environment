@@ -2,8 +2,6 @@ defmodule MyappWeb.Plugs.LogPlug do
   @moduledoc """
   Plug used to create a log for every request
   """
-  import Plug.Conn
-
   alias Myapp.Services.ElasticsearchService
 
   def init(props) do
