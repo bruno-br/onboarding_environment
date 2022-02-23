@@ -18,7 +18,7 @@ defmodule MailerApp.Tracing.DatadogTracing do
     HTTPoison.put(url, trace, headers)
   end
 
-  defp get_datadog_traces_url() do
+  def get_datadog_traces_url() do
     config = Application.get_all_env(:spandex_datadog)
     host = System.get_env("DATADOG_HOST") || config[:host] || "localhost"
     port = System.get_env("DATADOG_PORT") || config[:port] || 8126
