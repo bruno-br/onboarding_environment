@@ -20,6 +20,13 @@ defmodule Myapp.Tracing.DatadogTracingTest do
   @trace %{stack: [@span]}
   @trace_encoded "[[{\"type\":\"web\",\"trace_id\":\"trace_id\",\"start\":0,\"span_id\":\"span_id\",\"service\":\"myapp_test\",\"resource\":\"GET /path\",\"name\":\"name\",\"meta\":{\"http.url\":\"/path\",\"http.status_code\":\"200\",\"http.path_group\":\"/path\",\"http.method\":\"GET\"},\"duration\":10}]]"
 
+  setup_all do
+    [
+      url: DatadogTracing.get_datadog_traces_url(),
+      headers: [{"Content-type", "application/json"}]
+    ]
+  end
+
   setup_with_mocks([
     {
       Tracer,
@@ -32,16 +39,18 @@ defmodule Myapp.Tracing.DatadogTracingTest do
       HTTPoison,
       [],
       put: fn _url, _body, _headers -> :ok end
+    },
+    {
+      Poison,
+      [],
+      encode: fn _trace -> {:ok, @trace_encoded} end
     }
   ]) do
     :ok
   end
 
   describe "send_trace/0" do
-    test "call datadog agent API with correct params" do
-      url = DatadogTracing.get_datadog_traces_url
-      headers = [{"Content-type", "application/json"}]
-
+    test "call datadog agent API with correct params", %{url: url, headers: headers} do
       DatadogTracing.send_trace()
       assert_called(HTTPoison.put(url, @trace_encoded, headers))
     end
