@@ -53,26 +53,26 @@ defmodule MailerApp.Tracing.DatadogTracing do
          type: type_atom
        }),
        do: %{
-         duration: (completion_time != nil && completion_time - start) || nil,
-         meta: format_keyword_list(http, "http"),
-         span_id: span_id,
-         name: name,
-         resource: resource,
-         service: Atom.to_string(service_atom),
-         start: start,
-         trace_id: trace_id,
-         type: Atom.to_string(type_atom)
-       }
+        duration: (completion_time != nil && completion_time - start) || nil,
+        meta: Map.merge(format_keyword_list(http, "http"), get_env()),
+        span_id: span_id,
+        name: name,
+        resource: resource,
+        service: Atom.to_string(service_atom),
+        start: start,
+        trace_id: trace_id,
+        type: Atom.to_string(type_atom)
+      }
 
-  defp format_keyword_list(list, field_name) do
-    if Keyword.keyword?(list) do
-      list = Keyword.drop(list, [:query_string])
+ defp format_keyword_list(list, field_name) do
+   if Keyword.keyword?(list) do
+     Map.new(list, fn {key, val} ->
+       {String.to_atom("#{field_name}.#{Atom.to_string(key)}"), to_string(val)}
+     end)
+   else
+     list
+   end
+ end
 
-      Map.new(list, fn {key, val} ->
-        {String.to_atom("#{field_name}.#{Atom.to_string(key)}"), to_string(val)}
-      end)
-    else
-      list
-    end
-  end
+ defp get_env(), do: %{env: Atom.to_string(Mix.env())}
 end

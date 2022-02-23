@@ -54,7 +54,7 @@ defmodule Myapp.Tracing.DatadogTracing do
        }),
        do: %{
          duration: (completion_time != nil && completion_time - start) || nil,
-         meta: format_keyword_list(http, "http"),
+         meta: Map.merge(format_keyword_list(http, "http"), get_env()),
          span_id: span_id,
          name: name,
          resource: resource,
@@ -73,4 +73,6 @@ defmodule Myapp.Tracing.DatadogTracing do
       list
     end
   end
+
+  defp get_env(), do: %{env: Atom.to_string(Mix.env())}
 end
