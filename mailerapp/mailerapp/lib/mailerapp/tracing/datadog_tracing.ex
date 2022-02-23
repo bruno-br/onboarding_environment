@@ -46,6 +46,7 @@ defmodule MailerApp.Tracing.DatadogTracing do
          http: http,
          id: span_id,
          name: name,
+         resource: resource,
          service: service_atom,
          start: start,
          trace_id: trace_id,
@@ -54,9 +55,9 @@ defmodule MailerApp.Tracing.DatadogTracing do
        do: %{
          duration: (completion_time != nil && completion_time - start) || nil,
          meta: format_keyword_list(http, "http"),
-         #  meta: %{"http.status_code": "200"},
          span_id: span_id,
          name: name,
+         resource: resource,
          service: Atom.to_string(service_atom),
          start: start,
          trace_id: trace_id,
