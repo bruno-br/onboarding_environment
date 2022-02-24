@@ -19,10 +19,11 @@ defmodule MailerApp.Tracing.DatadogTracing do
   end
 
   def get_datadog_traces_url() do
-    config = Application.get_all_env(:spandex_datadog)
-    host = System.get_env("DATADOG_HOST") || config[:host] || "localhost"
-    port = System.get_env("DATADOG_PORT") || config[:port] || 8126
-    "#{host}:#{port}/v0.3/traces"
+      spandex_opts = MailerApp.Tracing.get_spandex_opts()
+      host = spandex_opts[:host]
+      port = spandex_opts[:port]
+
+      "#{host}:#{port}/v0.3/traces"
   end
 
   defp finish_active_spans() do
@@ -64,15 +65,16 @@ defmodule MailerApp.Tracing.DatadogTracing do
         type: Atom.to_string(type_atom)
       }
 
- defp format_keyword_list(list, field_name) do
-   if Keyword.keyword?(list) do
-     Map.new(list, fn {key, val} ->
-       {String.to_atom("#{field_name}.#{Atom.to_string(key)}"), to_string(val)}
-     end)
-   else
-     list
-   end
- end
+  defp format_keyword_list(list, field_name) do
+    if Keyword.keyword?(list) do
+      Map.new(list, fn {key, val} ->
+        {String.to_atom("#{field_name}.#{Atom.to_string(key)}"), to_string(val)}
+      end)
+    else
+      list
+    end
+  end
 
  defp get_env(), do: %{env: Atom.to_string(Mix.env())}
+
 end

@@ -22,7 +22,7 @@ defmodule MailerApp.Tracing.DatadogTracingTest do
 
   setup_all do
     [
-      url: DatadogTracing.get_datadog_traces_url(),
+      url: get_datadog_traces_url(),
       headers: [{"Content-type", "application/json"}]
     ]
   end
@@ -54,5 +54,13 @@ defmodule MailerApp.Tracing.DatadogTracingTest do
       DatadogTracing.send_trace()
       assert_called(HTTPoison.put(url, @trace_encoded, headers))
     end
+  end
+
+  def get_datadog_traces_url() do
+    spandex_opts = MailerApp.Tracing.get_spandex_opts()
+    host = spandex_opts[:host]
+    port = spandex_opts[:port]
+
+    "#{host}:#{port}/v0.3/traces"
   end
 end
