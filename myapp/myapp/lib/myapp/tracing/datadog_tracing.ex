@@ -19,9 +19,10 @@ defmodule Myapp.Tracing.DatadogTracing do
   end
 
   def get_datadog_traces_url() do
-    config = Application.get_all_env(:spandex_datadog)
-    host = System.get_env("DATADOG_HOST") || config[:host] || "localhost"
-    port = System.get_env("DATADOG_PORT") || config[:port] || 8126
+    spandex_opts = Myapp.Tracing.get_spandex_opts()
+    host = spandex_opts[:host]
+    port = spandex_opts[:port]
+
     "#{host}:#{port}/v0.3/traces"
   end
 
