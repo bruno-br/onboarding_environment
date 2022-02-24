@@ -7,21 +7,16 @@ defmodule Myapp.Application do
 
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
+      {SpandexDatadog.ApiServer, Myapp.Tracing.get_spandex_opts()},
       Myapp.Repo,
-      # Start the Telemetry supervisor
       MyappWeb.Telemetry,
-      # Start the PubSub system
       {Phoenix.PubSub, name: Myapp.PubSub},
-      # Start the Endpoint (http/https)
       MyappWeb.Endpoint,
-      # Start a worker by calling: Myapp.Worker.start_link(arg)
-      # {Myapp.Worker, arg}
       Myapp.Cache.RedisSupervisor
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
+    Logger.add_backend(Sentry.LoggerBackend)
+
     opts = [strategy: :one_for_one, name: Myapp.Supervisor]
     Supervisor.start_link(children, opts)
   end

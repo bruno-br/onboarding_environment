@@ -12,16 +12,38 @@ config :myapp,
 
 # Configures the endpoint
 config :myapp, MyappWeb.Endpoint,
+  instrumenters: [SpandexPhoenix.Instrumenter],
   url: [host: "localhost"],
   secret_key_base: "RYdsnixXkf7WLeAYqt+4HVDXBHUQ8hTR6i2TqqFU/IO46n4JjwZmQOAjxt0GtkTr",
   render_errors: [view: MyappWeb.ErrorView, accepts: ~w(json), layout: false, format: "json"],
   pubsub_server: Myapp.PubSub,
   live_view: [signing_salt: "knpjupim"]
 
+config :myapp, Myapp.Tracing.Tracer,
+  service: :myapp,
+  adapter: SpandexDatadog.Adapter,
+  type: :web
+
+config :spandex, :decorators, tracer: Myapp.Tracing.Tracer
+
+config :spandex, :datadog,
+  batch_size: 10,
+  sync_threshold: 20
+
+config :spandex,
+  levels: [:low, :medium, :high],
+  default_span_level: :low
+
+config :spandex_phoenix, tracer: Myapp.Tracing.Tracer
+
+config :spandex_ecto, SpandexEcto.EctoLogger,
+  tracer: Myapp.Tracing.Tracer,
+  otp_app: :myapp
+
 # Configures Elixir's Logger
 config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
+  format: "$time $metadata[$level] $levelpad$message\n",
+  metadata: [:request_id, :trace_id, :span_id]
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

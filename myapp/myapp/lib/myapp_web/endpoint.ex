@@ -1,5 +1,7 @@
 defmodule MyappWeb.Endpoint do
+  use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :myapp
+  use SpandexPhoenix
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
@@ -45,8 +47,10 @@ defmodule MyappWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
+  plug Sentry.PlugContext
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
   plug MyappWeb.Router
+  plug MyappWeb.Plugs.DatadogTracingPlug
 end

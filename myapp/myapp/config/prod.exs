@@ -16,6 +16,13 @@ config :myapp, MyappWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :sentry,
+  dsn: "http://23322d5f40914fe38ba74a89ce5fe680@127.0.0.1:9000/1",
+  environment_name: :prod,
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!(),
+  included_environments: [:prod]
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

@@ -7,6 +7,7 @@ defmodule MailerApp.Application do
 
   def start(_type, _args) do
     children = [
+      {SpandexDatadog.ApiServer, MailerApp.Tracing.get_spandex_opts()},
       # Start the Telemetry supervisor
       MailerAppWeb.Telemetry,
       # Start the PubSub system
@@ -16,6 +17,8 @@ defmodule MailerApp.Application do
       # Start a worker by calling: MailerApp.Worker.start_link(arg)
       # {MailerApp.Worker, arg}
     ]
+
+    Logger.add_backend(Sentry.LoggerBackend)
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

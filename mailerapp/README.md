@@ -31,10 +31,10 @@ $ mix phx.server
     {
       // Campos obrigatorios
       "from": "from@mail.com",
-	    "to": "to@mail.com",
-	    "subject": "Email Subject",
-	    "text_body": "Report text body",
-	    "html_body": "Report html body",
+      "to": "to@mail.com",
+      "subject": "Email Subject",
+      "text_body": "Report text body",
+      "html_body": "Report html body",
 
       // Opcional
       "attachment": {

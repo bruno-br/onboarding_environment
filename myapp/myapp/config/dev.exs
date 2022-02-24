@@ -48,8 +48,9 @@ config :myapp, MailerApi, url: "localhost:4444"
 # configured to run both http and https servers on
 # different ports.
 
-# Do not include metadata nor timestamps in development logs
-config :logger, :console, format: "[$level] $message\n"
+config :logger, :console,
+  format: "$time $metadata[$level] $levelpad$message\n",
+  metadata: [:request_id, :trace_id, :span_id]
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
@@ -60,3 +61,10 @@ config :phoenix, :plug_init_mode, :runtime
 
 # The default uri is http://127.0.0.1:9200
 config :tirexs, :uri, "http://127.0.0.1:9200"
+
+config :sentry,
+  dsn: "http://23322d5f40914fe38ba74a89ce5fe680@127.0.0.1:9000/1",
+  environment_name: :dev,
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!(),
+  included_environments: [:dev]
