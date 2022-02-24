@@ -4,8 +4,7 @@ defmodule Myapp.Tracing.DatadogTracing do
   def send_trace() do
     with finished_spans_list <- finish_active_spans(),
          {:ok, trace} <- Tracer.finish_trace(),
-         trace_spans_list <- get_trace_spans(trace),
-         all_spans <- List.flatten(trace_spans_list, finished_spans_list),
+         all_spans <- get_all_spans(trace, finished_spans_list),
          spans_formated <- format_spans(all_spans),
          {:ok, encoded_body} <- Poison.encode([spans_formated]) do
       send_to_datadog_agent(encoded_body)
@@ -38,7 +37,8 @@ defmodule Myapp.Tracing.DatadogTracing do
     end
   end
 
-  defp get_trace_spans(%{stack: span_list}), do: span_list
+  defp get_all_spans(%{stack: span_list}, finished_spans_list),
+    do: List.flatten(span_list, finished_spans_list)
 
   defp format_spans(span_list), do: Enum.map(span_list, &format_span(&1))
 
