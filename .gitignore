@@ -1,7 +1,6 @@
 data
 .elixir_ls
-myapp/myapp/_build
-myapp/myapp/deps
-mailerapp/myamailerapppp/_build
-mailerapp/mailerapp/deps
+**/**/_build
+**/**/deps
 .env
+.tool-versions
